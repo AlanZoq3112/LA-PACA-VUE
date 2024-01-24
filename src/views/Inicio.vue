@@ -2,20 +2,33 @@
     <div>
         <!-- submenu -->
         <div class="text-center ">
-            <b-button class="ss" to="hombre-screen" variant="light">HOMBRE</b-button>
-            <b-button class="ss" to="mujer-screen" variant="light">MUJER</b-button>
-            <b-button class="ss" to="nenes-screen" variant="light">NIÑOS</b-button>
+            
+            <b-dropdown split split-href="/hombre-screen"  text="HOMBRE" class="m-2 ss" variant="light">
+                <b-dropdown-item to="hombre-screen">Ropa</b-dropdown-item>
+                <b-dropdown-item to="">Calzado</b-dropdown-item>
+                <b-dropdown-item to="">Accesorios</b-dropdown-item>
+            </b-dropdown>
+
+            <b-dropdown split split-href="/mujer-screen"  text="MUJER" class="m-2 ss" variant="light">
+                <b-dropdown-item to="mujer-screen">Ropa</b-dropdown-item>
+                <b-dropdown-item to="">Calzado</b-dropdown-item>
+                <b-dropdown-item to="">Accesorios</b-dropdown-item>
+            </b-dropdown>
+            
+            <b-dropdown split split-href="/nenes-screen"  text="NIÑOS" class="m-2 ss" variant="light">
+                <b-dropdown-item to="nenes-screen">Ropa</b-dropdown-item>
+                <b-dropdown-item to="">Calzado</b-dropdown-item>
+                <b-dropdown-item to="">Accesorios</b-dropdown-item>
+            </b-dropdown>
+
             <b-button class="ss" to="ofertas-screen" variant="light">¡OFERTAS!</b-button>
+
+
         </div>
 
         <!-- contenido -->
         <div>
-            <b-card overlay img-src="https://picsum.photos/900/250/?image=3" img-alt="Card Image" text-variant="white"
-                title="Image Overlay" sub-title="Subtitle">
-                <b-card-text>
-                    Some quick example text to build on the card and make up the bulk of the card's content.
-                </b-card-text>
-            </b-card>
+            inicio
         </div>
     </div>
 </template>

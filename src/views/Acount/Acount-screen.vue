@@ -1,6 +1,8 @@
 <template>
-    <div>
+    <div class="text-center">
+
         Contenido del perfil
+
     </div>
 </template>
 

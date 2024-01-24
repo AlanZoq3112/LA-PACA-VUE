@@ -9,34 +9,39 @@ const router = new VueRouter({
   base: import.meta.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      name: 'inicio',
+      component: () => import('../views/Inicio.vue')
+    },
+    {
       path: '/inicio',
-      name: 'inico',
-      component: () => import('../views/Inicio.vue')  
+      name: 'inicio',
+      component: () => import('../views/Inicio.vue')
     },
     {
       path: '/hombre-screen',
       name: 'hombre-screen',
-      component: () => import('../views/Hombre/Hombre-screen.vue')  
+      component: () => import('../views/Hombre/Hombre-screen.vue')
     },
     {
       path: '/mujer-screen',
       name: 'mujer-screen',
-      component: () => import('../views/Mujer/Mujer-screen.vue')  
+      component: () => import('../views/Mujer/Mujer-screen.vue')
     },
     {
       path: '/nenes-screen',
       name: 'nenes-screen',
-      component: () => import('../views/Nenes/Nenes-screen.vue')  
+      component: () => import('../views/Nenes/Nenes-screen.vue')
     },
     {
       path: '/ofertas-screen',
       name: 'ofertas-screen',
-      component: () => import('../views/Ofertas/Ofertas-screen.vue')  
+      component: () => import('../views/Ofertas/Ofertas-screen.vue')
     },
     {
       path: '/profile-screen',
       name: 'profile-screen',
-      component: () => import('./../views/Acount/Acount-screen.vue')  
+      component: () => import('./../views/Acount/Acount-screen.vue')
     },
     {
       path: '*',

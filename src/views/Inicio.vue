@@ -27,7 +27,7 @@
         </div>
 
         <!-- contenido -->
-        <div>
+        <div class="d-flex">
             inicio
         </div>
     </div>

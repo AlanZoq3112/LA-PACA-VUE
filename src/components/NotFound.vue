@@ -16,7 +16,7 @@ export default {};
 
 <style scoped>
 .not-found-container {
-  background-color: #ffffff;
+  background-color: #f7f7f7;
   display: flex;
   justify-content: center;
   align-items: center;

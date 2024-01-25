@@ -44,6 +44,21 @@ const router = new VueRouter({
       component: () => import('./../views/Acount/Acount-screen.vue')
     },
     {
+      path: '/men-ropa',
+      name: 'men-ropa',
+      component: () => import('./../views/Hombre/Ropa/men-ropa.vue')
+    },
+    {
+      path: '/men-calzado',
+      name: 'men-calzado',
+      component: () => import('./../views/Hombre/Calzado/men-calzado.vue')
+    },
+    {
+      path: '/men-accesorios',
+      name: 'men-accesorios',
+      component: () => import('./../views/Hombre/Accesorios/men-accesorios.vue')
+    },
+    {
       path: '*',
       component: () => import('../components/NotFound.vue'),
     },

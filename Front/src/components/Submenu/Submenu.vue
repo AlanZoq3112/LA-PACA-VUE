@@ -15,9 +15,9 @@
             </b-dropdown>
 
             <b-dropdown split split-href="/nenes-screen" text="NIÑOS" class="m-2 ss" variant="faded">
-                <b-dropdown-item to="nenes-screen">Ropa</b-dropdown-item>
-                <b-dropdown-item to="">Calzado</b-dropdown-item>
-                <b-dropdown-item to="">Accesorios</b-dropdown-item>
+                <b-dropdown-item to="kid-ropa">Ropa</b-dropdown-item>
+                <b-dropdown-item to="kid-calzado">Calzado</b-dropdown-item>
+                <b-dropdown-item to="kid-accesorios">Accesorios</b-dropdown-item>
             </b-dropdown>
 
             <b-button class="ss" to="ofertas-screen" variant="faded">¡OFERTAS!</b-button>

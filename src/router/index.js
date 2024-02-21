@@ -33,6 +33,27 @@ const router = new VueRouter({
       name: 'nenes-screen',
       component: () => import('../views/Nenes/Nenes-screen.vue')
     },
+    //Sub-Menu-Kid
+    {
+      path: '/kid-ropa',
+      name: 'kid-ropa',
+      component: () => import('./../views/Nenes/Ropa/kid-ropa.vue')
+    },
+    {
+      path: '/kid-calzado',
+      name: 'kid-calzado',
+      component: () => import('./../views/Nenes/Calzado/kid-calzado.vue')
+    },
+    {
+      path: '/kid-accesorios',
+      name: 'kid-accesorios',
+      component: () => import('./../views/Nenes/Accesorios/kid-accesorios.vue')
+    },
+    {
+      path: '/kid-producto',
+      name: 'kid-producto',
+      component: () => import ('./../views/Nenes/Productos/kid-producto.vue')
+    },
     {
       path: '/ofertas-screen',
       name: 'ofertas-screen',

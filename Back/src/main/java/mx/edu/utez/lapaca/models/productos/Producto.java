@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+
+import java.util.List;
 
 @Entity
 @Table(name = "productos")
@@ -55,4 +59,9 @@ public class Producto {
     private SubCategoria subcategoria;
     //muchos productos pueden estar asociados a un misma subcategoria
 
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
+    private List<Pedido> pedidos;
+    //un producto puede estar asociados a muchos pedidos, muchos pedidos pueden estar asociados a un producto
+
+    //muchos pedidos pueden estar en un prodcuto, y un producto puede estar en muchos pedidos
 }

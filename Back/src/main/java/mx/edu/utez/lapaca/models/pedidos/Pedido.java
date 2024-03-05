@@ -30,10 +30,10 @@ public class Pedido {
     //muchos usuarios pueden realizar un pedido, y un pedido puede ser realizado por muchos productos
     //muchos pedidos pueden ser realizados por un usuario, y un usuario puede realizar muchos pedidos
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pedido_id")
-    private List<Producto> productos;
-    //un pedido puede estar asociado a muchos productos, ya que un pedido puede tener muchos productos
+    @ManyToOne
+    @JoinColumn(name = "producto_id")
+    private Producto producto;
+    //muchos pedidos pueden estar en un prodcuto, y un producto puede estar en muchos pedidos
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pagos_id", nullable = false)

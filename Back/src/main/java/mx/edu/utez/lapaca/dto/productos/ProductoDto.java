@@ -10,9 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
+import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,6 +56,8 @@ public class ProductoDto {
     @NotNull(message = "El id de subcategoria no puede ser nulo")
     private SubCategoria subcategoria;
 
+    private List<Pedido> pedidos;
+
 
     public Producto getProducto() {
 
@@ -66,7 +71,8 @@ public class ProductoDto {
                 getProducto().isEstado(),
                 getUsuario(),
                 getCategoria(),
-                getSubcategoria()
+                getSubcategoria(),
+                getPedidos()
         );
     }
 

@@ -25,9 +25,8 @@ public class PedidoDto {
     @NotNull(message = "El id de usuario no puede ser nulo")
     private Usuario usuario;
 
-    @NotNull(message = "La lista de id de productos no puede ser nula")
-    @Valid //valida recursivamente cada campo/id
-    private List<Producto> productos;
+    @NotNull(message = "El id de producto no puede ser nulo")
+    private Producto producto;
 
     @NotNull(message = "El id pago no puede ser nulo")
     private Pago pago;
@@ -36,7 +35,7 @@ public class PedidoDto {
         return new Pedido(
                 getId(),
                 getUsuario(),
-                getProductos(),
+                getProducto(),
                 getPago()
         );
     }

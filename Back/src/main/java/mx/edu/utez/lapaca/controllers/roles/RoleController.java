@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/role/")
@@ -40,23 +41,23 @@ public class RoleController {
     }
 
     //get one
-    @GetMapping("/getOne/{id}")
-    public ResponseEntity<CustomResponse<Role>> getOne(@PathVariable("id") Long id){
+    @GetMapping("/getOne")
+    public ResponseEntity<CustomResponse<Role>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
+        Long roleId = requestBody.get("id");
         return new ResponseEntity<>(
-                this.service.getOne(id),
+                this.service.getOne(roleId),
                 HttpStatus.OK
         );
     }
 
     //delete by id
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<CustomResponse<String>> deleteById(@PathVariable("id") Long id) {
-        CustomResponse<String> response = service.deleteById(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<CustomResponse<String>> deleteById(@Valid @RequestBody Map<String, Long> requestBody) {
+        Long roleId = requestBody.get("id");
         return new ResponseEntity<>(
-                response,
-                HttpStatus.valueOf(
-                        response.getStatusCode()
-                ));
+                this.service.deleteById(roleId),
+                HttpStatus.OK
+        );
     }
 
 }

@@ -31,16 +31,13 @@ public class UsuarioDto {
 
     @NotBlank(message = "La dirección de correo electrónico es obligatoria")
     @Email(message = "La dirección de correo electrónico debe ser válida")
-    @JsonIgnore
     private String email;
 
     @Size(min = 8, max = 35, message = "La contraseña debe tener entre {min} y {max} caracteres")
-    @JsonIgnore // evitar enviar la contraseña en respuestas HTTP
     private String contrasena;
 
     @NotNull(message = "El teléfono es obligatorio")
     @Digits(integer = 10, fraction = 0, message = "El teléfono debe contener solo números y tener como máximo {integer} dígitos")
-    @JsonIgnore
     private Long telefono;
 
     private Role role;

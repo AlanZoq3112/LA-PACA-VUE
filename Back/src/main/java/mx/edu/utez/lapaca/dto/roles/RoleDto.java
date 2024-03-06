@@ -17,6 +17,8 @@ public class RoleDto {
 
     private Long id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 15, message = "El nombre debe tener como máximo {max} caracteres")
     private String nombre;
 
     public Role getRole() {

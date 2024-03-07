@@ -80,6 +80,11 @@ const router = new VueRouter({
       component: () => import('./../views/Hombre/Accesorios/men-accesorios.vue')
     },
     {
+      path: '/usuarios',
+      name: 'usuarios',
+      component: () => import('./../modules/Usuarios/views/Usuarios.vue')
+    },
+    {
       path: '*',
       component: () => import('../components/NotFound.vue'),
     },

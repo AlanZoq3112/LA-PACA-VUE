@@ -62,11 +62,10 @@ public class UsuarioController {
         );
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<CustomResponse<Usuario>> delete(@Valid @RequestBody Map<String, Long> requestBody){
-        Long userId = requestBody.get("id");
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CustomResponse<Usuario>> delete(@PathVariable Long id){
         return new ResponseEntity<>(
-                this.service.deleteById(userId),
+                this.service.deleteById(id),
                 HttpStatus.OK
         );
     }

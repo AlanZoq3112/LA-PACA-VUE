@@ -39,6 +39,15 @@
                     {{ data.item.rol.nombre }}
                 </template>
 
+                <template #cell(actions)="data">
+                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
+                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                    </b-button>
+                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
+                        <b-icon icon="trash" style="color:red"></b-icon>
+                    </b-button>
+                </template>
+
                 
             </b-table>
         </div>
@@ -81,6 +90,28 @@ export default {
                 console.log(this.usuarios);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
+            }
+        },
+        async deleteUser(userId) {
+            try {
+                const result = await Swal.fire({
+                    title: '¿Estás seguro de eliminar este usuario?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#008c6f',
+                    cancelButtonColor: '#e11c24',
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: 'Cancelar',
+                });
+
+                if (result.isConfirmed) {
+                    await axios.delete(`http://localhost:8090/api-carsi-shop/usuario/delete/${userId}`);
+                    this.getUsuarios();
+                    Swal.fire('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
+                }
+            } catch (error) {
+                console.error("Error al eliminar el usuario", error);
+                Swal.fire('Error', 'Hubo un problema al intentar eliminar el usuario', 'error');
             }
         },
     },

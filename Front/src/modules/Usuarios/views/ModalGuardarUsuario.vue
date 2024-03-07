@@ -11,8 +11,7 @@
                         <b-row>
                             <b-col>
                                 <label for="usuario">Nombre del usuario: *</label>
-                                <b-form-input v-model="usuario.nombre" type="text" class="form-control"
-                                    placeholder="Nombre" required
+                                <b-form-input v-model="usuario.nombre" type="text" class="form-control" placeholder="Nombre" required
                                     aria-describedby="input-live-help input-live-feedback" />
                             </b-col>
                             <b-col>
@@ -44,7 +43,12 @@
                             </b-col>
                             <b-col>
                                 <label for="usuario">Rol del usuario: *</label>
-                                <b-form-input v-model="usuario.rol.id" type="number" class="form-control" required
+                                <b-form-input v-model="usuario.role.id" type="number" class="form-control" required
+                                    aria-describedby="input-live-help input-live-feedback" />
+                            </b-col>
+                            <b-col>
+                                <label for="usuario">Nombre del rol del usuario: *</label>
+                                <b-form-input v-model="usuario.role.nombre" type="text" class="form-control" required
                                     aria-describedby="input-live-help input-live-feedback" />
                             </b-col>
                         </b-row>
@@ -78,9 +82,9 @@ export default {
                 nombre: "",
                 imagen_url: "",
                 email: "",
-                contrasena: "", 
+                contrasena: "",
                 telefono: null,
-                rol:{
+                role: {
                     id: null,
                     nombre: ""
                 }
@@ -95,37 +99,63 @@ export default {
             this.usuario.email = ""
             this.usuario.contrasena = ""
             this.usuario.telefono = null
-            this.usuario.rol.id = null
-            this.usuario.rol.nombre = ""
+            this.usuario.role.id = null
+            this.usuario.role.nombre = ""
 
         },
         async save() {
-            Swal.fire({
-                title: "¿Estás seguro de registrar el usuario?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#008c6f',
-                cancelButtonColor: '#e11c24',
-                confirmButtonText: "Confirmar",
-                cancelButtonText: 'Cancelar',
-            }).then(async (result) => {
+            try {
+                const result = await Swal.fire({
+                    title: "¿Estás seguro de registrar el usuario?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#008c6f',
+                    cancelButtonColor: '#e11c24',
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: 'Cancelar',
+                });
+
                 if (result.isConfirmed) {
-                    try {
-                        console.log(this.usuario);
-                        await axios.post("http://localhost:8090/api-carsi-shop/usuario/insert", this.usuario);
+                    // Realiza la solicitud de guardado
+                    const response = await axios.post("http://localhost:8090/api-carsi-shop/usuario/insert", this.usuario);
+
+                    if (response.status === 201) {
+                        this.usuario = {
+                            nombre: '',
+                            imagen_url: '',
+                            email: '',
+                            contrasena: '',
+                            telefono: null,
+                            role: {
+                                id: null,
+                                name: '',
+                            },
+                        };
                         Swal.fire({
                             title: "¡Guardado!",
                             text: "El usuario se registró correctamente",
                             icon: "success"
                         });
-                        this.onClose();
-                        this.$emit('user-updated');
-                    } catch (error) {
-                        console.log("Error al guardar el usuario", error);
-                    }
 
+                        // Limpia el formulario después de guardar
+                        this.onClose();
+
+                        // Emite un evento para informar a otros componentes sobre la actualización del usuario
+                        this.$emit('user-updated');
+                    } else {
+                        // Maneja situaciones donde la solicitud fue exitosa, pero el servidor devuelve un estado no exitoso
+                        console.log("Error al guardar el usuario. Estado del servidor:", response.status);
+                    }
                 }
-            });
+            } catch (error) {
+                // Maneja errores generales, como problemas de red o errores en la solicitud
+                console.error("Error al realizar la solicitud de guardado:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Hubo un problema al intentar guardar el usuario",
+                    icon: "error"
+                });
+            }
         },
 
 

@@ -6,7 +6,8 @@ import mx.edu.edu.loginjwt.dto.SignUpRequest;
 import mx.edu.edu.loginjwt.entity.User;
 
 public interface AuthenticationService {
-    User singup(SignUpRequest signUpRequest);
+    User singupUser(SignUpRequest signUpRequest);
+    User singupAdmin(SignUpRequest signUpRequest);
 
     JwtAuthenticationResponse signin(SignUpRequest signUpRequest);
 

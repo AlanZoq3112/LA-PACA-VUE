@@ -24,12 +24,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
-    public User singup(SignUpRequest signUpRequest){
+    public User singupUser(SignUpRequest signUpRequest){
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(Role.USER);
+        return userRepository.save(user);
+    }
 
+    public User singupAdmin(SignUpRequest signUpRequest){
+        User user = new User();
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setRole(Role.ADMIN);
         return userRepository.save(user);
     }
 

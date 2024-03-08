@@ -19,9 +19,14 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/singup")
-    public ResponseEntity<User> singup(@RequestBody SignUpRequest signUpRequest){
-        return  ResponseEntity.ok(authenticationService.singup(signUpRequest));
+    @PostMapping("/singupUser")
+    public ResponseEntity<User> singupUser(@RequestBody SignUpRequest signUpRequest){
+        return  ResponseEntity.ok(authenticationService.singupUser(signUpRequest));
+    }
+
+    @PostMapping("/singupAdmin")
+    public ResponseEntity<User> singupAdmin(@RequestBody SignUpRequest signUpRequest){
+        return  ResponseEntity.ok(authenticationService.singupUser(signUpRequest));
     }
 
     @PostMapping("/signin")

@@ -11,6 +11,7 @@ import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.roles.Role;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -39,6 +40,10 @@ public class Usuario {
 
     @Column(name = "telefono", nullable = false, precision = 10)
     private Long telefono;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
+    private Date fechaNacimiento; //
 
 
     @ManyToOne

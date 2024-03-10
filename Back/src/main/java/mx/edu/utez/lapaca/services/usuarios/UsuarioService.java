@@ -43,7 +43,7 @@ public class UsuarioService {
                     200,
                     "Usuario registrado"
             );
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | IllegalArgumentException e) {
             return new CustomResponse<>(
                     null,
                     true,
@@ -84,7 +84,7 @@ public class UsuarioService {
                         "El usuario con el id " + id + " no existe"
                 );
             }
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | IllegalArgumentException e) {
             return new CustomResponse<>(
                     null,
                     true,
@@ -113,7 +113,7 @@ public class UsuarioService {
                     "Usuario actualizado"
             );
 
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | IllegalArgumentException e) {
             return new CustomResponse<>(
                     null,
                     true,
@@ -145,7 +145,7 @@ public class UsuarioService {
                     200,
                     "El usuario con el id " + id + " ha sido eliminado correctamente"
             );
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | IllegalArgumentException e) {
             return new CustomResponse<>(
                     null,
                     true,

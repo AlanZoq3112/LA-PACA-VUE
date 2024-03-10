@@ -11,7 +11,9 @@ import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,6 +42,11 @@ public class UsuarioDto {
     @Digits(integer = 10, fraction = 0, message = "El teléfono debe contener solo números y tener como máximo {integer} dígitos")
     private Long telefono;
 
+    @NotNull(message = "La fecha de nacimiento es obligatoria")
+    @DateTimeFormat(pattern = "yyyy/mm/dd")
+    @Past(message = "La fecha de nacimiento debe ser en el pasado")
+    private Date fechaNacimiento;
+
     private Role role;
 
     private List<Direccion> direcciones;
@@ -54,6 +61,7 @@ public class UsuarioDto {
                 getEmail(),
                 getContrasena(),
                 getTelefono(),
+                getFechaNacimiento(),
                 getRole(),
                 getDirecciones(),
                 getPagos()

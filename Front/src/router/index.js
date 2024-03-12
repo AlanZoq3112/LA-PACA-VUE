@@ -14,6 +14,17 @@ const router = new VueRouter({
       component: () => import('../views/Inicio.vue')
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../modules/Auth/Views/Login.vue')
+    },
+    {
+      path: '/crearCuenta',
+      name: 'crearCuenta',
+      component: () => import('../modules/Auth/Views/CrearCuenta.vue')
+    },
+    
+    {
       path: '/inicio',
       name: 'inicio',
       component: () => import('../views/Inicio.vue')

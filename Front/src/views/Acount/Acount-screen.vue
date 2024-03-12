@@ -31,6 +31,11 @@
                                     </b-form-group>
                                 </b-col>
                             </b-row>
+                            <div class="d-flex align-items-center justify-content-center pb-4">
+                                <p class="mb-0 me-2">¿Quieres vender tus productos?</p>
+                                <br>
+                                <b-link style="color:blue" class="text-muted" href="login">Enviar solicitud de vendedor</b-link>
+                            </div>
                         </div>
                     </b-card>
                 </b-col>
@@ -65,7 +70,7 @@ export default {
 }
 
 .userList{
-    background-color:#f5f5f5;
+    background-color:#F5F5F5;
     color: black;
 }
 

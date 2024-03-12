@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.pagos.Pago;
+import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -41,10 +41,6 @@ public class Usuario {
     @Column(name = "telefono", nullable = false, precision = 10)
     private Long telefono;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
-    private Date fechaNacimiento; //
-
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
@@ -63,4 +59,10 @@ public class Usuario {
     //y un usuario puede tener asociados muchos pagos
 
     //productos relacion? idkkkkk
+
+
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
+    private List<Producto> productos;
+// un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
 }

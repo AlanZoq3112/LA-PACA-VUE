@@ -64,4 +64,6 @@ public class Producto {
     //un producto puede estar asociados a muchos pedidos, muchos pedidos pueden estar asociados a un producto
 
     //muchos pedidos pueden estar en un prodcuto, y un producto puede estar en muchos pedidos
+
+
 }

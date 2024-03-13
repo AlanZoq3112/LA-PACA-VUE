@@ -1,10 +1,8 @@
 <template>
     <div>
         <div>
-            <div class="text-center">
-                <h4>Mi cuenta</h4>
-            </div>
             <div class="custom-container py-1 h-200">
+                <h4>Mi cuenta</h4>
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-xl-12">
                         <div class="card rounded-3 text-black">
@@ -24,19 +22,6 @@
                                             <h5>{{ user.Correo }}</h5>
                                         </b-col>
                                     </b-row>
-                                    <div class="carta">
-
-                                        <b-button variant="faded">
-                                            <b-icon icon="pencil-square"></b-icon> Actualizar datos
-                                        </b-button>
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">¿Quieres vender tus productos?</p>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <b-link style="color:blue" class="text-muted"
-                                                href="enviarSolicitdVendedor">Enviar solicitud de vendedor</b-link>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -63,11 +48,11 @@
                                                         <label for=""><b>Nombre y apellido</b></label>
                                                         <p>{{ user.Nombre }} {{ user.Apellidos }}</p>
                                                     </b-col>
-                                                    <b-col  class="pl-2">
+                                                    <b-col class="pl-2">
                                                         <label for=""><b>Correo</b></label>
                                                         <p>{{ user.Correo }}</p>
                                                     </b-col>
-                                                    <b-col  class="pl-2">
+                                                    <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
                                                         <p>{{ user.Telefono }}</p>
                                                     </b-col>
@@ -100,11 +85,11 @@
                                                         <label for=""><b>CURP</b></label>
                                                         <p>{{ user.datosFiscales.CURP }}</p>
                                                     </b-col>
-                                                    <b-col  class="pl-2">
+                                                    <b-col class="pl-2">
                                                         <label for=""><b>RFC</b></label>
                                                         <p>{{ user.datosFiscales.RFC }}</p>
                                                     </b-col>
-                                                    <b-col  class="pl-2">
+                                                    <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
                                                         <p>{{ user.datosFiscales.Telefono }}</p>
                                                     </b-col>
@@ -112,9 +97,17 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
+                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                        <p class="mb-0 me-2">¿Quieres vender tus productos?</p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                        <b-link style="color:blue" class="text-muted"
+                                            href="enviarSolicitdVendedor">Enviar solicitud de vendedor</b-link>
+                                    </div>
                                     <br>
                                     <div>
-                                        <b-button class="userList" to="usuarios"><b-icon icon="people"></b-icon> Lista de usuarios</b-button>
+                                        <b-button class="userList" to="usuarios"><b-icon icon="people"></b-icon> Lista
+                                            de usuarios</b-button>
                                     </div>
                                     <br>
                                     <div>
@@ -130,7 +123,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

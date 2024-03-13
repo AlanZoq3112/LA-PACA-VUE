@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
     name: "EnviarCorreo",
     data() {
@@ -36,6 +38,7 @@ export default {
 
     methods: {
         recuperarPassword(){
+            Swal.fire('Enviadad', 'Solicitud de cambio de contraseña enviada correctamente', 'success');
             console.log(this.email);
         }
     },

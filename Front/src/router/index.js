@@ -10,13 +10,17 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'inicio',
       component: () => import('../views/Inicio.vue')
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../modules/Auth/Views/Login.vue')
+    },
+    {
+      path: '/enviarSolicitdVendedor',
+      name: 'enviarSolicitdVendedor',
+      component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue')
     },
     {
       path: '/crearCuenta',

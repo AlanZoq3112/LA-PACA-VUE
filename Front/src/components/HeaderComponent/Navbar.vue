@@ -10,6 +10,7 @@
                 <b-collapse id="nav-collapse" is-nav>
                     <b-navbar-nav class="ml-auto">
                             <b-button v-b-tooltip.hover="'Carrito de compra'" class="boton" to="" variant="faded"><b-icon icon="cart3"></b-icon></b-button>
+                            <b-button v-b-tooltip.hover="'Ventas'" class="boton" to="login" variant="faded"><i class="fa fa-tags" aria-hidden="true"></i></b-button>
                             <b-button v-b-tooltip.hover="'Mi perfil'" class="boton" to="login" variant="faded"><b-icon icon="person"></b-icon></b-button>
                     </b-navbar-nav>
                 </b-collapse>
@@ -25,6 +26,6 @@ export default {
 </script>
 <style>
 .margin {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 </style>

@@ -10,8 +10,13 @@ import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,17 +40,17 @@ public class Usuario {
     @Column(nullable = false, length = 35, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 35)
-    private String contrasena;
+    @Column(nullable = false, length = 65)
+    private String password;
 
     @Column(name = "telefono", nullable = false, precision = 10)
     private Long telefono;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
+    private Date fechaNacimiento; //
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role rol;
-    // cada usuario pertenece a un rol, y cada rol puede tener varios usuarios asociados
+
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
     private List<Direccion> direcciones;
@@ -61,8 +66,63 @@ public class Usuario {
     //productos relacion? idkkkkk
 
 
-
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
     private List<Producto> productos;
-// un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
+    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
+
+
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void getFechaNacimiento(Date fechaNacimiento) {
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

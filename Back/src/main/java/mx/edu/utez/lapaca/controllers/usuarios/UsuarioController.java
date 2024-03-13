@@ -2,7 +2,7 @@ package mx.edu.utez.lapaca.controllers.usuarios;
 
 
 import jakarta.validation.Valid;
-import mx.edu.utez.lapaca.dto.roles.RoleDto;
+
 import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -11,6 +11,7 @@ import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +30,21 @@ public class UsuarioController {
     @Autowired
     UsuarioService service;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     //insert
     @PostMapping("/insert")
     public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @RequestBody UsuarioDto usuarioDto){
+        //Coloque que fuera user por defecto
+        usuarioDto.setRole(Role.USER);
+        //Se encripta la contraseña
+        String password = usuarioDto.getPassword();
+        usuarioDto.setPassword(passwordEncoder.encode(password));
         return new ResponseEntity<>(
                 this.service.insert(usuarioDto.getUsuario()),
                 HttpStatus.CREATED
@@ -59,6 +72,9 @@ public class UsuarioController {
 
     @PutMapping("/update")
     public ResponseEntity<CustomResponse<Usuario>> update(@Valid @RequestBody UsuarioDto usuarioDto){
+        //Se encripta la contraseña actualizada
+        String password = usuarioDto.getPassword();
+        usuarioDto.setPassword(passwordEncoder.encode(password));
         return new ResponseEntity<>(
                 this.service.update(usuarioDto.getUsuario()),
                 HttpStatus.OK

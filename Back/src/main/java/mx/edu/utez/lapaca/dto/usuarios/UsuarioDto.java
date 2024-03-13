@@ -12,7 +12,9 @@ import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -35,11 +37,18 @@ public class UsuarioDto {
     private String email;
 
     @Size(min = 8, max = 35, message = "La contraseña debe tener entre {min} y {max} caracteres")
-    private String contrasena;
+    private String password;
 
     @NotNull(message = "El teléfono es obligatorio")
     @Digits(integer = 10, fraction = 0, message = "El teléfono debe contener solo números y tener como máximo {integer} dígitos")
     private Long telefono;
+
+
+    @NotNull(message = "La fecha de nacimiento es obligatoria")
+    @DateTimeFormat(pattern = "yyyy/mm/dd")
+    @Past(message = "La fecha de nacimiento debe ser en el pasado")
+    private Date fechaNacimiento;
+
 
     private Role role;
 
@@ -55,12 +64,13 @@ public class UsuarioDto {
                 getNombre(),
                 getImagen_url(),
                 getEmail(),
-                getContrasena(),
+                getPassword(),
                 getTelefono(),
-                getRole(),
+                getFechaNacimiento(),
                 getDirecciones(),
                 getPagos(),
-                getProductos()
+                getProductos(),
+                getRole()
         );
     }
 }

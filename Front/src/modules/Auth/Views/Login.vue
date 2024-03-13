@@ -27,7 +27,8 @@
                                         </div>
     
                                         <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" @click="login" type="button">Iniciar Sesion</button>
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" @click="login" type="button">
+                                                Iniciar Sesion <i class="fas fa-sign-in-alt"></i></button>
                                             <a class="text-muted" v-b-modal.EnviarCorreo>¿Olvidaste tu contraseña?</a>
                                         </div>
     

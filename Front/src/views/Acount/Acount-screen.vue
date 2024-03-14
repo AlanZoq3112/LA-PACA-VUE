@@ -2,7 +2,7 @@
     <div>
         <div>
             <div class="custom-container py-1 h-200">
-                <h4>Mi cuenta</h4>
+                <h4>Mi cuenta <b-icon icon="person"></b-icon></h4>
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-xl-12">
                         <div class="card rounded-3 text-black">
@@ -252,6 +252,5 @@ export default {
 .custom-container {
     max-width: 1200px;
     margin: 0 auto;
-    /* Centra el contenedor en la pantalla */
 }
 </style>

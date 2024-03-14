@@ -27,6 +27,11 @@ const router = new VueRouter({
       name: 'crearCuenta',
       component: () => import('../modules/Auth/Views/CrearCuenta.vue')
     },
+    {
+      path: '/carritoCompras',
+      name: 'carritoCompras',
+      component: () => import('../modules/Carrito/Views/CarritoCompras.vue')
+    },
     
     {
       path: '/inicio',

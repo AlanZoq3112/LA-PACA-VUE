@@ -36,6 +36,7 @@
                         <div class="card rounded-3 text-black">
                             <div class="col-lg-12">
                                 <div class="card-body p-md-5 mx-md-4">
+                                    <!-- Info personal -->
                                     <div>
                                         <b-button v-b-toggle.collapsePersonal class="m-1" variant="faded">
                                             Información personal
@@ -73,6 +74,20 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
+                                    <!-- Historial compras -->
+                                    <br>
+                                    <div>
+                                        <b-button v-b-toggle.collapseCompras class="m-1" variant="faded">Mis Compras
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapseCompras">
+                                            <b-card>
+                                                <b-button to="productos" variant="faded" ><i class="fa fa-history" aria-hidden="true"></i> Hisotrial de compras</b-button>
+
+                                            </b-card>
+                                        </b-collapse>
+                                    </div>
+                                    <!-- Info fiscal -->
                                     <br>
                                     <div>
                                         <b-button v-b-toggle.collapseFiscal class="m-1" variant="faded">Datos vendedor
@@ -97,30 +112,82 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
-                                    <div class="d-flex align-items-center justify-content-center pb-4">
-                                        <p class="mb-0 me-2">¿Quieres vender tus productos?</p>
+                                    <br>
+                                    <!-- Productos -->
+                                    <div>
+                                        <b-button v-b-toggle.collapsVendedor class="m-1" variant="faded">
+                                            Administrar productos
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapsVendedor">
+                                            <b-card>
+                                                <div class="d-flex align-items-center justify-content-center pb-4">
+                                                    <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                </div>
+                                                <div class="d-flex pb-4">
+                                                    <p class="mb-0 me-2"><b>¿Quieres vender tus productos? 
+                                                        <b-link class="text-muted" href="enviarSolicitdVendedor">Enviar solicitud de vendedor</b-link></b></p>
+                                                </div>
+
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button to="productos" variant="faded" style="color: blue;"><i class="fa fa-shopping-bag"  aria-hidden="true"></i> Administrar productos</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button to="historialVentas" variant="faded" style="color: blue;"><i class="fa fa-credit-card" aria-hidden="true"></i> Administrar ventas</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button to="historialVentas" variant="faded" style="color: blue;"><i class="fa fa-truck" aria-hidden="true"></i> Administrar envios</b-button>
+
+                                                    </b-col>
+                                                </b-row>
+                                            </b-card>
+                                        </b-collapse>
                                     </div>
-                                    <div class="d-flex align-items-center justify-content-center pb-4">
-                                        <b-link style="color:blue" class="text-muted"
-                                            href="enviarSolicitdVendedor">Enviar solicitud de vendedor</b-link>
-                                    </div>
+                                    <!-- Administrador -->
                                     <br>
                                     <div>
-                                        <b-button class="userList" to="usuarios"><b-icon icon="people"></b-icon> Lista
-                                            de usuarios</b-button>
+                                        <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
+                                            Administrar
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapsBitacoras">
+                                            <b-card>    
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="people"></b-icon> Lista de usuarios</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="card-checklist"></b-icon> Bitacora de usuarios</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="shop"></b-icon> Administrar ventas</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                                <br>
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="clock"></b-icon> Solicitudes de vendedores</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="hourglass-split"></b-icon> Solicitudes de productos</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-truck" aria-hidden="true"></i> Administrar envios</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                                <br>
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon icon="bookmarks"></b-icon> Categorias y subcategorias</b-button>
+                                                    </b-col>
+
+                                                </b-row>
+                                            </b-card>
+                                        </b-collapse>
                                     </div>
+
                                     <br>
-                                    <div>
-                                        <b-button class="userList" to="usuarios"><b-icon icon="card-checklist"></b-icon>
-                                            Bitacora de
-                                            usuarios</b-button>
-                                    </div>
-                                    <br>
-                                    <div>
-                                        <b-button class="userList" to="usuarios"><b-icon icon="shop"></b-icon> Bitacora
-                                            de
-                                            ventas</b-button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

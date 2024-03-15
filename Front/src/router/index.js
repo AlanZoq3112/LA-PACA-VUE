@@ -32,6 +32,11 @@ const router = new VueRouter({
       name: 'carritoCompras',
       component: () => import('../modules/Carrito/Views/CarritoCompras.vue')
     },
+    {
+      path: '/checkoutDireccion',
+      name: 'checkoutDireccion',
+      component: () => import('../modules/Ventas/Views/Direccion.vue')
+    },
     
     {
       path: '/inicio',

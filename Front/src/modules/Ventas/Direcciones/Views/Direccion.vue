@@ -12,9 +12,8 @@
                             <h6>{{ direccion.nombre }}</h6>
                             <p>{{ direccion.direccion }}</p>
                             <p>{{ direccion.ciudad }}</p>
-                            <!-- Agrega aquí más detalles según sea necesario -->
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :value="direccion.id"
+                                <input class="form-check-input" type="radio" :value="direccion.id"
                                     v-model="direccionElegida">
                                 <label class="form-check-label">
                                     Elegir dirección
@@ -25,10 +24,13 @@
                     <div v-else>
                         <p>No hay direcciones disponibles</p>
                     </div>
-                    <div class="text-center mt-3">
-                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" @click="agregarDireccion"
+                    <div class="button-container mt-3 d-flex justify-content-between">
+                        <button class="btn btn-primary fa-lg gradient-custom-2" @click="agregarDireccion"
                             type="button">
                             Agregar nueva dirección <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn btn-primary fa-lg gradient-custom-2" @click="continuar"
+                            type="button">Continuar  <i class="fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -43,7 +45,6 @@
                 <div class="card-body p-md-5 mx-md-4">
                     <div v-if="producto.length > 0">
                         <p>Total de Productos: {{ calculateTotal() }}</p>
-                        <p>Envío: {{ calculateEnvio() }}</p>
                         <p>Total: {{ calculateTotal() + calculateEnvio() }}</p>
                     </div>
                     <div v-else>
@@ -66,6 +67,12 @@ export default {
                     nombre: "Casa",
                     direccion: "Calle Principal 123",
                     ciudad: "Ciudad de Ejemplo",
+                },
+                {
+                    id: "2",
+                    nombre: "Departamento",
+                    direccion: "Calle Secundaria",
+                    ciudad: "Xdds",
                 },
                 // Agrega más direcciones si es necesario
             ],
@@ -93,7 +100,7 @@ export default {
                     envioGratis: false,
                 },
             ],
-            direccionElegida: null,
+            direccionElegida: null, 
         };
     },
     methods: {
@@ -106,7 +113,7 @@ export default {
         },
         continuar() {
             console.log(this.direccionElegida);
-            this.$router.push({ name: 'checkoutDireccion', params: { direccionId: this.direccionElegida } });
+            // Aquí podrías hacer algo con la dirección elegida, como enviarla al servidor o almacenarla en el estado global
         },
         agregarDireccion() {
             // Aquí podrías implementar la lógica para agregar una nueva dirección

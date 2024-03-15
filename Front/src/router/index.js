@@ -35,7 +35,7 @@ const router = new VueRouter({
     {
       path: '/checkoutDireccion',
       name: 'checkoutDireccion',
-      component: () => import('../modules/Ventas/Views/Direccion.vue')
+      component: () => import('../modules/Ventas/Direcciones/Views/Direccion.vue')
     },
     
     {

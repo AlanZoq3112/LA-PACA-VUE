@@ -1,37 +1,41 @@
 <template>
     <div class="container d-flex justify-content-center">
         <div class="custom-container bigger py-1">
-            <div class="card rounded-3 text-black ">
+            <div class="card rounded-3 text-black">
                 <div class="text-center">
                     <br>
-                    <h5>Productos</h5>
+                    <h5>Dirección de entrega <b-icon icon="geo-alt"></b-icon></h5>
                 </div>
                 <div class="card-body p-md-5 mx-md-4">
-                    <b-card v-for="product in producto" :key="product.id">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <h6>{{ product.Nombre }}</h6>
-                                <p>{{ product.Descripcion }}</p>
-                                <p>Precio: {{ product.Precio }}</p>
-                                <p>Cantidad: {{ product.Cantidad }}</p>
+                    <div v-if="direcciones.length > 0">
+                        <b-card v-for="direccion in direcciones" :key="direccion.id" class="mb-3">
+                            <h6>{{ direccion.nombre }}</h6>
+                            <p>{{ direccion.direccion }}</p>
+                            <p>{{ direccion.ciudad }}</p>
+                            <!-- Agrega aquí más detalles según sea necesario -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" :value="direccion.id"
+                                    v-model="direccionElegida">
+                                <label class="form-check-label">
+                                    Elegir dirección
+                                </label>
                             </div>
-                            <div class="col-md-5">
-                                <img style="height: 200px; width: 200px;" :src="product.Imagenes[0]"
-                                    alt="Imagen del producto">
-                            </div>
-                        </div>
-                        <template #footer>
-                            <div class="icono">
-                                <b-button variant="faded"><b-icon icon="pencil"></b-icon></b-button>
-                                <b-button variant="faded" style="color: red;"><b-icon icon="trash"></b-icon></b-button>
-                            </div>
-                        </template>
-                    </b-card>
+                        </b-card>
+                    </div>
+                    <div v-else>
+                        <p>No hay direcciones disponibles</p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" @click="agregarDireccion"
+                            type="button">
+                            Agregar nueva dirección <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="custom-container2 py-1">
-            <div class="card rounded-3 text-black ">
+            <div class="card rounded-3 text-black">
                 <div class="text-center">
                     <br>
                     <h5>Resumen de compra</h5>
@@ -45,11 +49,6 @@
                     <div v-else>
                         <p>No hay productos en el carrito</p>
                     </div>
-
-                    <div class="text-center mt-3">
-                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" @click="continuar" type="button">
-                            Continuar compra <i class="fas fa-sign-in-alt"></i></button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -58,9 +57,18 @@
 
 <script>
 export default {
-    name: "CarritoCompras",
+    name: "metodoPago",
     data() {
         return {
+            direcciones: [
+                {
+                    id: "1",
+                    nombre: "Casa",
+                    direccion: "Calle Principal 123",
+                    ciudad: "Ciudad de Ejemplo",
+                },
+                // Agrega más direcciones si es necesario
+            ],
             producto: [
                 {
                     id: "1",
@@ -85,14 +93,8 @@ export default {
                     envioGratis: false,
                 },
             ],
+            direccionElegida: null,
         };
-    },
-    mounted() {
-        this.producto.forEach(product => {
-            if (product.Precio > 300) {
-                product.envioGratis = true;
-            }
-        });
     },
     methods: {
         calculateTotal() {
@@ -103,11 +105,13 @@ export default {
             return totalProductos > 300 ? 0 : 100;
         },
         continuar() {
-            console.log(this.user);
-            this.$router.push({ name: 'checkoutDireccion' });
-        }
+            console.log(this.direccionElegida);
+            this.$router.push({ name: 'checkoutDireccion', params: { direccionId: this.direccionElegida } });
+        },
+        agregarDireccion() {
+            // Aquí podrías implementar la lógica para agregar una nueva dirección
+        },
     },
-
 };
 </script>
 

@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.models.carrito_productos;
+package mx.edu.utez.lapaca.models.carritoProductos;
 
 
 import jakarta.persistence.*;
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @Entity
@@ -28,9 +27,4 @@ public class CarritoProducto {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
     //un carrito_producto puede solo tener un producto asociado
-
-    @ManyToOne
-    @JoinColumn(name = "carrito_id")
-    private Carrito carrito;
-    // Un producto en el carrito pertenece a un solo carrito
 }

@@ -42,9 +42,4 @@ public class Pago {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    //muchos pagos pueden estar asociados a un solo usuario (cada pago pertenece a un solo usuario),
-    //y un usuario puede tener asociados muchos pagos
-
-
-
 }

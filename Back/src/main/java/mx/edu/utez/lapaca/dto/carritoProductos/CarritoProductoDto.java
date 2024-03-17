@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.dto.carrito_productos;
+package mx.edu.utez.lapaca.dto.carritoProductos;
 
 
 import jakarta.validation.constraints.NotNull;
@@ -7,8 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carrito_productos.CarritoProducto;
-import mx.edu.utez.lapaca.models.carritos.Carrito;
+import mx.edu.utez.lapaca.models.carritoProductos.CarritoProducto;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @AllArgsConstructor
@@ -25,14 +24,12 @@ public class CarritoProductoDto {
     @NotNull(message = "El id de producto no puede ser nulo")
     private Producto producto;
 
-    @NotNull(message = "El id de producto no puede ser nulo")
-    private Carrito carrito;
+        
     public CarritoProducto getCarritos() {
         return new CarritoProducto(
                 getId(),
                 getCantidad(),
-                getProducto(),
-                getCarrito()
+                getProducto()
         );
     }
 

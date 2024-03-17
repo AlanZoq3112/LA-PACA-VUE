@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
+import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
@@ -31,7 +32,7 @@ public class ProductoDto {
 
     @NotBlank(message = "La URL de la imagen no puede estar vacía")
     @Size(max = 200, message = "La URL de la imagen debe tener como máximo {max} caracteres")
-    private String imagen_url;
+    private String imagenUrl;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -53,26 +54,21 @@ public class ProductoDto {
     @NotNull(message = "El id de categoria no puede ser nulo")
     private Categoria categoria;
 
-    @NotNull(message = "El id de subcategoria no puede ser nulo")
-    private SubCategoria subcategoria;
 
-    private List<Pedido> pedidos;
-
-
+    private List<Oferta> ofertas;
     public Producto getProducto() {
 
         return new Producto(
                 getId(),
                 getNombre(),
-                getImagen_url(),
+                getImagenUrl(),
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
                 getProducto().isEstado(),
                 getUsuario(),
                 getCategoria(),
-                getSubcategoria(),
-                getPedidos()
+                getOfertas()
         );
     }
 

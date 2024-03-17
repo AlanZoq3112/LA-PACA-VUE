@@ -36,13 +36,13 @@ public class Direccion {
     private String municipio;
 
     @Column(nullable = false, precision = 5)
-    private int codigo_postal;
+    private int codigoPostal;
 
     @Column(nullable = false, length = 100)
     private String referencia;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario

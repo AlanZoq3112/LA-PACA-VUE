@@ -34,8 +34,11 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, length = 25)
     private String nombre;
 
+    @Column(nullable = false, length = 15)
+    private String genero;
+
     @Column(nullable = false, length = 200)
-    private String imagen_url;
+    private String imagenUrl;
 
     @Column(nullable = false, length = 35, unique = true)
     private String email;
@@ -48,30 +51,12 @@ public class Usuario implements UserDetails {
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
-    private Date fechaNacimiento; //
+    private Date fechaNacimiento;
 
-
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
-    private List<Direccion> direcciones;
-    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
-
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Pago> pagos;
-
-    //muchos pagos pueden estar asociados a un solo usuario (cada pago pertenece a un solo usuario),
-    //y un usuario puede tener asociados muchos pagos
-
-    //productos relacion? idkkkkk
-
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
-    private List<Producto> productos;
-    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
 
 
     private Role role;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -105,24 +90,4 @@ public class Usuario implements UserDetails {
 
     public void getFechaNacimiento(Date fechaNacimiento) {
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

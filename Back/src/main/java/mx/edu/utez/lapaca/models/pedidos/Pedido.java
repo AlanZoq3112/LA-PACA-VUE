@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -39,6 +40,14 @@ public class Pedido {
     @JoinColumn(name = "pagos_id", nullable = false)
     private Pago pago;
     //un pedido solo puede ser pagado por una forma de pago
+
+    @ManyToOne
+    @JoinColumn(name = "direccion_id")
+    private Direccion direccion;
+
+
+    private Boolean status;
+
 
 
 }

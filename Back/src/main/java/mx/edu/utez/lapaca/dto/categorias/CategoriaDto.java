@@ -26,9 +26,9 @@ public class CategoriaDto {
     @Size(max = 10, message = "El nombre debe tener como máximo {max} caracteres")
     private String nombre;
 
-    @NotNull(message = "La lista de id de subcategorias no puede ser nula")
-    @Valid//valida recursivamente cada campo/id
     private List<SubCategoria> subcategorias;
+
+
 
     public Categoria getCategoria() {
         return new Categoria(

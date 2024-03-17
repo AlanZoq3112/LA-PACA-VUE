@@ -30,7 +30,12 @@ public class UsuarioDto {
     @Size(max = 20, message = "El nombre debe tener como máximo {max} caracteres")
     private String nombre;
 
-    private String imagen_url;
+    @NotBlank(message = "El genero es obligatorio")
+    @Size(max = 15, message = "El nombre debe tener como máximo {max} caracteres")
+    private String genero;
+
+    @NotBlank(message = "La cadena de imagen no puede estar vacía")
+    private String imagenUrl;
 
     @NotBlank(message = "La dirección de correo electrónico es obligatoria")
     @Email(message = "La dirección de correo electrónico debe ser válida")
@@ -50,26 +55,22 @@ public class UsuarioDto {
     private Date fechaNacimiento;
 
 
+    @NotNull(message = "id role no puede ser nulo")
     private Role role;
 
-    private List<Direccion> direcciones;
 
-    private List<Pago> pagos;
 
-    private List<Producto> productos;
 
     public Usuario getUsuario() {
         return new Usuario(
                 getId(),
                 getNombre(),
-                getImagen_url(),
+                getGenero(),
+                getImagenUrl(),
                 getEmail(),
                 getPassword(),
                 getTelefono(),
                 getFechaNacimiento(),
-                getDirecciones(),
-                getPagos(),
-                getProductos(),
                 getRole()
         );
     }

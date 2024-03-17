@@ -21,7 +21,7 @@ public class DireccionDto {
     private Long id;
 
     @NotBlank(message = "la calle es obligatoria")
-    @Size(max = 50, message = "La calle debe tener como máximo {max} caracteres")
+    @Size(max = 25, message = "La calle debe tener como máximo {max} caracteres")
     private String calle;
 
     @NotNull(message = "El numero es obligatorio")
@@ -29,15 +29,15 @@ public class DireccionDto {
     private int numero;
 
     @NotBlank(message = "la colonia es obligatoria")
-    @Size(max = 50, message = "La colonia debe tener como máximo {max} caracteres")
+    @Size(max = 25, message = "La colonia debe tener como máximo {max} caracteres")
     private String colonia;
 
     @NotBlank(message = "el estado es obligatorio")
-    @Size(max = 25, message = "El estado debe tener como máximo {max} caracteres")
+    @Size(max = 15, message = "El estado debe tener como máximo {max} caracteres")
     private String estado;
 
     @NotBlank(message = "el municipio es obligatorio")
-    @Size(max = 25, message = "El municipio debe tener como máximo {max} caracteres")
+    @Size(max = 15, message = "El municipio debe tener como máximo {max} caracteres")
     private String municipio;
 
     @NotNull(message = "el cp es obligatorio")

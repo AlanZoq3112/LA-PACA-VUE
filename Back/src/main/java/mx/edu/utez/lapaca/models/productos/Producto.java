@@ -27,14 +27,14 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 40)
+    @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String imagenUrl;
 
-    @Column(nullable = false, length = 100)
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;
 
     @Column(nullable = false)

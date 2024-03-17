@@ -21,7 +21,7 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
+    @Column(columnDefinition = "VARCHAR(150)", nullable = false)
     private String comentario;
 
     @Column(nullable = false, length = 150)

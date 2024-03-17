@@ -45,7 +45,7 @@ public class Pedido {
     @JoinColumn(name = "direccion_id")
     private Direccion direccion;
 
-
+    @Column(nullable = false)
     private Boolean status;
 
 

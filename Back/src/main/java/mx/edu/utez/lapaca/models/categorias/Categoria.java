@@ -24,7 +24,7 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 10)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String nombre;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //las subcategorías asociadas a una categoría eliminada también se eliminen de la base de datos

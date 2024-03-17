@@ -20,17 +20,16 @@ public class Vendedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 18)
+    @Column(columnDefinition = "VARCHAR(18)", nullable = false)
     private String curp;
 
-    @Column(name = "telefono", nullable = false, precision = 10)
-    private Long telefonoVendedor;
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String telefonoVendedor;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String ine;
 
-
-    @Column(nullable = false, length = 13)
+    @Column(columnDefinition = "VARCHAR(13)", nullable = false)
     private String rfc;
 
 

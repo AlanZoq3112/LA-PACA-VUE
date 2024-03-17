@@ -40,11 +40,11 @@ public class PagoDto {
     private String titular;
 
     @NotNull(message = "Este campo es obligatorio")
-    @NotBlank(message = "No puede contener espacios en blanco")
     @Size(min = 5, max = 5, message = "La fecha de vencimiento debe tener 5 caracteres")
     @Pattern(regexp = "\\d{2}/\\d{2}", message = "El formato de la fecha de vencimiento debe ser MM/YY")
     private String fechaVencimiento;
 
+    @NotNull(message = "El id de usuario no puede ser nulo")
     private Usuario usuario;
 
     public Pago getPago() {

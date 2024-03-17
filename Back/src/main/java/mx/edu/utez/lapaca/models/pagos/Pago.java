@@ -32,10 +32,10 @@ public class Pago {
     @Column(nullable = false)
     private Integer cvv;
 
-    @Column(nullable = false, length = 50)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String titular;
 
-    @Column(nullable = false, length = 5)
+    @Column(columnDefinition = "VARCHAR(5)", nullable = false)
     private String fechaVencimiento;
 
     @ManyToOne

@@ -1,10 +1,7 @@
 package mx.edu.utez.lapaca.dto.productos;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +38,8 @@ public class ProductoDto {
     @NotBlank(message = "El precio del producto no puede estar vacía")
     private double precio;
 
+    @NotNull(message = "El stock es obligatorio")
+    @Min(value = 0, message = "El stock debe ser igual o mayor que cero")
     @Positive(message = "El stock del producto debe ser un número positivo")
     private int stock;
 

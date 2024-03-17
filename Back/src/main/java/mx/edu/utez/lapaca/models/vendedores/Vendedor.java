@@ -26,7 +26,7 @@ public class Vendedor {
     @Column(name = "telefono", nullable = false, precision = 10)
     private Long telefonoVendedor;
 
-    @Column(name = "ine", nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String ine;
 
 

@@ -1,5 +1,6 @@
 package mx.edu.utez.lapaca.security.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.security.dto.JwtAuthenticationResponse;
@@ -20,7 +21,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/singupUser")
-    public ResponseEntity<Usuario> singupUser(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<Usuario> singupUser(@Valid @RequestBody SignUpRequest signUpRequest){
         return  ResponseEntity.ok(authenticationService.singupUser(signUpRequest));
     }
 

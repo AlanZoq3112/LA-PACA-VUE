@@ -30,7 +30,8 @@ public class Producto {
     @Column(nullable = false, length = 40)
     private String nombre;
 
-    @Column(nullable = false, length = 200)
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String imagenUrl;
 
     @Column(nullable = false, length = 100)

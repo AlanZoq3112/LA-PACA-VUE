@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,29 +32,27 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String nombre;
 
-    @Column(nullable = false, length = 15)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String genero;
 
-    @Column(nullable = false, length = 200)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String imagenUrl;
 
-    @Column(nullable = false, length = 35, unique = true)
+    @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 65)
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     private String password;
 
-    @Column(name = "telefono", nullable = false, precision = 10)
-    private Long telefono;
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String telefono;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
-    private Date fechaNacimiento;
-
-
+    private LocalDate fechaNacimiento;
 
     private Role role;
 

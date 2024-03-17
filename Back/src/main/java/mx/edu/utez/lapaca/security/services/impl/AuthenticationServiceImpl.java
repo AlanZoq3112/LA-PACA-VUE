@@ -10,12 +10,14 @@ import mx.edu.utez.lapaca.security.dto.RefreshTokenRequest;
 import mx.edu.utez.lapaca.security.dto.SignUpRequest;
 import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import mx.edu.utez.lapaca.security.services.JWTService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
+    @Autowired
+    private UsuarioRepository repository;
+
     public Usuario singupUser(SignUpRequest signUpRequest){
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
-        user.setImagen_url(signUpRequest.getImagen_url());
+        user.setGenero(signUpRequest.getGenero());
+        user.setImagenUrl(signUpRequest.getImagenUrl());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setTelefono(signUpRequest.getTelefono());
@@ -42,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Usuario singupAdmin(SignUpRequest signUpRequest){
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
-        user.setImagen_url(signUpRequest.getImagen_url());
+        user.setImagenUrl(signUpRequest.getImagenUrl());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setTelefono(signUpRequest.getTelefono());

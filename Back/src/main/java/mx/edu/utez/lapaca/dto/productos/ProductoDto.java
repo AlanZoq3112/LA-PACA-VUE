@@ -31,7 +31,6 @@ public class ProductoDto {
     private String nombre;
 
     @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    @Size(max = 200, message = "La URL de la imagen debe tener como máximo {max} caracteres")
     private String imagenUrl;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")

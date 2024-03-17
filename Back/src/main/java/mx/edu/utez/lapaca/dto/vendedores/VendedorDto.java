@@ -25,7 +25,7 @@ public class VendedorDto {
     @Digits(integer = 10, fraction = 0, message = "El teléfono debe contener solo números y tener como máximo {integer} dígitos")
     private Long telefonoVendedor;
 
-    @NotBlank(message = "La cadena de imagen ine no puede estar vacía")
+    @NotBlank(message = "La URL de la imagen ine no puede estar vacía")
     private String ine;
 
     @NotBlank(message = "El RFC no puede estar vacío")

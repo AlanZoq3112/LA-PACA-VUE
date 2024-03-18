@@ -11,6 +11,7 @@ import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api-carsi-shop/usuario/")
+@RequestMapping("/api-carsi-shop/admin/managementUsuario")
 //@CrossOrigin(origins = {"*"})
 public class UsuarioController {
 
@@ -39,9 +40,10 @@ public class UsuarioController {
 
     //insert
     @PostMapping("/insert")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @RequestBody UsuarioDto usuarioDto){
         //Coloque que fuera user por defecto
-        usuarioDto.setRole(Role.USER);
+        usuarioDto.setRole(Role.COMPRADOR);
         //Se encripta la contraseña
         String password = usuarioDto.getPassword();
         usuarioDto.setPassword(passwordEncoder.encode(password));
@@ -53,6 +55,7 @@ public class UsuarioController {
 
     //get all
     @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<List<Usuario>>> getAll(){
         return new ResponseEntity<>(
                 this.service.getAll(),
@@ -62,6 +65,7 @@ public class UsuarioController {
 
     //get one
     @GetMapping("/getOne")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
         Long userId = requestBody.get("id");
         return new ResponseEntity<>(
@@ -71,6 +75,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> update(@Valid @RequestBody UsuarioDto usuarioDto){
         //Se encripta la contraseña actualizada
         String password = usuarioDto.getPassword();
@@ -82,6 +87,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> delete(@Valid @RequestBody Map<String, Long> requestBody){
         Long userId = requestBody.get("id");
         return new ResponseEntity<>(

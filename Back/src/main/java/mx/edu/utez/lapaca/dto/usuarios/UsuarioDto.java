@@ -59,7 +59,7 @@ public class UsuarioDto {
     private LocalDate fechaNacimiento;
 
 
-    @NotNull(message = "id role no puede ser nulo")
+
     private Role role;
 
 

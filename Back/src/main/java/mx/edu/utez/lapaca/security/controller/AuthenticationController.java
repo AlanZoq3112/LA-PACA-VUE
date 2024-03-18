@@ -6,6 +6,7 @@ import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.security.dto.JwtAuthenticationResponse;
 import mx.edu.utez.lapaca.security.dto.RefreshTokenRequest;
 import mx.edu.utez.lapaca.security.dto.SignUpRequest;
+import mx.edu.utez.lapaca.security.dto.SinginRequest;
 import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +32,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@Valid @RequestBody SignUpRequest signUpRequest){
-        return ResponseEntity.ok(authenticationService.signin(signUpRequest));
+    public ResponseEntity<JwtAuthenticationResponse> signin(@Valid @RequestBody SinginRequest singinRequest){
+        return ResponseEntity.ok(authenticationService.signin(singinRequest));
     }
 
     @PostMapping("/refresh")

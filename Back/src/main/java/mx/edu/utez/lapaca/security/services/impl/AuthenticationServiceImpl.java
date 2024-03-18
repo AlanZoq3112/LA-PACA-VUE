@@ -8,6 +8,7 @@ import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.security.dto.JwtAuthenticationResponse;
 import mx.edu.utez.lapaca.security.dto.RefreshTokenRequest;
 import mx.edu.utez.lapaca.security.dto.SignUpRequest;
+import mx.edu.utez.lapaca.security.dto.SinginRequest;
 import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import mx.edu.utez.lapaca.security.services.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
 
+
     public Usuario singupUser(SignUpRequest signUpRequest){
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
@@ -40,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setTelefono(signUpRequest.getTelefono());
         user.setFechaNacimiento(signUpRequest.getFechaNacimiento());
-        user.setRole(Role.USER);
+        user.setRole(Role.COMPRADOR);
         return userRepository.save(user);
     }
 
@@ -57,10 +59,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse signin(SignUpRequest signUpRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(),
-                signUpRequest.getPassword()));
-        var user = userRepository.findByEmail(signUpRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+    public JwtAuthenticationResponse signin(SinginRequest singinRequest){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singinRequest.getEmail(),
+                singinRequest.getPassword()));
+        var user = userRepository.findByEmail(singinRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 

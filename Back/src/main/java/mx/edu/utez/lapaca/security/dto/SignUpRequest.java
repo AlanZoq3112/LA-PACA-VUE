@@ -37,7 +37,7 @@ public class SignUpRequest {
     @NotNull(message = "El teléfono es obligatorio")
     @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefono;
-    
+
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @DateTimeFormat(pattern = "yyyy/mm/dd")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")

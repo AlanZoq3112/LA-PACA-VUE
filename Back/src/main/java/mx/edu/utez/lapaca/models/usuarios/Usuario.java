@@ -54,6 +54,7 @@ public class Usuario implements UserDetails {
     @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
     private LocalDate fechaNacimiento;
 
+    @Column(nullable = true)
     private Role role;
 
 

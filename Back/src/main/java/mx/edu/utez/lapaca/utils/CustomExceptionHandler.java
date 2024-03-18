@@ -25,4 +25,8 @@ public class CustomExceptionHandler {
 
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
     }
+
+
 }
+
+

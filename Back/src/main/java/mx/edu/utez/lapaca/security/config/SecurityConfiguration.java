@@ -1,5 +1,6 @@
 package mx.edu.utez.lapaca.security.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.security.services.UserService;
@@ -33,15 +34,26 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request.requestMatchers("/api-carsi-shop/auth/**")
                         .permitAll()
                         .requestMatchers("/api-carsi-shop/admin/**").hasAnyAuthority(Role.ADMIN.name())
-
                         .requestMatchers("/api-carsi-shop/usuario/**").hasAnyAuthority(
                                 Role.VENDEDOR.name(), Role.COMPRADOR.name())
                         .anyRequest().authenticated())
 
+
+
+                .exceptionHandling(handler -> handler
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                        }))
+
+                
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                 );
+
                 return http.build();
     }
 

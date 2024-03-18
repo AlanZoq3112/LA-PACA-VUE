@@ -1,7 +1,8 @@
-package mx.edu.utez.lapaca.services.usuarios;
+package mx.edu.utez.lapaca.services.categorias;
 
 
-import mx.edu.utez.lapaca.models.roles.Role;
+import mx.edu.utez.lapaca.models.categorias.Categoria;
+import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -11,47 +12,42 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
-public class UsuarioService {
+public class CategoriaService {
 
     @Autowired
-    private UsuarioRepository repository;
+    private CategoriaRepository repository;
 
-
-    //insert
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Usuario> insert(Usuario usuario) {
-        Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
+    public CustomResponse<Categoria> insert(Categoria categoria) {
+        Optional<Categoria> exists = repository.findByNombre(categoria.getNombre());
         try {
             if (exists.isPresent()) {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "Error... Usuario con correo ya registrado"
+                        "Error... Categoria ya existente"
                 );
             }
-            Usuario savedUser = repository.save(usuario);
+            Categoria savedUser = repository.save(categoria);
             return new CustomResponse<>(
                     savedUser,
                     false,
                     200,
-                    "Usuario registrado"
+                    "Categoria registrada"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
                     true,
                     500,
-                    "Error interno del servidor al registrar el usuario"
+                    "Error interno del servidor al registrar la categoria"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -63,9 +59,8 @@ public class UsuarioService {
         }
     }
 
-    //get all
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<List<Usuario>> getAll() {
+    public CustomResponse<List<Categoria>> getAll() {
         return new CustomResponse<>(
                 this.repository.findAll(),
                 false,
@@ -74,24 +69,23 @@ public class UsuarioService {
         );
     }
 
-    //get one by id
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Usuario> getOne(Long id) {
-        Optional<Usuario> usuario = repository.findById(id);
+    public CustomResponse<Categoria> getOne(Long id) {
+        Optional<Categoria> categoria = repository.findById(id);
         try {
-            if (usuario.isPresent()) {
+            if (categoria.isPresent()) {
                 return new CustomResponse<>(
-                        usuario.get(),
+                        categoria.get(),
                         false,
                         200,
-                        "Usuario con el id " + usuario.get().getId() + " encontrado"
+                        "Categoria con el id " + categoria.get().getId() + " encontrada"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "El usuario con el id " + id + " no existe"
+                        "La categoria con el id " + id + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -99,7 +93,42 @@ public class UsuarioService {
                     null,
                     true,
                     500,
-                    "Error interno del servidor al buscar el usuario solicitado"
+                    "Error interno del servidor al buscar la categoria solicitada"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... argumento ilegal" + e.getMessage()
+            );
+        }
+    }
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<Categoria> update(Categoria categoria) {
+        try {
+            if (!this.repository.existsById(categoria.getId())) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        400,
+                        "La categoria no existe"
+                );
+            }
+            Categoria savedCategoria = repository.save(categoria);
+            return new CustomResponse<>(
+                    savedCategoria,
+                    false,
+                    200,
+                    "Categoria actualizada"
+            );
+
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al actualizar la categoria"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -112,48 +141,10 @@ public class UsuarioService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Usuario> update(Usuario usuario) {
+    public CustomResponse<Categoria> deleteById(Long id) {
         try {
-            if (!this.repository.existsById(usuario.getId())) {
-                return new CustomResponse<>(
-                        null,
-                        true,
-                        400,
-                        "El usuario no existe"
-                );
-            }
-            Usuario savedUser = repository.save(usuario);
-            return new CustomResponse<>(
-                    savedUser,
-                    false,
-                    200,
-                    "Usuario actualizado"
-            );
-
-        } catch (DataAccessException e) {
-            return new CustomResponse<>(
-                    null,
-                    true,
-                    500,
-                    "Error interno del servidor al actualizar el usuario"
-            );
-        } catch (IllegalArgumentException e) {
-            return new CustomResponse<>(
-                    null,
-                    true,
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
-            );
-        }
-    }
-
-
-    //delete
-    @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Usuario> deleteById(Long id) {
-        try {
-            Optional<Usuario> usuarioId = repository.findById(id);
-            if (!usuarioId.isPresent()) {
+            Optional<Categoria> categoriaId = repository.findById(id);
+            if (!categoriaId.isPresent()) {
                 return new CustomResponse<>(
                         null,
                         true,
@@ -161,20 +152,20 @@ public class UsuarioService {
                         "El usuario con el id " + id + " no existe"
                 );
             }
-            Usuario usuario = usuarioId.get();
-            repository.delete(usuario);
+            Categoria categoria = categoriaId.get();
+            repository.delete(categoria);
             return new CustomResponse<>(
                     null,
                     false,
                     200,
-                    "El usuario con el id " + id + " ha sido eliminado correctamente"
+                    "La categoria con el id " + id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
                     true,
                     500,
-                    "Error interno del servidor al eliminar el usuario"
+                    "Error interno del servidor al eliminar la categoria"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -185,4 +176,6 @@ public class UsuarioService {
             );
         }
     }
+
+
 }

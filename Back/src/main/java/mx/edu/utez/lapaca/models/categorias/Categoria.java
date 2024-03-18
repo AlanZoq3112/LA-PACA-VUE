@@ -27,7 +27,7 @@ public class Categoria {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String nombre;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //las subcategorías asociadas a una categoría eliminada también se eliminen de la base de datos
+    @OneToMany //las subcategorías asociadas a una categoría eliminada también se eliminen de la base de datos
     @JoinColumn(name = "categoria_id", nullable = false)
     private List<SubCategoria> subcategorias;
     //una categoria puede tener asociadas muchas subcategorias

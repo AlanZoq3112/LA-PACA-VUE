@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api-carsi-shop/admin/**").hasAnyAuthority(Role.ADMIN.name())
                         .requestMatchers("/api-carsi-shop/usuario/**").hasAnyAuthority(
-                                Role.VENDEDOR.name(), Role.COMPRADOR.name())
+                                Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
                         .anyRequest().authenticated())
 
 
@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
                         }))
 
-                
+
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class

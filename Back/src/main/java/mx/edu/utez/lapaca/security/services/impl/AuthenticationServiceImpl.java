@@ -29,8 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
-    @Autowired
-    private UsuarioRepository repository;
+
 
     public Usuario singupUser(SignUpRequest signUpRequest){
         Usuario user = new Usuario();
@@ -48,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Usuario singupAdmin(SignUpRequest signUpRequest){
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
+        user.setGenero(signUpRequest.getGenero());
         user.setImagenUrl(signUpRequest.getImagenUrl());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));

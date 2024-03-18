@@ -44,7 +44,7 @@ public class Usuario implements UserDetails {
     @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
     private String email;
 
-    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
+    @Column(nullable = false, length = 65)
     private String password;
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)

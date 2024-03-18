@@ -31,17 +31,13 @@ public class SignUpRequest {
     @Email(message = "La dirección de correo electrónico debe ser válida")
     private String email;
 
-    @NotNull(message = "La contraseña es obligatoria")
-    @Size(min = 8, max = 25, message = "La contraseña debe tener entre {min} y {max} caracteres")
+    @Size(min = 8, max = 35, message = "La contraseña debe tener entre {min} y {max} caracteres")
     private String password;
-
 
     @NotNull(message = "El teléfono es obligatorio")
     @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefono;
-
-
-
+    
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @DateTimeFormat(pattern = "yyyy/mm/dd")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")

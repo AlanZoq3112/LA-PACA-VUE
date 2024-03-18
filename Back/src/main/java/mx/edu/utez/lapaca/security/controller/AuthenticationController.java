@@ -26,17 +26,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/singupAdmin")
-    public ResponseEntity<Usuario> singupAdmin(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<Usuario> singupAdmin(@Valid @RequestBody SignUpRequest signUpRequest){
         return  ResponseEntity.ok(authenticationService.singupAdmin(signUpRequest));
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<JwtAuthenticationResponse> signin(@Valid @RequestBody SignUpRequest signUpRequest){
         return ResponseEntity.ok(authenticationService.signin(signUpRequest));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 }

@@ -34,7 +34,6 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api-carsi-shop/admin/**").hasAnyAuthority(Role.ADMIN.name())
                         .requestMatchers("/api-carsi-shop/usuario/**").hasAnyAuthority(Role.USER.name())
-
                         .anyRequest().authenticated())
 
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

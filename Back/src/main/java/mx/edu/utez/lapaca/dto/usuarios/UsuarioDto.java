@@ -43,8 +43,7 @@ public class UsuarioDto {
     @Email(message = "La dirección de correo electrónico debe ser válida")
     private String email;
 
-    @NotNull(message = "La contraseña es obligatoria")
-    @Size(min = 8, max = 25, message = "La contraseña debe tener entre {min} y {max} caracteres")
+    @Size(min = 8, max = 35, message = "La contraseña debe tener entre {min} y {max} caracteres")
     private String password;
 
     @NotNull(message = "El teléfono es obligatorio")

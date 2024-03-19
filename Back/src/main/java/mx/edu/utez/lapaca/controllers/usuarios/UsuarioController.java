@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/admin/usuario")
-//@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"*"})
 public class UsuarioController {
 
     @Autowired

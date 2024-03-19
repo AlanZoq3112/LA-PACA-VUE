@@ -1,12 +1,12 @@
 <template>
-  <div>
+   <div>
     <Navbar class="fixed-top"/>
     <br>
     <br>
     <Submenu/>
     <router-view />
     <br>
-    <Footer></Footer>
+    <Footer ></Footer>
   </div>
 </template>
 

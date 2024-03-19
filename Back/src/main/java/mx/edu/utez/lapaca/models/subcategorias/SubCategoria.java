@@ -24,7 +24,7 @@ public class SubCategoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     private String nombre;
 
 

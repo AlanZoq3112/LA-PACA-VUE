@@ -7,9 +7,12 @@ import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +53,13 @@ public class UsuarioService {
                     500,
                     "Error interno del servidor al registrar el usuario"
             );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... argumento ilegal" + e.getMessage()
+            );
         }
     }
 
@@ -89,7 +99,14 @@ public class UsuarioService {
                     null,
                     true,
                     500,
-                    "Error interno del servidor al buscar el usuario"
+                    "Error interno del servidor al buscar el usuario solicitado"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... argumento ilegal" + e.getMessage()
             );
         }
     }
@@ -119,6 +136,13 @@ public class UsuarioService {
                     true,
                     500,
                     "Error interno del servidor al actualizar el usuario"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... argumento ilegal" + e.getMessage()
             );
         }
     }
@@ -151,6 +175,13 @@ public class UsuarioService {
                     true,
                     500,
                     "Error interno del servidor al eliminar el usuario"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... argumento ilegal" + e.getMessage()
             );
         }
     }

@@ -1,15 +1,13 @@
 package mx.edu.utez.lapaca.dto.productos;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
+import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
@@ -30,8 +28,7 @@ public class ProductoDto {
     private String nombre;
 
     @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    @Size(max = 200, message = "La URL de la imagen debe tener como máximo {max} caracteres")
-    private String imagen_url;
+    private String imagenUrl;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -41,6 +38,8 @@ public class ProductoDto {
     @NotBlank(message = "El precio del producto no puede estar vacía")
     private double precio;
 
+    @NotNull(message = "El stock es obligatorio")
+    @Min(value = 0, message = "El stock debe ser igual o mayor que cero")
     @Positive(message = "El stock del producto debe ser un número positivo")
     private int stock;
 
@@ -53,26 +52,21 @@ public class ProductoDto {
     @NotNull(message = "El id de categoria no puede ser nulo")
     private Categoria categoria;
 
-    @NotNull(message = "El id de subcategoria no puede ser nulo")
-    private SubCategoria subcategoria;
 
-    private List<Pedido> pedidos;
-
-
+    private List<Oferta> ofertas;
     public Producto getProducto() {
 
         return new Producto(
                 getId(),
                 getNombre(),
-                getImagen_url(),
+                getImagenUrl(),
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
                 getProducto().isEstado(),
                 getUsuario(),
                 getCategoria(),
-                getSubcategoria(),
-                getPedidos()
+                getOfertas()
         );
     }
 

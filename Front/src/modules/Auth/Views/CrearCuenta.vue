@@ -17,47 +17,15 @@
                                         <b-col>
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="nombre">Nombre(s): </label>
-                                                <input v-model="user.Nombre" type="text" id="nombre" class="form-control"
-                                                    placeholder="Nombre" />
-                                            </div>
-                                        </b-col>
-                                        <b-col>
-                                            <div class="form-outline mb-4">
-                                                <label class="form-label" for="apellidos">Apellido(s): </label>
-                                                <input v-model="user.Apellidos" type="text" id="apellidos" class="form-control"
-                                                    placeholder="Apellidos" />
-                                            </div>
-                                        </b-col>
-                                    </b-row>
-                                    <b-row>
-                                        <b-col>
-                                            <div class="form-outline mb-4">
-                                                <label class="form-label" for="contrasena">Contraseña: </label>
-                                                <input v-model="user.Contraseña" type="password" id="contrasena"
-                                                    class="form-control" placeholder="Contraseña" />
-                                            </div>
-                                        </b-col>
-                                        <b-col>
-                                            <div class="form-outline mb-4">
-                                                <label class="form-label" for="contrasena">Repetir contraseña: </label>
-                                                <input v-model="confirmPassword" type="password" id="contrasena"
-                                                    class="form-control" placeholder="Contraseña" />
-                                            </div>
-                                        </b-col>
-                                    </b-row>
-                                    <b-row>
-                                        <b-col>
-                                            <div class="form-outline mb-4">
-                                                <label class="form-label" for="correo">Correo electrónico: </label>
-                                                <input v-model="user.Correo" type="email" id="correo" class="form-control"
-                                                    placeholder="Correo electrónico" />
+                                                <input v-model="user.nombre" type="text" id="nombre"
+                                                    class="form-control" placeholder="Nombre" />
                                             </div>
                                         </b-col>
                                         <b-col>
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="genero">Género: </label>
                                                 <div class="input-group">
-                                                    <select v-model="user.Genero" id="genero" class="form-select">
+                                                    <select v-model="user.genero" id="genero" class="form-select">
                                                         <option value="">Seleccionar</option>
                                                         <option value="masculino">Masculino</option>
                                                         <option value="femenino">Femenino</option>
@@ -70,30 +38,36 @@
                                     <b-row>
                                         <b-col>
                                             <div class="form-outline mb-4">
-                                                <label class="form-label" for="telefono">Teléfono: </label>
-                                                <input v-model="user.Telefono" type="tel" id="telefono" class="form-control"
-                                                    placeholder="Teléfono" />
+                                                <label class="form-label" for="correo">Correo electrónico: </label>
+                                                <input v-model="user.email" type="email" id="correo"
+                                                    class="form-control" placeholder="Correo electrónico" />
                                             </div>
                                         </b-col>
                                         <b-col>
                                             <div class="form-outline mb-4">
-                                                <label class="form-label" for="fechaNacimiento">Fecha de nacimiento: </label>
-                                                <input v-model="user.Fecha_de_nacimiento" type="date" id="fechaNacimiento"
+                                                <label class="form-label" for="contrasena">Contraseña: </label>
+                                                <input v-model="user.password" type="password" id="contrasena"
+                                                    class="form-control" placeholder="Contraseña" />
+                                            </div>
+                                        </b-col>
+                                    </b-row>
+                                    <b-row>
+                                        <b-col>
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="telefono">Teléfono: </label>
+                                                <input v-model="user.telefono" type="tel" id="telefono"
+                                                    class="form-control" placeholder="Teléfono" />
+                                            </div>
+                                        </b-col>
+                                        <b-col>
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="fechaNacimiento">Fecha de nacimiento:
+                                                </label>
+                                                <input v-model="user.fechaNacimiento" type="date" id="fechaNacimiento"
                                                     class="form-control" />
                                             </div>
                                         </b-col>
                                     </b-row>
-
-                                    <div class="form-outline mb-4">
-                                        <label class="form-label" for="direccion">Dirección: </label>
-                                        <input v-model="user.Direccion" type="text" id="direccion" class="form-control"
-                                            placeholder="Calle, numero, colonia, municipio, estado" />
-                                    </div>
-
-
-
-
-
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="imagen">Foto de perfil:</label>
                                         <div class="input-group">
@@ -104,16 +78,12 @@
                                             </label>
                                         </div>
                                     </div>
-
-                                    <div class="form-outline mb-4"
-                                        v-if="user.Imagen_de_perfil && user.Imagen_de_perfil.length > 0">
-                                        <h5>Vista previa de la imágen:</h5>
+                                    <div class="form-outline mb-4" v-if="user.imagenUrl && user.imagenUrl.length > 0">
+                                        <h5>Vista previa de la imagen:</h5>
                                         <div class="image-preview-container">
-                                            <img v-for="(imagen, index) in user.Imagen_de_perfil" :key="index"
-                                                :src="imagen" alt="Vista previa de la imagen" class="image-preview" />
+                                            <img class="image-preview" :src="user.imagenUrl" alt="Vista previa de la imagen" />
                                         </div>
                                     </div>
-
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                             @click="createAccount" type="button">
@@ -144,15 +114,13 @@ export default {
     data() {
         return {
             user: {
-                Nombre: "",
-                Apellidos: "",
-                Correo: "",
-                Contraseña: "",
-                Telefono: "",
-                Direccion: "",
-                Fecha_de_nacimiento: "",
-                Genero: "",
-                Imagen_de_perfil: []
+                nombre: "",
+                genero: "",
+                imagenUrl: "",
+                email: "",
+                password: "",
+                telefono: "",
+                fechaNacimiento: ""
             },
             confirmPassword: "",
         };
@@ -160,34 +128,43 @@ export default {
     methods: {
         createAccount() {
             console.log(this.user);
-            Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
-            this.$router.push({ name: 'login' });
+            axios.post('http://localhost:8090/api-carsi-shop/auth/singupUser', this.user)
+                .then(response => {
+                    console.log(response.data);
+                    Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
+                    this.$router.push({ name: 'login' });
+                })
+                .catch(error => {
+                    let errorMessage = "Hubo un problema al crear la cuenta";
+                    if (error.response && error.response.data && error.response.data.length > 0) {
+                        errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                    }
+                    Swal.fire('Error', errorMessage, 'error');
+                });
         },
 
         handleImageUpload(event) {
-            if (this.user.Imagen_de_perfil.length >= 1) {
-                Swal.fire('Error', 'No puedes agregar mas de 1', 'error');
-                return;
-            }
+            const file = event.target.files[0];
+            if (!file) return;
 
-            const files = event.target.files;
+            // Crea un objeto FileReader para leer el contenido del archivo como una URL de datos
+            const reader = new FileReader();
 
-            // Itera sobre los archivos seleccionados
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+            // Configura la función que se ejecutará cuando se complete la lectura del archivo
+            reader.onload = () => {
+                // Asigna el resultado de la lectura del archivo (base64) a la propiedad imagenUrl
+                this.user.imagenUrl = reader.result;
 
-                if (file) {
-                    // Convierte la imagen a una URL de datos para la vista previa
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        // Agrega la imagen al arreglo de imágenes
-                        this.user.Imagen_de_perfil.push(reader.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
+                // Muestra la imagen en la vista previa
+                const preview = document.querySelector('.image-preview');
+                preview.src = reader.result;
+            };
+
+            // Lee el contenido del archivo como una URL de datos (base64)
+            reader.readAsDataURL(file);
         },
     },
+    
 };
 </script>
 

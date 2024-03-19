@@ -20,29 +20,29 @@ public class Direccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     private String calle;
 
     @Column(nullable = false)
     private int numero;
 
-    @Column(nullable = false, length = 25)
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     private String colonia;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String estado;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String municipio;
 
     @Column(nullable = false, precision = 5)
-    private int codigo_postal;
+    private int codigoPostal;
 
-    @Column(nullable = false, length = 100)
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String referencia;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario

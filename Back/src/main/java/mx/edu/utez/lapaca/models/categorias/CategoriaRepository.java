@@ -1,4 +1,11 @@
 package mx.edu.utez.lapaca.models.categorias;
 
-public interface CategoriaRepository {
+import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
+
+    Optional<Categoria> findByNombre(String nombre);
 }

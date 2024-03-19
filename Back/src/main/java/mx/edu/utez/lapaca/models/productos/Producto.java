@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -26,13 +27,14 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 40)
+    @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
-    @Column(nullable = false, length = 200)
-    private String imagen_url;
 
-    @Column(nullable = false, length = 100)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String imagenUrl;
+
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;
 
     @Column(nullable = false)
@@ -47,21 +49,14 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-    //muchos productos pueden estar asociados a un mismo usuario
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    //muchos productos pueden estar asociados a un misma categoria
 
-    @ManyToOne
-    @JoinColumn(name = "subcategoria_id")
-    private SubCategoria subcategoria;
-    //muchos productos pueden estar asociados a un misma subcategoria
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
-    private List<Pedido> pedidos;
-    //un producto puede estar asociados a muchos pedidos, muchos pedidos pueden estar asociados a un producto
 
-    //muchos pedidos pueden estar en un prodcuto, y un producto puede estar en muchos pedidos
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "producto_id") // Nombre de la columna en la tabla Producto que hace referencia a la Oferta
+    private List<Oferta> ofertas;
 }

@@ -9,11 +9,9 @@ import mx.edu.utez.lapaca.security.dto.SignUpRequest;
 import mx.edu.utez.lapaca.security.dto.SinginRequest;
 import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api-carsi-shop/auth")
 @RequiredArgsConstructor

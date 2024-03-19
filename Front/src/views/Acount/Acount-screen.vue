@@ -15,11 +15,19 @@
                                                 style="width: 150px; height: 150px;">
                                         </b-col>
 
-                                        <b-col cols="10">
+                                        <b-col cols="8">
                                             <br>
                                             <br>
                                             <h4>{{ user.Nombre }} {{ user.Apellidos }}</h4>
                                             <h5>{{ user.Correo }}</h5>
+                                        </b-col>
+
+                                        <b-col>
+                                            <br>
+                                            <br>
+                                            <b-button @click="logout" variant="faded">
+                                                <b-icon icon="person-fill"></b-icon> Cerrar sesion
+                                            </b-button>
                                         </b-col>
                                     </b-row>
                                 </div>
@@ -82,7 +90,8 @@
                                         </b-button>
                                         <b-collapse id="collapseCompras">
                                             <b-card>
-                                                <b-button to="productos" variant="faded" ><i class="fa fa-history" aria-hidden="true"></i> Hisotrial de compras</b-button>
+                                                <b-button to="productos" variant="faded"><i class="fa fa-history"
+                                                        aria-hidden="true"></i> Hisotrial de compras</b-button>
 
                                             </b-card>
                                         </b-collapse>
@@ -125,19 +134,27 @@
                                                     <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
                                                 </div>
                                                 <div class="d-flex pb-4">
-                                                    <p class="mb-0 me-2"><b>¿Quieres vender tus productos? 
-                                                        <b-link class="text-muted" href="enviarSolicitdVendedor">Enviar solicitud de vendedor</b-link></b></p>
+                                                    <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
+                                                            <b-link class="text-muted"
+                                                                href="enviarSolicitdVendedor">Enviar solicitud de
+                                                                vendedor</b-link></b></p>
                                                 </div>
 
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button to="productos" variant="faded" style="color: blue;"><i class="fa fa-shopping-bag"  aria-hidden="true"></i> Administrar productos</b-button>
+                                                        <b-button to="productos" variant="faded" style="color: blue;"><i
+                                                                class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                                            Administrar productos</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded" style="color: blue;"><i class="fa fa-credit-card" aria-hidden="true"></i> Administrar ventas</b-button>
+                                                        <b-button to="historialVentas" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-credit-card"
+                                                                aria-hidden="true"></i> Administrar ventas</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded" style="color: blue;"><i class="fa fa-truck" aria-hidden="true"></i> Administrar envios</b-button>
+                                                        <b-button to="historialVentas" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-truck"
+                                                                aria-hidden="true"></i> Administrar envios</b-button>
 
                                                     </b-col>
                                                 </b-row>
@@ -152,34 +169,46 @@
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
                                         </b-button>
                                         <b-collapse id="collapsBitacoras">
-                                            <b-card>    
+                                            <b-card>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="people"></b-icon> Lista de usuarios</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="people"></b-icon> Lista de usuarios</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="card-checklist"></b-icon> Bitacora de usuarios</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="card-checklist"></b-icon> Bitacora de
+                                                            usuarios</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="shop"></b-icon> Administrar ventas</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="shop"></b-icon> Administrar ventas</b-button>
                                                     </b-col>
                                                 </b-row>
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="clock"></b-icon> Solicitudes de vendedores</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="clock"></b-icon> Solicitudes de
+                                                            vendedores</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="hourglass-split"></b-icon> Solicitudes de productos</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="hourglass-split"></b-icon> Solicitudes de
+                                                            productos</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-truck" aria-hidden="true"></i> Administrar envios</b-button>
+                                                        <b-button to="historialVentas" variant="faded"><i
+                                                                class="fa fa-truck" aria-hidden="true"></i> Administrar
+                                                            envios</b-button>
                                                     </b-col>
                                                 </b-row>
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon icon="bookmarks"></b-icon> Categorias y subcategorias</b-button>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="bookmarks"></b-icon> Categorias y
+                                                            subcategorias</b-button>
                                                     </b-col>
 
                                                 </b-row>
@@ -230,6 +259,14 @@ export default {
                     RFC: "DOCA0312312D8",
                 }
             },
+        }
+    },
+
+    methods: {
+        logout() {
+            // Método para cerrar sesión
+            localStorage.clear(); // Limpiar el almacenamiento local
+            this.$router.push({ name: 'login' }); // Redirigir a la página de inicio de sesión
         }
     },
 }

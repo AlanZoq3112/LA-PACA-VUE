@@ -20,7 +20,15 @@ const router = new VueRouter({
     {
       path: '/enviarSolicitdVendedor',
       name: 'enviarSolicitdVendedor',
-      component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue')
+      component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
     },
     {
       path: '/crearCuenta',
@@ -30,14 +38,43 @@ const router = new VueRouter({
     {
       path: '/carritoCompras',
       name: 'carritoCompras',
-      component: () => import('../modules/Carrito/Views/CarritoCompras.vue')
+      component: () => import('../modules/Carrito/Views/CarritoCompras.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
     },
     {
       path: '/checkoutDireccion',
       name: 'checkoutDireccion',
-      component: () => import('../modules/Ventas/Direcciones/Views/Direccion.vue')
+      component: () => import('../modules/Ventas/Direcciones/Views/Direccion.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
     },
-    
+    {
+      path: '/profile-screen',
+      name: 'profile-screen',
+      component: () => import('./../views/Acount/Acount-screen.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
     {
       path: '/inicio',
       name: 'inicio',
@@ -84,26 +121,7 @@ const router = new VueRouter({
       name: 'ofertas-screen',
       component: () => import('../views/Ofertas/Ofertas-screen.vue')
     },
-    {
-      path: '/profile-screen',
-      name: 'profile-screen',
-      component: () => import('./../views/Acount/Acount-screen.vue'),
-      beforeEnter: (to, from, next) => {
-        // Verificar si el token está presente en el localStorage
-        const token = localStorage.getItem('token');
 
-        if (token) {
-          // Aquí puedes realizar la lógica para verificar la validez del token si es necesario
-          // Por ejemplo, podrías decodificar el token para verificar su validez o tiempo de expiración
-
-          // Si el token es válido, permite que el usuario acceda a la ruta
-          next();
-        } else {
-          // Si el token no está presente en el localStorage, redirigir al usuario a la página de inicio de sesión
-          next('/login');
-        }
-      }
-    },
     {
       path: '/men-ropa',
       name: 'men-ropa',

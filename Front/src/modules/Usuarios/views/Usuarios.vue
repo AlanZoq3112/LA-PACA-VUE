@@ -48,12 +48,14 @@
                                             </template>
                             
                                             <template #cell(actions)="data">
-                                                <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
-                                                    <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                                                </b-button>
-                                                <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
-                                                    <b-icon icon="trash" style="color:red"></b-icon>
-                                                </b-button>
+                                                <div class="text-center">
+                                                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
+                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                    </b-button>
+                                                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
+                                                        <b-icon icon="trash" style="color:red"></b-icon>
+                                                    </b-button>
+                                                </div>
                                             </template>
                             
                             

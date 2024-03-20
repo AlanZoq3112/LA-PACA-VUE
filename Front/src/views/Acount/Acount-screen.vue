@@ -206,7 +206,7 @@
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="categorias-screen"><b-icon
                                                                 icon="bookmarks"></b-icon> Categorias y
                                                             subcategorias</b-button>
                                                     </b-col>

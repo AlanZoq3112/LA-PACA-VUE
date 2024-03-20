@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/admin/categoria")
-//@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"*"})
 public class CategoriaController {
 
     @Autowired

@@ -17,27 +17,30 @@
                                             </b-button>
                                         </div>
                                     </div>
-                                    <div class="text-center tabla">
-                                        <b-table responsive :fields="fields" :items="categorias" head-variant="light"
-                                            bordered class="text-center shadow" id="table" ref="table">
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(nombre)="data">
-                                                {{ data.item.nombre }}
-                                            </template>
-                                            <template #cell(actions)="data">
-                                                <div class="text-center">
-                                                    <b-button size="sm" @click="edit(data.item)" variant="faded"
-                                                        class="btnEdit">
-                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                                                    </b-button>
-                                                    <b-button size="sm" @click="deleteCategoria(data.item.id)"
-                                                        variant="faded" class="btnDelete">
-                                                        <b-icon icon="trash" style="color:red"></b-icon>
-                                                    </b-button>
-                                                </div>
-                                            </template>
-                                        </b-table>
-                                    </div>
+                                    <b-table responsive :fields="fields" :items="categorias" head-variant="light"
+                                        bordered class="text-center shadow" id="table" ref="table">
+                                        <!-- Columna para mostrar el 'Nombre' -->
+                                        <template #cell(nombre)="data">
+                                            {{ data.item.nombre }}
+                                        </template>
+                                        <template #cell(subcategorias)="data">
+                                            <div v-for="subcategoria in data.item.subcategorias" :key="subcategoria.id">
+                                                {{ subcategoria.nombre }}
+                                            </div>
+                                        </template>
+                                        <template #cell(actions)="data">
+                                            <div class="text-center">
+                                                <b-button size="sm" @click="edit(data.item)" variant="faded"
+                                                    class="btnEdit">
+                                                    <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                </b-button>
+                                                <b-button size="sm" @click="deleteCategoria(data.item.id)"
+                                                    variant="faded" class="btnDelete">
+                                                    <b-icon icon="trash" style="color:red"></b-icon>
+                                                </b-button>
+                                            </div>
+                                        </template>
+                                    </b-table>
                                 </div>
 
                                 <br>
@@ -48,13 +51,14 @@
                                         </div>
                                         <div class="">
                                             <b-button v-b-modal.modal-guardar-categorias class="btnAdd">
-                                                <b-icon icon="plus"></b-icon> Registrar Categoria
+                                                <b-icon icon="plus"></b-icon> Registrar Subcategoria
                                             </b-button>
                                         </div>
                                     </div>
                                     <div class="text-center tabla">
-                                        <b-table responsive :fields="fields" :items="categorias" head-variant="light"
-                                            bordered class="text-center shadow" id="table" ref="table">
+                                        <b-table responsive :fields="fields2" :items="subcategorias"
+                                            head-variant="light" bordered class="text-center shadow" id="table"
+                                            ref="table">
                                             <!-- Columna para mostrar el 'Nombre' -->
                                             <template #cell(nombre)="data">
                                                 {{ data.item.nombre }}
@@ -65,7 +69,7 @@
                                                         class="btnEdit">
                                                         <b-icon icon="pencil-square" style="color:blue"></b-icon>
                                                     </b-button>
-                                                    <b-button size="sm" @click="deleteCategoria(data.item.id)"
+                                                    <b-button size="sm" @click="deleteSubcategoria(data.item.id)"
                                                         variant="faded" class="btnDelete">
                                                         <b-icon icon="trash" style="color:red"></b-icon>
                                                     </b-button>
@@ -83,7 +87,7 @@
         <ModalGuardarCategorias @categoria-saved="getCategorias" />
         <!-- Pasa la categoría seleccionada al modal de edición -->
         <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria"
-        @categoria-saved="getCategorias" />
+            @categoria-saved="getCategorias" />
     </div>
 </template>
 
@@ -103,7 +107,14 @@ export default {
         return {
             selectCategoria: null,
             categorias: [],
+            subcategorias: [],
+
             fields: [
+                { key: 'nombre', label: 'Nombre', sortable: true },
+                { key: 'subcategorias', label: 'Subcategorias', sortable: true },
+                { key: 'actions', label: 'Acciones', visible: true },
+            ],
+            fields2: [
                 { key: 'nombre', label: 'Nombre', sortable: true },
                 { key: 'actions', label: 'Acciones', visible: true },
             ],
@@ -151,14 +162,58 @@ export default {
                 Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
             }
         },
+        async getSubcategoriaategorias() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/subcategoria/getAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                this.subcategorias = response.data.data;
+                console.log("Sub xd: ", this.subcategorias);
+            } catch (error) {
+                console.error("Error al obtener las subcategorias", error);
+            }
+        },
+        async deleteSubcategoria(subcategoriaId) {
+            try {
+                const result = await Swal.fire({
+                    title: '¿Estás seguro de eliminar esta Subcategoria?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#008c6f',
+                    cancelButtonColor: '#e11c24',
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: 'Cancelar',
+                });
+
+                if (result.isConfirmed) {
+                    const token = localStorage.getItem('token');
+                    await axios.delete('http://localhost:8090/api-carsi-shop/admin/subcategoria/delete', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        data: { id: subcategoriaId }
+                    });
+                    this.getSubcategoriaategorias();
+                    this.getCategorias();
+                    Swal.fire('Eliminada', 'La subcategoria ha sido eliminada correctamente', 'success');
+                }
+            } catch (error) {
+                console.error("Error al eliminar la categoria", error);
+                Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
+            }
+        },
         edit(categoria) {
-    this.selectCategoria = categoria;
-    console.log(categoria);
-    this.$refs['modal-editar-categorias'].show();
-},
+            this.selectCategoria = categoria;
+            console.log(categoria);
+            this.$refs['modal-editar-categorias'].show();
+        },
     },
     mounted() {
         this.getCategorias();
+        this.getSubcategoriaategorias();
     },
 }
 </script>

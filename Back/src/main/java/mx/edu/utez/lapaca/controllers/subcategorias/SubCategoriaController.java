@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/admin/subcategoria")
-//@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"*"})
 public class SubCategoriaController {
 
 

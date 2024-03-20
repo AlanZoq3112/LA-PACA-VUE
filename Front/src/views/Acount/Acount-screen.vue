@@ -238,6 +238,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
     name: "profile-screen",
     data() {
@@ -259,16 +261,44 @@ export default {
                     RFC: "DOCA0312312D8",
                 }
             },
+            user1:{},
+            usuario: {
+                id: 1,
+            }
         }
     },
 
     methods: {
         logout() {
-            // Método para cerrar sesión
-            localStorage.clear(); // Limpiar el almacenamiento local
-            this.$router.push({ name: 'login' }); // Redirigir a la página de inicio de sesión
-        }
+            localStorage.clear();
+            this.$router.push({ name: 'login' });
+        },
+
+        async getInfo() {
+            try {
+                const id = this.usuario.id;
+                console.log(id);
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/usuario/getOne', {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                    },
+                    data: {
+                        id: id
+                    }
+                });
+                this.user1 = response.data.data; // Guardar los datos del usuario en el estado del componente
+                console.log(this.user1);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
+        },
+
+        
     },
+    mounted() {
+        this.getInfo();
+    }
 }
 
 </script>

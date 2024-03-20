@@ -76,6 +76,20 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/categorias-screen',
+      name: 'categorias-screen',
+      component: () => import('./../modules/Categorias/Views/Categorias.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
       path: '/inicio',
       name: 'inicio',
       component: () => import('../views/Inicio.vue')

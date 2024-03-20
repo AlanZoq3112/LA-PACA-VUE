@@ -20,24 +20,57 @@
                                     <div class="text-center tabla">
                                         <b-table responsive :fields="fields" :items="categorias" head-variant="light"
                                             bordered class="text-center shadow" id="table" ref="table">
-
                                             <!-- Columna para mostrar el 'Nombre' -->
                                             <template #cell(nombre)="data">
                                                 {{ data.item.nombre }}
                                             </template>
-
                                             <template #cell(actions)="data">
-                                                <b-button size="sm" @click="edit(data.item)" variant="faded"
-                                                    class="btnEdit">
-                                                    <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                                                </b-button>
-                                                <b-button size="sm" @click="deleteCategoria(data.item.id)"
-                                                    variant="faded" class="btnDelete">
-                                                    <b-icon icon="trash" style="color:red"></b-icon>
-                                                </b-button>
+                                                <div class="text-center">
+                                                    <b-button size="sm" @click="edit(data.item)" variant="faded"
+                                                        class="btnEdit">
+                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                    </b-button>
+                                                    <b-button size="sm" @click="deleteCategoria(data.item.id)"
+                                                        variant="faded" class="btnDelete">
+                                                        <b-icon icon="trash" style="color:red"></b-icon>
+                                                    </b-button>
+                                                </div>
                                             </template>
+                                        </b-table>
+                                    </div>
+                                </div>
 
-
+                                <br>
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-4 tabla">
+                                        <div>
+                                            <h4>Subcategorias <b-icon icon="bookmarks"></b-icon></h4>
+                                        </div>
+                                        <div class="">
+                                            <b-button v-b-modal.modal-guardar-categorias class="btnAdd">
+                                                <b-icon icon="plus"></b-icon> Registrar Categoria
+                                            </b-button>
+                                        </div>
+                                    </div>
+                                    <div class="text-center tabla">
+                                        <b-table responsive :fields="fields" :items="categorias" head-variant="light"
+                                            bordered class="text-center shadow" id="table" ref="table">
+                                            <!-- Columna para mostrar el 'Nombre' -->
+                                            <template #cell(nombre)="data">
+                                                {{ data.item.nombre }}
+                                            </template>
+                                            <template #cell(actions)="data">
+                                                <div class="text-center">
+                                                    <b-button size="sm" @click="edit(data.item)" variant="faded"
+                                                        class="btnEdit">
+                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                    </b-button>
+                                                    <b-button size="sm" @click="deleteCategoria(data.item.id)"
+                                                        variant="faded" class="btnDelete">
+                                                        <b-icon icon="trash" style="color:red"></b-icon>
+                                                    </b-button>
+                                                </div>
+                                            </template>
                                         </b-table>
                                     </div>
                                 </div>
@@ -48,6 +81,9 @@
             </div>
         </div>
         <ModalGuardarCategorias @categoria-saved="getCategorias" />
+        <!-- Pasa la categoría seleccionada al modal de edición -->
+        <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria"
+        @categoria-saved="getCategorias" />
     </div>
 </template>
 
@@ -55,41 +91,38 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ModalGuardarCategorias from './ModalGuardarCategorias.vue';
+import ModalEditarCategoria from './ModalEditarCategoria.vue';
 
 export default {
     components: {
         ModalGuardarCategorias,
+        ModalEditarCategoria
     },
     name: "Categorias",
     data() {
         return {
+            selectCategoria: null,
             categorias: [],
             fields: [
                 { key: 'nombre', label: 'Nombre', sortable: true },
-                {
-                    key: 'actions',
-                    label: 'Acciones',
-                    visible: true,
-                },
+                { key: 'actions', label: 'Acciones', visible: true },
             ],
         }
     },
     methods: {
         async getCategorias() {
             try {
-                const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
+                const token = localStorage.getItem('token');
                 const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/categoria/getAll', {
                     headers: {
-                        Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                        Authorization: `Bearer ${token}`
                     }
                 });
-                this.categorias = response.data.data; // Asumiendo que la respuesta tiene una propiedad 'data'
-                console.log(this.categorias);
+                this.categorias = response.data.data;
             } catch (error) {
                 console.error("Error al obtener las categorias", error);
             }
         },
-
         async deleteCategoria(categoriaId) {
             try {
                 const result = await Swal.fire({
@@ -106,11 +139,9 @@ export default {
                     const token = localStorage.getItem('token');
                     await axios.delete('http://localhost:8090/api-carsi-shop/admin/categoria/delete', {
                         headers: {
-                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                            Authorization: `Bearer ${token}`
                         },
-                        data: {
-                            id: categoriaId
-                        }
+                        data: { id: categoriaId }
                     });
                     this.getCategorias();
                     Swal.fire('Eliminada', 'La categoria ha sido eliminada correctamente', 'success');
@@ -120,6 +151,11 @@ export default {
                 Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
             }
         },
+        edit(categoria) {
+    this.selectCategoria = categoria;
+    console.log(categoria);
+    this.$refs['modal-editar-categorias'].show();
+},
     },
     mounted() {
         this.getCategorias();
@@ -143,7 +179,6 @@ td {
     padding: 8px;
     text-align: left;
 }
-
 
 .btnAdd {
     background-color: #089779;

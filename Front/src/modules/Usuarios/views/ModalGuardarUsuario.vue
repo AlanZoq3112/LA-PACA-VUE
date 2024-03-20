@@ -102,53 +102,53 @@ export default {
             this.resetForm();
         },
         async save() {
-    try {
-        const result = await Swal.fire({
-            title: "¿Estás seguro de registrar el usuario?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#008c6f',
-            cancelButtonColor: '#e11c24',
-            confirmButtonText: "Confirmar",
-            cancelButtonText: 'Cancelar',
-        });
-
-        if (result.isConfirmed) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                Swal.fire('Error', 'No se encontró un token válido', 'error');
-                return;
-            }
-            console.log( "Usuario a guardar: ",this.usuario);
-            const response = await axios.post("http://localhost:8090/api-carsi-shop/admin/usuario/insert", this.usuario, {
-                headers: {
-                    Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
-                }
-            });
-
-            if (response.status === 201) {
-                this.resetForm();
-                Swal.fire({
-                    title: "¡Guardado!",
-                    text: "El usuario se registró correctamente",
-                    icon: "success"
+            try {
+                const result = await Swal.fire({
+                    title: "¿Estás seguro de registrar el usuario?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#008c6f',
+                    cancelButtonColor: '#e11c24',
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: 'Cancelar',
                 });
 
-                this.$emit('user-updated');
-                this.$bvModal.hide("modal-save-user");
-            } else {
-                console.log("Error al guardar el usuario. Estado del servidor:", response.status);
+                if (result.isConfirmed) {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        Swal.fire('Error', 'No se encontró un token válido', 'error');
+                        return;
+                    }
+                    console.log("Usuario a guardar: ", this.usuario);
+                    const response = await axios.post("http://localhost:8090/api-carsi-shop/admin/usuario/insert", this.usuario, {
+                        headers: {
+                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                        }
+                    });
+
+                    if (response.status === 201) {
+                        this.resetForm();
+                        Swal.fire({
+                            title: "¡Guardado!",
+                            text: "El usuario se registró correctamente",
+                            icon: "success"
+                        });
+
+                        this.$emit('user-updated');
+                        this.$bvModal.hide("modal-save-user");
+                    } else {
+                        console.log("Error al guardar el usuario. Estado del servidor:", response.status);
+                    }
+                }
+            } catch (error) {
+                console.error("Error al realizar la solicitud de guardado:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Hubo un problema al intentar guardar el usuario",
+                    icon: "error"
+                });
             }
-        }
-    } catch (error) {
-        console.error("Error al realizar la solicitud de guardado:", error);
-        Swal.fire({
-            title: "Error",
-            text: "Hubo un problema al intentar guardar el usuario",
-            icon: "error"
-        });
-    }
-},
+        },
         resetForm() {
             this.usuario = {
                 nombre: "",

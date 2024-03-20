@@ -65,7 +65,7 @@ public class UsuarioController {
 
     //get one
     @GetMapping("/getOne")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPADOR')")
     public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
         Long userId = requestBody.get("id");
         return new ResponseEntity<>(

@@ -6,6 +6,7 @@ import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.security.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,7 +34,17 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/api-carsi-shop/auth/**")
                         .permitAll()
-                        .requestMatchers("/api-carsi-shop/admin/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/admin/usuario/insert").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/admin/usuario/getAll").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/admin/usuario/getOne").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
+                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/admin/usuario/update").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/api-carsi-shop/admin/usuario/delete").hasAnyAuthority(Role.ADMIN.name())
+
+                        .requestMatchers("/api-carsi-shop/admin/categoria/**").hasAnyAuthority(Role.ADMIN.name())
+
+
+
+
                         .requestMatchers("/api-carsi-shop/usuario/**").hasAnyAuthority(
                                 Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
                         .anyRequest().authenticated())

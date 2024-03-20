@@ -149,7 +149,7 @@ public class CategoriaService {
                         null,
                         true,
                         400,
-                        "El usuario con el id " + id + " no existe"
+                        "La categoria con el id " + id + " no existe"
                 );
             }
             Categoria categoria = categoriaId.get();

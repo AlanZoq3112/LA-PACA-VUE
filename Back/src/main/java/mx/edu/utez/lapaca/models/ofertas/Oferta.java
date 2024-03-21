@@ -6,6 +6,7 @@ import lombok.*;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ofertas")
@@ -23,15 +24,12 @@ public class Oferta {
     private boolean estado;
 
     @Column(nullable = false)
-    private Date fecha_inicio;
+    private Date fechaInicio;
 
     @Column(nullable = false)
-    private Date fecha_fin;
+    private Date fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
-    //una oferta está asociada con un único producto
+
 
 
 }

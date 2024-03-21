@@ -6,11 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carrito_productos.CarritoProducto;
+import mx.edu.utez.lapaca.models.carritoProductos.CarritoProducto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "carritos")
@@ -29,8 +26,10 @@ public class Carrito {
     private Usuario usuario;
     //un/muchos carrito pertenece a un único usuario
 
-    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CarritoProducto> carrito_productos;
-    //un carrito puede contener varios productos en forma de carrito_productos
+    @ManyToOne
+    @JoinColumn(name = "carrito_producto_id", nullable = false)
+    private CarritoProducto carritoProducto;
+    // Un producto en el carrito pertenece a un solo carrito
+
 
 }

@@ -10,8 +10,84 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'inicio',
       component: () => import('../views/Inicio.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../modules/Auth/Views/Login.vue')
+    },
+    {
+      path: '/enviarSolicitdVendedor',
+      name: 'enviarSolicitdVendedor',
+      component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/crearCuenta',
+      name: 'crearCuenta',
+      component: () => import('../modules/Auth/Views/CrearCuenta.vue')
+    },
+    {
+      path: '/carritoCompras',
+      name: 'carritoCompras',
+      component: () => import('../modules/Carrito/Views/CarritoCompras.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/checkoutDireccion',
+      name: 'checkoutDireccion',
+      component: () => import('../modules/Ventas/Direcciones/Views/Direccion.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/profile-screen',
+      name: 'profile-screen',
+      component: () => import('./../views/Acount/Acount-screen.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/categorias-screen',
+      name: 'categorias-screen',
+      component: () => import('./../modules/Categorias/Views/Categorias.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
     },
     {
       path: '/inicio',
@@ -59,11 +135,7 @@ const router = new VueRouter({
       name: 'ofertas-screen',
       component: () => import('../views/Ofertas/Ofertas-screen.vue')
     },
-    {
-      path: '/profile-screen',
-      name: 'profile-screen',
-      component: () => import('./../views/Acount/Acount-screen.vue')
-    },
+
     {
       path: '/men-ropa',
       name: 'men-ropa',

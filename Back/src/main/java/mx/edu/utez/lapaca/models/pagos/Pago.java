@@ -32,19 +32,14 @@ public class Pago {
     @Column(nullable = false)
     private Integer cvv;
 
-    @Column(nullable = false, length = 50)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String titular;
 
-    @Column(nullable = false, length = 5)
+    @Column(columnDefinition = "VARCHAR(5)", nullable = false)
     private String fechaVencimiento;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
-
-    //muchos pagos pueden estar asociados a un solo usuario (cada pago pertenece a un solo usuario),
-    //y un usuario puede tener asociados muchos pagos
-
-
 
 }

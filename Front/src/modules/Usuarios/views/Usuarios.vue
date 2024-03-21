@@ -1,55 +1,72 @@
 <template>
     <div>
-        <template>
-            <div class="d-flex justify-content-between align-items-center mb-4 tabla">
-                <div>
-                    <b>
-                        <h3>Usuarios <b-icon icon="people"></b-icon></h3>
-                    </b>
-                </div>
-                <div class="">
-                    <b-button v-b-modal.modal-save-user class="btnAdd">
-                        <b-icon icon="person-plus"></b-icon> Registrar usuario
-                    </b-button>
+        <div>
+            <div class="custom-container py-1 h-200">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-xl-12">
+                        <div class="card rounded-3 text-black">
+                            <div class="col-lg-12">
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-4 tabla">
+                                        <div>
+                                            <h4>Usuarios <b-icon icon="person"></b-icon></h4>
+
+                                        </div>
+                                        <div class="">
+                                            <b-button v-b-modal.modal-save-user class="btnAdd">
+                                                <b-icon icon="person-plus"></b-icon> Registrar usuario
+                                            </b-button>
+                                        </div>
+                                    </div>
+                                    <div class="text-center tabla">
+                                        <b-table responsive :fields="fields" :items="usuarios" head-variant="light" bordered
+                                            class="text-center shadow" id="table" ref="table">
+                            
+                                            <!-- Columna para mostrar el 'Nombre' -->
+                                            <template #cell(nombre)="data">
+                                                {{ data.item.nombre }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el 'Email' -->
+                                            <template #cell(accountNonExpired)="data">
+                                                {{ data.item.accountNonExpired ? 'Activo' : 'Expirado' }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el estado de 'accountNonLocked' -->
+                                            <template #cell(accountNonLocked)="data">
+                                                {{ data.item.accountNonLocked ? 'Desbloqueado' : 'Bloqueado' }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar las autoridades -->
+                                            <template #cell(authorities)="data">
+                                                {{ data.item.authorities.join(', ') }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el estado de 'credentialsNonExpired' -->
+                                            <template #cell(credentialsNonExpired)="data">
+                                                {{ data.item.credentialsNonExpired ? 'Válido' : 'Expirado' }}
+                                            </template>
+                            
+                                            <template #cell(actions)="data">
+                                                <div class="text-center">
+                                                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
+                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                    </b-button>
+                                                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
+                                                        <b-icon icon="trash" style="color:red"></b-icon>
+                                                    </b-button>
+                                                </div>
+                                            </template>
+                            
+                            
+                                        </b-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </template>
-        <div class="text-center tabla">
-            <b-table responsive :fields="fields" :items="usuarios" head-variant="light" bordered class="text-center shadow" id="table"
-                ref="table">
-
-                <!-- Columna para mostrar el 'Nombre' -->
-                <template #cell(nombre)="data">
-                    {{ data.item.nombre }}
-                </template>
-
-                <!-- Columna para mostrar el 'Email' -->
-                <template #cell(email)="data">
-                    {{ data.item.email }}
-                </template>
-
-                <!-- Columna para mostrar el 'Correo' -->
-                <template #cell(imagen_url)="data">
-                    <img :src="data.item.imagen_url" alt="Imagen del usuario"
-                        style="max-width: 50px; max-height: 50px;">
-                </template>
-
-                <!-- Columna para mostrar el 'Nombre del Rol' -->
-                <template #cell(rol)="data">
-                    {{ data.item.rol.nombre }}
-                </template>
-
-                <template #cell(actions)="data">
-                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
-                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                    </b-button>
-                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
-                        <b-icon icon="trash" style="color:red"></b-icon>
-                    </b-button>
-                </template>
-
-                
-            </b-table>
         </div>
         <ModalGuardarUsuario @user-updated="getUsuarios" />
     </div>
@@ -72,20 +89,24 @@ export default {
             fields: [
                 { key: 'nombre', label: 'Nombre', sortable: true },
                 { key: 'email', label: 'Email', sortable: true },
-                { key: 'imagen_url', label: 'Foto de perfil', sortable: true },
-                { key: 'rol', label: 'Rol', sortable: true },
+                { key: 'role', label: 'Rol', sortable: true },
                 {
-					key: 'actions',
-					label: 'Acciones',
-					visible: true,
-				},
+                    key: 'actions',
+                    label: 'Acciones',
+                    visible: true,
+                },
             ],
         };
     },
     methods: {
         async getUsuarios() {
             try {
-                const response = await axios.get('http://localhost:8090/api-carsi-shop/usuario/getAll');
+                const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/usuario/getAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                    }
+                });
                 this.usuarios = response.data.data; // Asumiendo que la respuesta tiene una propiedad 'data'
                 console.log(this.usuarios);
             } catch (error) {
@@ -105,7 +126,15 @@ export default {
                 });
 
                 if (result.isConfirmed) {
-                    await axios.delete(`http://localhost:8090/api-carsi-shop/usuario/delete/${userId}`);
+                    const token = localStorage.getItem('token');
+                    await axios.delete('http://localhost:8090/api-carsi-shop/admin/usuario/delete', {
+                        headers: {
+                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                        },
+                        data: {
+                            id: userId // Enviar el ID del usuario que se va a eliminar en el cuerpo de la solicitud
+                        }
+                    });
                     this.getUsuarios();
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
                 }
@@ -141,5 +170,22 @@ td {
 
 .btnAdd {
     background-color: #089779;
+}
+
+.carta {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.userList {
+    background-color: #F5F5F5;
+    color: black;
+}
+
+.custom-container {
+    max-width: 1500px;
+    margin: 0 auto;
 }
 </style>

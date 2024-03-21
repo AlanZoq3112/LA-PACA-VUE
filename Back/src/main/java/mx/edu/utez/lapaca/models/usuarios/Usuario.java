@@ -8,9 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.pagos.Pago;
+import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,43 +26,68 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String nombre;
 
-    @Column(nullable = false, length = 200)
-    private String imagen_url;
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    private String genero;
 
-    @Column(nullable = false, length = 35, unique = true)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String imagenUrl;
+
+    @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 35)
-    private String contrasena;
+    @Column(nullable = false, length = 65)
+    private String password;
 
-    @Column(name = "telefono", nullable = false, precision = 10)
-    private Long telefono;
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String telefono;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
+    private LocalDate fechaNacimiento;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role rol;
-    // cada usuario pertenece a un rol, y cada rol puede tener varios usuarios asociados
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL) //todas las operaciones de persistencia realizadas en un usuario (por ejemplo, guardar, actualizar, eliminar) se propagarán automáticamente a todas las direcciones asociadas
-    private List<Direccion> direcciones;
-    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
+    @Column(nullable = true)
+    private Role role;
 
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Pago> pagos;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
 
-    //muchos pagos pueden estar asociados a un solo usuario (cada pago pertenece a un solo usuario),
-    //y un usuario puede tener asociados muchos pagos
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-    //productos relacion? idkkkkk
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void getFechaNacimiento(Date fechaNacimiento) {
+    }
 }

@@ -5,51 +5,55 @@
                 <header class="text-center border-bottom">
                     <p style="font-family: cabin">Registrar usuario</p>
                 </header>
-
                 <main>
                     <form id="registrarUsuario">
                         <b-row>
                             <b-col>
-                                <label for="usuario">Nombre del usuario: *</label>
-                                <b-form-input v-model="usuario.nombre" type="text" class="form-control" placeholder="Nombre" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                <label for="nombre">Nombre del usuario: *</label>
+                                <b-form-input v-model="usuario.nombre" type="text" class="form-control"
+                                    placeholder="Nombre" required />
                             </b-col>
                             <b-col>
-                                <label for="usuario">Email del usuario: *</label>
+                                <label for="email">Email del usuario: *</label>
                                 <b-form-input v-model="usuario.email" type="text" class="form-control"
-                                    placeholder="email@example.com" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                    placeholder="email@example.com" required />
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col>
-                                <label for="usuario">URL de la foto de perfil: *</label>
-                                <b-form-input v-model="usuario.imagen_url" type="text" class="form-control"
-                                    placeholder="URL De la imagen" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                <label for="imagen_url">URL de la foto de perfil: *</label>
+                                <b-form-input v-model="usuario.imagenUrl" type="text" class="form-control"
+                                    placeholder="URL De la imagen" required />
                             </b-col>
                             <b-col>
-                                <label for="usuario">Contraseña del usuario: *</label>
-                                <b-form-input v-model="usuario.contrasena" type="password" class="form-control" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                <label for="password">Contraseña del usuario: *</label>
+                                <b-form-input v-model="usuario.password" type="password" class="form-control"
+                                    required />
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col>
-                                <label for="usuario">Número telefonico: *</label>
+                                <label for="telefono">Número telefónico: *</label>
                                 <b-form-input v-model="usuario.telefono" type="number" class="form-control"
-                                    placeholder="1112224455" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                    placeholder="1112224455" required />
                             </b-col>
                             <b-col>
-                                <label for="usuario">Rol del usuario: *</label>
-                                <b-form-input v-model="usuario.role.id" type="number" class="form-control" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                <label for="genero">Género: *</label>
+                                <b-form-select v-model="usuario.genero" :options="generos" required />
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <label for="role">Rol del usuario: *</label>
+                                <b-form-select v-model="usuario.role" :options="roles" required />
                             </b-col>
                             <b-col>
-                                <label for="usuario">Nombre del rol del usuario: *</label>
-                                <b-form-input v-model="usuario.role.nombre" type="text" class="form-control" required
-                                    aria-describedby="input-live-help input-live-feedback" />
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="fechaNacimiento">Fecha de nacimiento:
+                                    </label>
+                                    <input v-model="usuario.fechaNacimiento" type="date" id="fechaNacimiento"
+                                        class="form-control" />
+                                </div>
                             </b-col>
                         </b-row>
                     </form>
@@ -78,30 +82,24 @@ export default {
     data() {
         return {
             usuario: {
-                id: null,
                 nombre: "",
-                imagen_url: "",
                 email: "",
-                contrasena: "",
+                imagenUrl: "",
+                password: "",
                 telefono: null,
-                role: {
-                    id: null,
-                    nombre: ""
-                }
+                genero: "",
+                role: "",
+                fechaNacimiento: ""
             },
+            generos: ["Masculino", "Femenino", "Otro"],
+            roles: ["ADMIN", "VENDEDOR", "COMPRADOR"]
+
         };
     },
     methods: {
         onClose() {
             this.$bvModal.hide("modal-save-user");
-            this.usuario.nombre = ""
-            this.usuario.imagen_url = ""
-            this.usuario.email = ""
-            this.usuario.contrasena = ""
-            this.usuario.telefono = null
-            this.usuario.role.id = null
-            this.usuario.role.nombre = ""
-
+            this.resetForm();
         },
         async save() {
             try {
@@ -116,39 +114,33 @@ export default {
                 });
 
                 if (result.isConfirmed) {
-                    // Realiza la solicitud de guardado
-                    const response = await axios.post("http://localhost:8090/api-carsi-shop/usuario/insert", this.usuario);
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        Swal.fire('Error', 'No se encontró un token válido', 'error');
+                        return;
+                    }
+                    console.log("Usuario a guardar: ", this.usuario);
+                    const response = await axios.post("http://localhost:8090/api-carsi-shop/admin/usuario/insert", this.usuario, {
+                        headers: {
+                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                        }
+                    });
 
                     if (response.status === 201) {
-                        this.usuario = {
-                            nombre: '',
-                            imagen_url: '',
-                            email: '',
-                            contrasena: '',
-                            telefono: null,
-                            role: {
-                                id: null,
-                                name: '',
-                            },
-                        };
+                        this.resetForm();
                         Swal.fire({
                             title: "¡Guardado!",
                             text: "El usuario se registró correctamente",
                             icon: "success"
                         });
 
-                        // Limpia el formulario después de guardar
-                        this.onClose();
-
-                        // Emite un evento para informar a otros componentes sobre la actualización del usuario
                         this.$emit('user-updated');
+                        this.$bvModal.hide("modal-save-user");
                     } else {
-                        // Maneja situaciones donde la solicitud fue exitosa, pero el servidor devuelve un estado no exitoso
                         console.log("Error al guardar el usuario. Estado del servidor:", response.status);
                     }
                 }
             } catch (error) {
-                // Maneja errores generales, como problemas de red o errores en la solicitud
                 console.error("Error al realizar la solicitud de guardado:", error);
                 Swal.fire({
                     title: "Error",
@@ -157,9 +149,19 @@ export default {
                 });
             }
         },
-
-
-    },
+        resetForm() {
+            this.usuario = {
+                nombre: "",
+                email: "",
+                imagenUrl: "",
+                password: "",
+                telefono: null,
+                genero: "",
+                role: "",
+                fechaNacimiento: ""
+            };
+        }
+    }
 
 }
 </script>

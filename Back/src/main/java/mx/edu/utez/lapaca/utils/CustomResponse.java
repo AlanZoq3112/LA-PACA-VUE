@@ -30,5 +30,4 @@ public class CustomResponse <T> {
         this.StatusCode = StatusCode;
         this.message = message;
     }
-
 }

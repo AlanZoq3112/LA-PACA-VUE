@@ -36,9 +36,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 export default {
     name: "modal-guardar-categorias",
-    props: {
-        categoriaSeleccionada: Object // Define una prop para recibir la categoría seleccionada
-    },
     data() {
         return {
             categoria: {

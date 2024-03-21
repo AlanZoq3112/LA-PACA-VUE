@@ -51,7 +51,20 @@ const router = new VueRouter({
     {
       path: '/checkoutDireccion',
       name: 'checkoutDireccion',
-      component: () => import('../modules/Ventas/Direcciones/Views/Direccion.vue'),
+      component: () => import('../modules/Venta/Views/Direcciones/CheckoutDireccion.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/checkoutMetodoPago',
+      name: 'checkoutMetodoPago',
+      component: () => import('../modules/Venta/Views/MetodoPago/CheckoutMetodoPago.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
         if (token) {

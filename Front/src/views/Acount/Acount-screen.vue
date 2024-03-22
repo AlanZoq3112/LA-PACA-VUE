@@ -11,8 +11,13 @@
                                     <b-row>
                                         <b-col cols="2">
                                             <!-- Aquí se mostrará la imagen de perfil -->
-                                            <img v-if="user1.imagenUrl" :src="user1.imagenUrl" class="rounded-circle img-thumbnail" alt="Avatar" style="width: 150px; height: 150px;">
-                                            <img v-else src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg" class="rounded-circle img-thumbnail" alt="Avatar" style="width: 150px; height: 150px;">
+                                            <img v-if="user1.imagenUrl" :src="user1.imagenUrl"
+                                                class="rounded-circle img-thumbnail" alt="Avatar"
+                                                style="width: 150px; height: 150px;">
+                                            <img v-else
+                                                src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg"
+                                                class="rounded-circle img-thumbnail" alt="Avatar"
+                                                style="width: 150px; height: 150px;">
                                         </b-col>
 
                                         <b-col cols="8">
@@ -270,8 +275,32 @@ export default {
 
     methods: {
         logout() {
-            localStorage.clear();
-            this.$router.push({ name: 'login' });
+            // Mostrar una alerta de confirmación antes de cerrar la sesión
+            Swal.fire({
+                title: 'Cerrar sesión',
+                text: '¿Estás seguro de que deseas cerrar la sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#008c6f',
+                cancelButtonColor: '#e11c24',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si se confirma la acción, limpiar el localStorage y redirigir a la página de inicio de sesión
+                    localStorage.clear();
+                    Swal.fire({
+                    title: '¡Vuelve pronto!',
+                    text: 'Has cerrado sesión correctamente.',
+                    icon: 'success',
+                    position: 'top-end', // Posiciona la alerta en la esquina superior derecha
+                    toast: true, // Activa el modo toast para la alerta
+                    showConfirmButton: false, // No muestra el botón de confirmación
+                    timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                });
+                    this.$router.push({ name: 'login' });
+                }
+            });
         },
         async getInfo() {
             try {
@@ -283,18 +312,19 @@ export default {
                     }
                 });
                 this.user1 = response.data.data;
-                console.log(this.user1);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
         },
 
-        
+
+
+
 
 
     },
     mounted() {
-        this.getInfo();
+        this.getInfo(); // Obtener información del usuario
     }
 }
 

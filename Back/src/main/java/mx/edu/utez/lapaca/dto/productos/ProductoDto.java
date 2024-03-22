@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.dto.productos.validators.ValidBase64ImageSize;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.pedidos.Pedido;
@@ -28,14 +29,15 @@ public class ProductoDto {
     private String nombre;
 
     @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    private String imagenUrl;
+    @ValidBase64ImageSize
+    private String imagen_url;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
     private String descripcion;
 
     @Positive(message = "El precio del producto debe ser un número positivo")
-    @NotBlank(message = "El precio del producto no puede estar vacía")
+    @NotNull(message = "El precio del producto no puede estar vacía")
     private double precio;
 
     @NotNull(message = "El stock es obligatorio")
@@ -59,11 +61,11 @@ public class ProductoDto {
         return new Producto(
                 getId(),
                 getNombre(),
-                getImagenUrl(),
+                getImagen_url(),
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
-                getProducto().isEstado(),
+                isEstado(),
                 getUsuario(),
                 getCategoria(),
                 getOfertas()

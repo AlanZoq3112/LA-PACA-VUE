@@ -1,59 +1,72 @@
 <template>
     <div>
-        <template>
-            <div class="d-flex justify-content-between align-items-center mb-4 tabla">
-                <div>
-                    <b>
-                        <h3>Usuarios <b-icon icon="people"></b-icon></h3>
-                    </b>
-                </div>
-                <div class="">
-                    <b-button v-b-modal.modal-save-user class="btnAdd">
-                        <b-icon icon="person-plus"></b-icon> Registrar usuario
-                    </b-button>
+        <div>
+            <div class="custom-container py-1 h-200">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-xl-12">
+                        <div class="card rounded-3 text-black">
+                            <div class="col-lg-12">
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-4 tabla">
+                                        <div>
+                                            <h4>Usuarios <b-icon icon="person"></b-icon></h4>
+
+                                        </div>
+                                        <div class="">
+                                            <b-button v-b-modal.modal-save-user class="btnAdd">
+                                                <b-icon icon="person-plus"></b-icon> Registrar usuario
+                                            </b-button>
+                                        </div>
+                                    </div>
+                                    <div class="text-center tabla">
+                                        <b-table responsive :fields="fields" :items="usuarios" head-variant="light" bordered
+                                            class="text-center shadow" id="table" ref="table">
+                            
+                                            <!-- Columna para mostrar el 'Nombre' -->
+                                            <template #cell(nombre)="data">
+                                                {{ data.item.nombre }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el 'Email' -->
+                                            <template #cell(accountNonExpired)="data">
+                                                {{ data.item.accountNonExpired ? 'Activo' : 'Expirado' }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el estado de 'accountNonLocked' -->
+                                            <template #cell(accountNonLocked)="data">
+                                                {{ data.item.accountNonLocked ? 'Desbloqueado' : 'Bloqueado' }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar las autoridades -->
+                                            <template #cell(authorities)="data">
+                                                {{ data.item.authorities.join(', ') }}
+                                            </template>
+                            
+                                            <!-- Columna para mostrar el estado de 'credentialsNonExpired' -->
+                                            <template #cell(credentialsNonExpired)="data">
+                                                {{ data.item.credentialsNonExpired ? 'Válido' : 'Expirado' }}
+                                            </template>
+                            
+                                            <template #cell(actions)="data">
+                                                <div class="text-center">
+                                                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
+                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
+                                                    </b-button>
+                                                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
+                                                        <b-icon icon="trash" style="color:red"></b-icon>
+                                                    </b-button>
+                                                </div>
+                                            </template>
+                            
+                            
+                                        </b-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </template>
-        <div class="text-center tabla">
-            <b-table responsive :fields="fields" :items="usuarios" head-variant="light" bordered
-                class="text-center shadow" id="table" ref="table">
-
-                <!-- Columna para mostrar el 'Nombre' -->
-                <template #cell(nombre)="data">
-                    {{ data.item.nombre }}
-                </template>
-
-                <!-- Columna para mostrar el 'Email' -->
-                <template #cell(accountNonExpired)="data">
-                    {{ data.item.accountNonExpired ? 'Activo' : 'Expirado' }}
-                </template>
-
-                <!-- Columna para mostrar el estado de 'accountNonLocked' -->
-                <template #cell(accountNonLocked)="data">
-                    {{ data.item.accountNonLocked ? 'Desbloqueado' : 'Bloqueado' }}
-                </template>
-
-                <!-- Columna para mostrar las autoridades -->
-                <template #cell(authorities)="data">
-                    {{ data.item.authorities.join(', ') }}
-                </template>
-
-                <!-- Columna para mostrar el estado de 'credentialsNonExpired' -->
-                <template #cell(credentialsNonExpired)="data">
-                    {{ data.item.credentialsNonExpired ? 'Válido' : 'Expirado' }}
-                </template>
-
-                <template #cell(actions)="data">
-                    <b-button size="sm" @click="edit(data.item)" variant="faded" class="btnEdit">
-                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                    </b-button>
-                    <b-button size="sm" @click="deleteUser(data.item.id)" variant="faded" class="btnDelete">
-                        <b-icon icon="trash" style="color:red"></b-icon>
-                    </b-button>
-                </template>
-
-
-            </b-table>
         </div>
         <ModalGuardarUsuario @user-updated="getUsuarios" />
     </div>
@@ -157,5 +170,22 @@ td {
 
 .btnAdd {
     background-color: #089779;
+}
+
+.carta {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.userList {
+    background-color: #F5F5F5;
+    color: black;
+}
+
+.custom-container {
+    max-width: 1500px;
+    margin: 0 auto;
 }
 </style>

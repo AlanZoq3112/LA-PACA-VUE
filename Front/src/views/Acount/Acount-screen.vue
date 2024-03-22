@@ -10,16 +10,16 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <b-row>
                                         <b-col cols="2">
-                                            <img src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg"
-                                                class="rounded-circle img-thumbnail" alt="Avatar"
-                                                style="width: 150px; height: 150px;">
+                                            <!-- Aquí se mostrará la imagen de perfil -->
+                                            <img v-if="user1.imagenUrl" :src="user1.imagenUrl" class="rounded-circle img-thumbnail" alt="Avatar" style="width: 150px; height: 150px;">
+                                            <img v-else src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg" class="rounded-circle img-thumbnail" alt="Avatar" style="width: 150px; height: 150px;">
                                         </b-col>
 
                                         <b-col cols="8">
                                             <br>
                                             <br>
-                                            <h4>{{ user.Nombre }} {{ user.Apellidos }}</h4>
-                                            <h5>{{ user.Correo }}</h5>
+                                            <h4>{{ user1.nombre }}</h4>
+                                            <h5>{{ user1.email }}</h5>
                                         </b-col>
 
                                         <b-col>
@@ -55,22 +55,22 @@
                                                 <b-row class="mb-3">
                                                     <b-col cols="5" class="pr-2">
                                                         <label for=""><b>Nombre y apellido</b></label>
-                                                        <p>{{ user.Nombre }} {{ user.Apellidos }}</p>
+                                                        <p>{{ user1.nombre }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Correo</b></label>
-                                                        <p>{{ user.Correo }}</p>
+                                                        <p>{{ user1.email }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user.Telefono }}</p>
+                                                        <p>{{ user1.telefono }}</p>
                                                     </b-col>
                                                 </b-row>
 
                                                 <b-row>
                                                     <b-col cols="8">
-                                                        <label for=""><b>Dirección</b></label>
-                                                        <p>{{ user.Direccion }}</p>
+                                                        <label for=""><b>Fecha de Nacimiento</b></label>
+                                                        <p>{{ user1.fechaNacimiento }}</p>
                                                     </b-col>
                                                     <b-col>
                                                         <br>
@@ -206,7 +206,7 @@
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="categorias-screen"><b-icon
                                                                 icon="bookmarks"></b-icon> Categorias y
                                                             subcategorias</b-button>
                                                     </b-col>
@@ -238,6 +238,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
     name: "profile-screen",
     data() {
@@ -259,16 +261,41 @@ export default {
                     RFC: "DOCA0312312D8",
                 }
             },
+            user1: {},
+            usuario: {
+                id: 3,
+            }
         }
     },
 
     methods: {
         logout() {
-            // Método para cerrar sesión
-            localStorage.clear(); // Limpiar el almacenamiento local
-            this.$router.push({ name: 'login' }); // Redirigir a la página de inicio de sesión
-        }
+            localStorage.clear();
+            this.$router.push({ name: 'login' });
+        },
+        async getInfo() {
+            try {
+                const id = this.usuario.id;
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8090/api-carsi-shop/admin/usuario/getOne/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                this.user1 = response.data.data;
+                console.log(this.user1);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
+        },
+
+        
+
+
     },
+    mounted() {
+        this.getInfo();
+    }
 }
 
 </script>

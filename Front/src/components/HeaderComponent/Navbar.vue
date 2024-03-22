@@ -12,7 +12,7 @@
 
                 <b-collapse id="nav-collapse" is-nav>
                     <b-navbar-nav class="ml-auto">
-                        <b-button v-b-tooltip.hover="'Carrito de compra'" class="boton" to="carritoCompras"
+                        <b-button v-b-tooltip.hover="'Carrito de compra'" class="boton" @click="goToCart"
                             variant="faded">
                             <b-icon icon="cart3"></b-icon>
                         </b-button>
@@ -40,6 +40,18 @@ export default {
             // Si hay un token de sesión, redirigir al usuario a la página de perfil
             if (token) {
                 this.$router.push({ name: 'profile-screen' });
+            } else {
+                // Si no hay un token de sesión, redirigir al usuario a la página de inicio de sesión
+                this.$router.push({ name: 'login' });
+            }
+        },
+        goToCart() {
+            // Verificar si hay un token de sesión almacenado
+            const token = localStorage.getItem('token');
+
+            // Si hay un token de sesión, redirigir al usuario a la página de perfil
+            if (token) {
+                this.$router.push({ name: 'carritoCompras' });
             } else {
                 // Si no hay un token de sesión, redirigir al usuario a la página de inicio de sesión
                 this.$router.push({ name: 'login' });

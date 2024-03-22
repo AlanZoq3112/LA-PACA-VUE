@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api-carsi-shop/admin/usuario")
+@RequestMapping("/api-carsi-shop/usuario")
 @CrossOrigin(origins = {"*"})
 public class UsuarioController {
 

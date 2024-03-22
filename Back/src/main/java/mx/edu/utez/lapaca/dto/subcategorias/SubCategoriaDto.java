@@ -24,12 +24,13 @@ public class SubCategoriaDto {
     @Size(max = 25, message = "El nombre debe tener como máximo {max} caracteres")
     private String nombre;
 
-
+    private Categoria categoria;
 
     public SubCategoria getSubCategoria() {
         return new SubCategoria(
                 getId(),
-                getNombre()
+                getNombre(),
+                getCategoria()
         );
     }
 }

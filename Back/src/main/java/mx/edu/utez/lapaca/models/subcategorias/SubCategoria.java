@@ -27,6 +27,8 @@ public class SubCategoria {
     @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     private String nombre;
 
-
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
 
 }

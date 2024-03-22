@@ -8,7 +8,7 @@
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
-                                        <img src="https://png.pngtree.com/template/20191024/ourmid/pngtree-shopping-cart-vector-logo-design-shopping-logo-design-on-line-shopping-image_322990.jpg"
+                                        <img src="./../../../assets/Logo.png"
                                             style="width: 200px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">Carsi Shop</h4>
                                     </div>

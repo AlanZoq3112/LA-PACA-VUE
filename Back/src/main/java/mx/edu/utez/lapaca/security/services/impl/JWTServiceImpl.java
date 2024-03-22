@@ -12,13 +12,22 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JWTServiceImpl implements JWTService {
+
+
+    //servicio de usuario
+
+
     public String generateToken(UserDetails userDetails){
-        return Jwts.builder().setSubject(userDetails.getUsername())
+
+        Map<String,String> claims = new HashMap<>();
+
+        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000* 60 * 24))
                 .signWith(getSiginKey(), SignatureAlgorithm.HS256)

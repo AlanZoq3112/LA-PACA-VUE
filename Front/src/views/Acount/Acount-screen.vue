@@ -245,6 +245,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { jwtDecode } from "jwt-decode";
 export default {
     name: "profile-screen",
     data() {
@@ -268,7 +269,7 @@ export default {
             },
             user1: {},
             usuario: {
-                id: 3,
+                id: 1,
             }
         }
     },
@@ -306,17 +307,25 @@ export default {
             try {
                 const id = this.usuario.id;
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:8090/api-carsi-shop/admin/usuario/getOne/${id}`, {
+
+                const response = await axios.get(`http://localhost:8090/api-carsi-shop/usuario/getOne/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
                 this.user1 = response.data.data;
+                console.log(this.user1)
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
         },
-
+        decodeToken(){
+            const token = localStorage.getItem('token');
+            const decoded = jwtDecode(token);
+            const email = decoded.sub
+            console.log("Email decodificado", email)
+           
+        }
 
 
 
@@ -325,6 +334,7 @@ export default {
     },
     mounted() {
         this.getInfo(); // Obtener información del usuario
+        this.decodeToken();
     }
 }
 

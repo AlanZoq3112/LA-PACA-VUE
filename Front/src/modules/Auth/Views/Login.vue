@@ -23,14 +23,22 @@
 
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example22">Contraseña</label>
-                                            <input v-model="user.password" type="password" id="form2Example22"
-                                                class="form-control" />
+                                            <div class="input-group">
+                                                <input v-model="user.password"
+                                                    :type="showPassword ? 'text' : 'password'" id="form2Example22"
+                                                    class="form-control" placeholder="Ingresa tu contraseña" />
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    @click="togglePasswordVisibility">
+                                                    <i :class="['fas', showPassword ? 'fa-eye-slash' : 'fa-eye']"></i>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 @click="login" type="button">
-                                                Iniciar Sesion <i class="fas fa-sign-in-alt"></i></button>
+                                                Iniciar Sesion <i class="fas fa-sign-in-alt"></i>
+                                            </button>
                                             <a class="text-muted" v-b-modal.EnviarCorreo>¿Olvidaste tu contraseña?</a>
                                         </div>
 
@@ -61,7 +69,6 @@
         <EnviarCorreoModal />
     </div>
 </template>
-
 <script>
 import EnviarCorreoModal from './EnviarCorreoModal.vue';
 import axios from 'axios';
@@ -76,7 +83,8 @@ export default {
             user: {
                 username: "",
                 password: ""
-            }
+            },
+            showPassword: false
         }
     },
 
@@ -90,7 +98,6 @@ export default {
                 });
 
                 // Extrae el token JWT y los datos del usuario de la respuesta
-                console.log(response.data);
                 const token = response.data.token;
                 const usuario = response.data.usuario;
 
@@ -100,12 +107,27 @@ export default {
 
                 // Redirige al usuario a la pantalla de perfil
                 this.$router.push({ name: 'profile-screen' });
+
+                // Muestra una alerta de bienvenida al sistema
+                Swal.fire({
+                    title: '¡Bienvenido!',
+                    text: 'Has iniciado sesión correctamente.',
+                    icon: 'success',
+                    position: 'top-end', // Posiciona la alerta en la esquina superior derecha
+                    toast: true, // Activa el modo toast para la alerta
+                    showConfirmButton: false, // No muestra el botón de confirmación
+                    timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                });
             } catch (error) {
                 // Si hay un error en la autenticación, muestra un mensaje de error
                 console.error('Error de autenticación:', error.response.data);
-                Swal.fire('Error', "Error al iniciar sesion", 'error');
+                Swal.fire('Error', 'Error al iniciar sesión, revisa correctamente tu correo y contraseña', 'error');
             }
+        },
+        togglePasswordVisibility() {
+            this.showPassword = !this.showPassword; // Cambia el estado de visibilidad de la contraseña
         }
+
     },
 }
 </script>

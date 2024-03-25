@@ -37,7 +37,7 @@ public class ProductoDto {
     private String descripcion;
 
     @Positive(message = "El precio del producto debe ser un número positivo")
-    @NotBlank(message = "El precio del producto no puede estar vacía")
+    @NotNull(message = "El precio del producto no puede estar vacía")
     private double precio;
 
     @NotNull(message = "El stock es obligatorio")
@@ -65,7 +65,7 @@ public class ProductoDto {
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
-                getProducto().isEstado(),
+                isEstado(),
                 getUsuario(),
                 getCategoria(),
                 getOfertas()

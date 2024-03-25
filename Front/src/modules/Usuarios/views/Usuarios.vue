@@ -102,7 +102,7 @@ export default {
         async getUsuarios() {
             try {
                 const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
-                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/usuario/getAll', {
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/usuario/getAll', {
                     headers: {
                         Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
                     }
@@ -127,7 +127,8 @@ export default {
 
                 if (result.isConfirmed) {
                     const token = localStorage.getItem('token');
-                    await axios.delete('http://localhost:8090/api-carsi-shop/admin/usuario/delete', {
+                    await axios.delete('http://localhost:8090/api-carsi-shop/usuario/delete', 
+                    {
                         headers: {
                             Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
                         },

@@ -4,6 +4,7 @@ package mx.edu.utez.lapaca.controllers.usuarios;
 import jakarta.validation.Valid;
 
 import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
+import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
@@ -66,8 +67,8 @@ public class UsuarioController {
     //get one
     @PostMapping("/getOne")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPADOR')")
-    public ResponseEntity<CustomResponse<Usuario>> getOne(@RequestBody Map<String, String> payload){
-        String email = payload.get("email");
+    public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody EmailDTO emailDTO){
+        String email = emailDTO.getEmail();
         return new ResponseEntity<>(
                 this.service.getOne(email),
                 HttpStatus.OK

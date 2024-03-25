@@ -101,15 +101,74 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
+
+                                    <br>
+                                    <!-- Productos -->
+                                    <div>
+                                        <b-button v-b-toggle.collapsVendedor class="m-1" variant="faded">
+                                            Administrar productos
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapsVendedor">
+                                            <b-card>
+                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                                        <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                    </div>
+                                                    <div class="d-flex pb-4">
+                                                        <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
+                                                                <b-link class="text-muted"
+                                                                    href="enviarSolicitdVendedor">Enviar solicitud de
+                                                                    vendedor</b-link></b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <b-row v-if="user1.role == 'VENDEDOR' || user1.role === 'ADMIN'">
+                                                    <b-col>
+                                                        <b-button  to="productos"
+                                                            variant="faded" style="color: blue;"><i
+                                                                class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                                            Administrar productos</b-button>
+                                                        <b-button to="productos" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-shopping-bag"
+                                                                aria-hidden="true"></i> Ver productos</b-button>
+                                                    </b-col>
+                                                    <b-col >
+                                                        <b-button to="historialVentas" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-credit-card"
+                                                                aria-hidden="true"></i> Administrar ventas</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button to="historialVentas" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-truck"
+                                                                aria-hidden="true"></i> Administrar envios</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-card>
+                                        </b-collapse>
+                                    </div>
+
                                     <!-- Info fiscal -->
                                     <br>
-                                    <div>
+                                    <div v-if="user1.role == 'VENDEDOR' || user1.role === 'COMPRADOR'">
                                         <b-button v-b-toggle.collapseFiscal class="m-1" variant="faded">Datos vendedor
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
                                         </b-button>
                                         <b-collapse id="collapseFiscal">
                                             <b-card>
-                                                <b-row class="mb-3">
+                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                                        <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                    </div>
+                                                    <div class="d-flex pb-4">
+                                                        <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
+                                                                <b-link class="text-muted"
+                                                                    href="enviarSolicitdVendedor">Enviar solicitud de
+                                                                    vendedor</b-link></b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <b-row class="mb-3" v-if="user1.role == 'VENDEDOR'">
                                                     <b-col class="pr-2">
                                                         <label for=""><b>CURP</b></label>
                                                         <p>{{ user1.nombre }}</p>
@@ -126,49 +185,9 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
-                                    <br>
-                                    <!-- Productos -->
-                                    <div>
-                                        <b-button v-b-toggle.collapsVendedor class="m-1" variant="faded">
-                                            Administrar productos
-                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
-                                        </b-button>
-                                        <b-collapse id="collapsVendedor">
-                                            <b-card>
-                                                <div class="d-flex align-items-center justify-content-center pb-4">
-                                                    <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
-                                                </div>
-                                                <div class="d-flex pb-4">
-                                                    <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
-                                                            <b-link class="text-muted"
-                                                                href="enviarSolicitdVendedor">Enviar solicitud de
-                                                                vendedor</b-link></b></p>
-                                                </div>
-
-                                                <b-row>
-                                                    <b-col>
-                                                        <b-button to="productos" variant="faded" style="color: blue;"><i
-                                                                class="fa fa-shopping-bag" aria-hidden="true"></i>
-                                                            Administrar productos</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button to="historialVentas" variant="faded"
-                                                            style="color: blue;"><i class="fa fa-credit-card"
-                                                                aria-hidden="true"></i> Administrar ventas</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button to="historialVentas" variant="faded"
-                                                            style="color: blue;"><i class="fa fa-truck"
-                                                                aria-hidden="true"></i> Administrar envios</b-button>
-
-                                                    </b-col>
-                                                </b-row>
-                                            </b-card>
-                                        </b-collapse>
-                                    </div>
                                     <!-- Administrador -->
                                     <br>
-                                    <div>
+                                    <div v-if="user1.role == 'ADMIN'">
                                         <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
                                             Administrar
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
@@ -302,8 +321,6 @@ export default {
                 console.error("Error al obtener la información del usuario", error);
             }
         }
-
-
 
 
     },

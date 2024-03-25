@@ -64,10 +64,10 @@ public class UsuarioController {
     }
 
     //get one
-    @GetMapping("/getOne")
+    @PostMapping("/getOne")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPADOR')")
-    public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody Map<String, String> requestBody){
-        String email = requestBody.get("email");
+    public ResponseEntity<CustomResponse<Usuario>> getOne(@RequestBody Map<String, String> payload){
+        String email = payload.get("email");
         return new ResponseEntity<>(
                 this.service.getOne(email),
                 HttpStatus.OK

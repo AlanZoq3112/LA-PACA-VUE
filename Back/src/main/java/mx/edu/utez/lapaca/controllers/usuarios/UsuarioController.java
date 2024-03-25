@@ -65,7 +65,6 @@ public class UsuarioController {
     }
 
     //get one
-    //get one
     @PostMapping("/getOne")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPADOR')")
     public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody EmailDTO emailDTO){

@@ -8,8 +8,7 @@
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
-                                        <img src="./../../../assets/Logo.png"
-                                            style="width: 200px;" alt="logo">
+                                        <img src="./../../../assets/Logo.png" style="width: 200px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">Carsi Shop</h4>
                                     </div>
 
@@ -120,8 +119,12 @@ export default {
                 });
             } catch (error) {
                 // Si hay un error en la autenticación, muestra un mensaje de error
-                console.error('Error de autenticación:', error.response.data);
-                Swal.fire('Error', 'Error al iniciar sesión, revisa correctamente tu correo y contraseña', 'error');
+                let errorMessage = 'Error al iniciar sesión, revisa correctamente tu correo y contraseña';
+                if (error.response && error.response.data && error.response.data.length > 0) {
+                    errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                }
+                console.error('Error de autenticación:', errorMessage);
+                Swal.fire('Error', errorMessage, 'error');
             }
         },
         togglePasswordVisibility() {

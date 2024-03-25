@@ -23,7 +23,7 @@
                                         <b-col cols="8">
                                             <br>
                                             <br>
-                                            <h4>{{ user1.nombre }}</h4>
+                                            <h4 style="color:black">{{ user1.nombre }}</h4>
                                             <h5>{{ user1.email }}</h5>
                                         </b-col>
 
@@ -112,15 +112,15 @@
                                                 <b-row class="mb-3">
                                                     <b-col class="pr-2">
                                                         <label for=""><b>CURP</b></label>
-                                                        <p>{{ user.datosFiscales.CURP }}</p>
+                                                        <p>{{ user1.nombre }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>RFC</b></label>
-                                                        <p>{{ user.datosFiscales.RFC }}</p>
+                                                        <p>{{ user1.email }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user.datosFiscales.Telefono }}</p>
+                                                        <p>{{ user1.username }}</p>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>
@@ -250,27 +250,7 @@ export default {
     name: "profile-screen",
     data() {
         return {
-            user: {
-                Nombre: "Alan Matthew Esteban",
-                Apellidos: "Dominguez Castañeda",
-                Correo: "alanmat3112@gmail.com",
-                Contraseña: "******",
-                Telefono: "7775992016",
-                Direccion: "20 de Noviembre, 204, Emiliano Zapata, Puente de Ixtla, Morelos",
-                Fecha_de_nacimiento: "31/12/2003",
-                Genero: "Masculino",
-                Imagen_de_perfil: [],
-                datosFiscales: {
-                    Telefono: "7513440461",
-                    Direccion: "Carretera Temixco, Lote 17 Bodega 1 D.I.E.Z., Col. Palo Escrito, 62760 Emiliano Zapata, Mor.",
-                    CURP: "DOCA031231HMSMSLA4",
-                    RFC: "DOCA0312312D8",
-                }
-            },
             user1: {},
-            usuario: {
-                id: 1,
-            }
         }
     },
 
@@ -291,50 +271,44 @@ export default {
                     // Si se confirma la acción, limpiar el localStorage y redirigir a la página de inicio de sesión
                     localStorage.clear();
                     Swal.fire({
-                    title: '¡Vuelve pronto!',
-                    text: 'Has cerrado sesión correctamente.',
-                    icon: 'success',
-                    position: 'top-end', // Posiciona la alerta en la esquina superior derecha
-                    toast: true, // Activa el modo toast para la alerta
-                    showConfirmButton: false, // No muestra el botón de confirmación
-                    timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
-                });
+                        title: '¡Vuelve pronto!',
+                        text: 'Has cerrado sesión correctamente.',
+                        icon: 'success',
+                        position: 'top-end', // Posiciona la alerta en la esquina superior derecha
+                        toast: true, // Activa el modo toast para la alerta
+                        showConfirmButton: false, // No muestra el botón de confirmación
+                        timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                    });
                     this.$router.push({ name: 'login' });
                 }
             });
         },
         async getInfo() {
             try {
-                const id = this.usuario.id;
                 const token = localStorage.getItem('token');
+                const decoded = jwtDecode(token);
+                const email = decoded.sub;
 
-                const response = await axios.get(`http://localhost:8090/api-carsi-shop/usuario/getOne/${id}`, {
+                const response = await axios.post('http://localhost:8090/api-carsi-shop/usuario/getOne', { email }, {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-                this.user1 = response.data.data;
-                console.log(this.user1)
-            } catch (error) {
-                console.error("Error al obtener los datos del usuario", error);
-            }
-        },
-        decodeToken(){
-            const token = localStorage.getItem('token');
-            const decoded = jwtDecode(token);
-            const email = decoded.sub
-            console.log("Email decodificado", email)
-           
-        }
 
+                this.user1 = response.data.data; // Asignar los datos del usuario a user1 del componente
+                console.log("Datos del usuario logueado", this.user1);
+            } catch (error) {
+                console.error("Error al obtener la información del usuario", error);
+            }
+        }
 
 
 
 
     },
     mounted() {
-        this.getInfo(); // Obtener información del usuario
-        this.decodeToken();
+        this.getInfo();
     }
 }
 

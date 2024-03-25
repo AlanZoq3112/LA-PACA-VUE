@@ -120,7 +120,7 @@ export default {
                         return;
                     }
                     console.log("Usuario a guardar: ", this.usuario);
-                    const response = await axios.post("http://localhost:8090/api-carsi-shop/admin/usuario/insert", this.usuario, {
+                    const response = await axios.post("http://localhost:8090/api-carsi-shop/usuario/insert", this.usuario, {
                         headers: {
                             Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
                         }

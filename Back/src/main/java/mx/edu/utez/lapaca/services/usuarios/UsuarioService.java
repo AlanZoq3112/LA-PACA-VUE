@@ -76,22 +76,22 @@ public class UsuarioService {
 
     //get one by id
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Usuario> getOne(Long id) {
-        Optional<Usuario> usuario = repository.findById(id);
+    public CustomResponse<Usuario> getOne(String email) {
+        Optional<Usuario> usuario = repository.findByEmail(email);
         try {
             if (usuario.isPresent()) {
                 return new CustomResponse<>(
                         usuario.get(),
                         false,
                         200,
-                        "Usuario con el id " + usuario.get().getId() + " encontrado"
+                        "Usuario con el correo: " + email + " encontrado"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "El usuario con el id " + id + " no existe"
+                        "El usuario con el email " + email + " no existe"
                 );
             }
         } catch (DataAccessException e) {

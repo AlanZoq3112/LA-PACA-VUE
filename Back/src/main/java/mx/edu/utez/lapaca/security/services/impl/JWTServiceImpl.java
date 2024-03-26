@@ -1,12 +1,13 @@
 package mx.edu.utez.lapaca.security.services.impl;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import mx.edu.utez.lapaca.security.services.JWTService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,15 @@ import java.util.function.Function;
 public class JWTServiceImpl implements JWTService {
 
 
-    //servicio de usuario
+    //clave generada automáticamente que cumple con los requisitos de seguridad para el algoritmo HS256 -> 256 bits
+    private Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    public String generateResetPasswordToken(String email) {
+        return Jwts.builder().setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() +1000L * 60 * 60 * 24)) //un día
+                .signWith(secretKey).compact();
+    }
 
 
     public String generateToken(UserDetails userDetails){

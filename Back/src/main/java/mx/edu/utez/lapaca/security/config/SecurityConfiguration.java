@@ -34,6 +34,8 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api-carsi-shop/auth/**").permitAll()
+                        .requestMatchers("/api-carsi-shop/email/**").permitAll()
+                        .requestMatchers("/api-carsi-shop/recovery/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api-carsi-shop/usuario/insert").hasAnyAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/usuario/getAll").hasAnyAuthority(Role.ADMIN.name())

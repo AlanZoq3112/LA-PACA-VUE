@@ -77,7 +77,21 @@ const router = new VueRouter({
     {
       path: '/profile-screen',
       name: 'profile-screen',
-      component: () => import('./../views/Acount/Acount-screen.vue'),
+      component: () => import('./../modules/Account/Views/Acount-screen.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/Productos',
+      name: 'productos',
+      component: () => import('./../modules/Productos/Views/Productos.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
 
@@ -91,7 +105,7 @@ const router = new VueRouter({
     {
       path: '/categorias-screen',
       name: 'categorias-screen',
-      component: () => import('./../modules/Categorias/Views/Categorias.vue'),
+      component: () => import('./../modules/Categorias/Views/Categorias/Categorias.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
 

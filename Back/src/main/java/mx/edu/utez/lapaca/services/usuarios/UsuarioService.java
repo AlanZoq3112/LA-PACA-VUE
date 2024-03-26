@@ -113,7 +113,16 @@ public class UsuarioService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> update(Usuario usuario) {
+        Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
+            if (exists.isPresent()) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        400,
+                        "Error... Usuario con correo ya registrado"
+                );
+            }
             if (!this.repository.existsById(usuario.getId())) {
                 return new CustomResponse<>(
                         null,

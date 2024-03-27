@@ -54,6 +54,13 @@ public class Usuario implements UserDetails {
     @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
     private LocalDate fechaNacimiento;
 
+
+
+    @Column(columnDefinition = "VARCHAR(8)")
+    private String secretPass;
+
+
+
     @Column(nullable = true)
     private Role role;
 

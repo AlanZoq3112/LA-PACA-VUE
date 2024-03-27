@@ -18,6 +18,11 @@ const router = new VueRouter({
       component: () => import('../modules/Auth/Views/Login.vue')
     },
     {
+      path: '/recuperarContrasena',
+      name: 'recuperarContrasena',
+      component: () => import('../modules/Auth/Views/RecuperarPassword.vue')
+    },
+    {
       path: '/enviarSolicitdVendedor',
       name: 'enviarSolicitdVendedor',
       component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue'),

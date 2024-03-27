@@ -38,7 +38,7 @@
                                                 @click="login" type="button">
                                                 Iniciar Sesion <i class="fas fa-sign-in-alt"></i>
                                             </button>
-                                            <a class="text-muted" v-b-modal.EnviarCorreo>¿Olvidaste tu contraseña?</a>
+                                            <a class="text-muted" href="recuperarContrasena">¿Olvidaste tu contraseña?</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">

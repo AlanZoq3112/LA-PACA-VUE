@@ -48,7 +48,7 @@ public class ProductoDto {
     @NotNull(message = "El estado no puede ser nulo")
     private boolean estado;
 
-    @NotNull(message = "El id de usuario no puede ser nulo")
+
     private Usuario usuario;
 
     @NotNull(message = "El id de categoria no puede ser nulo")

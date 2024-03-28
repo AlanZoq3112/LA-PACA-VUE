@@ -58,9 +58,10 @@ public class UsuarioDto {
     @IsAdult
     private LocalDate fechaNacimiento;
 
-
+    private String secretPass;
 
     private Role role;
+
 
 
 
@@ -75,6 +76,7 @@ public class UsuarioDto {
                 getPassword(),
                 getTelefono(),
                 getFechaNacimiento(),
+                getSecretPass(),
                 getRole()
         );
     }

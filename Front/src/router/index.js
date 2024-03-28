@@ -18,6 +18,11 @@ const router = new VueRouter({
       component: () => import('../modules/Auth/Views/Login.vue')
     },
     {
+      path: '/recuperarContrasena',
+      name: 'recuperarContrasena',
+      component: () => import('../modules/Auth/Views/RecuperarPassword.vue')
+    },
+    {
       path: '/enviarSolicitdVendedor',
       name: 'enviarSolicitdVendedor',
       component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue'),
@@ -77,7 +82,21 @@ const router = new VueRouter({
     {
       path: '/profile-screen',
       name: 'profile-screen',
-      component: () => import('./../views/Acount/Acount-screen.vue'),
+      component: () => import('./../modules/Account/Views/Acount-screen.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
+      path: '/Productos',
+      name: 'productos',
+      component: () => import('./../modules/Productos/Views/Productos.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
 
@@ -91,7 +110,7 @@ const router = new VueRouter({
     {
       path: '/categorias-screen',
       name: 'categorias-screen',
-      component: () => import('./../modules/Categorias/Views/Categorias.vue'),
+      component: () => import('./../modules/Categorias/Views/Categorias/Categorias.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
 

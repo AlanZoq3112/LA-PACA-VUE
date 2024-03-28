@@ -120,6 +120,7 @@ export default {
                 });
         },
         recoveriPassword() {
+            console.log(this.recoverPassword.email, this.newPassword.newPassword, this.newPassword.secretPass);
             axios.put('http://localhost:8090/api-carsi-shop/recovery/updatePassword', {
                 email: this.recoverPassword.email,
                 newPassword: this.newPassword.newPassword,

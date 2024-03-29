@@ -54,7 +54,7 @@
                                         <b-table responsive :fields="fields2" :items="subcategorias"
                                             head-variant="light" bordered class="text-center shadow" id="table"
                                             ref="table">
-                                            <!-- Columna para mostrar el 'Nombre' -->
+                                            
                                             <template #cell(nombre)="data">
                                                 {{ data.item.nombre }}
                                             </template>

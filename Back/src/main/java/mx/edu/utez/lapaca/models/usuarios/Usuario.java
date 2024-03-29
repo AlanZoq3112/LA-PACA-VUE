@@ -90,4 +90,7 @@ public class Usuario implements UserDetails {
 
     public void getFechaNacimiento(Date fechaNacimiento) {
     }
+
+    public void setId(String id) {
+    }
 }

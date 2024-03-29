@@ -98,7 +98,7 @@ export default {
 
     methods: {
         sendEmail() {
-            axios.post('http://localhost:8090/api-carsi-shop/recovery/', {
+            axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
                 email: this.recoverPassword.email
             })
                 .then(response => {
@@ -121,11 +121,9 @@ export default {
         },
         recoveriPassword() {
             console.log(this.recoverPassword.email, this.newPassword.newPassword, this.newPassword.secretPass);
-            axios.put('http://localhost:8090/api-carsi-shop/recovery/updatePassword', {
-                email: this.recoverPassword.email,
-                newPassword: this.newPassword.newPassword,
-                secretPass: this.newPassword.secretPass
-            })
+            this.newPassword.email = this.recoverPassword.email;
+
+            axios.put('http://localhost:8091/api-carsi-shop/recovery/updatePassword', this.newPassword)
                 .then(response => {
                     if (response.status === 200) {
                         Swal.fire('Actualizada', 'Tu contraseña fue restaurada correctamente', 'success');

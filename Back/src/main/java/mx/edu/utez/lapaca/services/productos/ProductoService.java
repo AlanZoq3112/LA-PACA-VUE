@@ -7,12 +7,10 @@ import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +22,17 @@ import java.util.Optional;
 @Transactional
 public class ProductoService {
 
-    @Autowired
-    private ProductoRepository repository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private  final ProductoRepository repository;
+
+
+    private final UsuarioRepository usuarioRepository;
+
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository) {
+        this.repository = repository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
@@ -134,15 +138,18 @@ public class ProductoService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> update(Producto producto) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
+            // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
+            String username = authentication.getName(); // obtener el nombre de usuario
 
             // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
             // Asignar el usuario al producto
             producto.setUsuario(usuario.get());
+
+
+
 
             // Establecer el estado del producto dependiendo del rol del usuario
             if (usuario.get().getRole() == Role.ADMIN) {

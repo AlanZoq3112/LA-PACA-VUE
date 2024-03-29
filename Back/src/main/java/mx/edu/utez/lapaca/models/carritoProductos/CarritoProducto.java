@@ -26,5 +26,4 @@ public class CarritoProducto {
     @OneToOne
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
-    //un carrito_producto puede solo tener un producto asociado
 }

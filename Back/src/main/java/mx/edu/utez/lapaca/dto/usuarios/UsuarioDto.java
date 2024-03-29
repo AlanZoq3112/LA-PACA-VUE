@@ -1,24 +1,18 @@
 package mx.edu.utez.lapaca.dto.usuarios;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.dto.usuarios.constraints.IsAdult;
-import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.pagos.Pago;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,8 +44,6 @@ public class UsuarioDto {
     @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefono;
 
-
-
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @DateTimeFormat(pattern = "yyyy/mm/dd")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
@@ -60,11 +52,8 @@ public class UsuarioDto {
 
     private String secretPass;
 
+    @NotNull(message = "El rol no puede ser nulo")
     private Role role;
-
-
-
-
 
     public Usuario getUsuario() {
         return new Usuario(

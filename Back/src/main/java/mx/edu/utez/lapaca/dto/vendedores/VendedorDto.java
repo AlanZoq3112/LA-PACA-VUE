@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.dto.vendedores;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,8 +33,10 @@ public class VendedorDto {
     @Size(min = 13, max = 13, message = "El RFC debe tener exactamente 13 caracteres")
     private String rfc;
 
+    @NotNull(message = "El estado no puede ser nulo")
+    private boolean estado;
 
-    @NotBlank(message = "El nombre es obligatorio")
+
     private Usuario usuario;
 
     public Vendedor getVendedor() {
@@ -45,6 +46,7 @@ public class VendedorDto {
                 getTelefonoVendedor(),
                 getIne(),
                 getRfc(),
+                isEstado(),
                 getUsuario()
         );
     }

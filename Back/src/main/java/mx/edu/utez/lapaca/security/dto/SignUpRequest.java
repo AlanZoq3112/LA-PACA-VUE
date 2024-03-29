@@ -3,12 +3,10 @@ package mx.edu.utez.lapaca.security.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import mx.edu.utez.lapaca.dto.usuarios.constraints.IsAdult;
-import mx.edu.utez.lapaca.models.roles.Role;
-import mx.edu.utez.lapaca.utils.Validations;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 

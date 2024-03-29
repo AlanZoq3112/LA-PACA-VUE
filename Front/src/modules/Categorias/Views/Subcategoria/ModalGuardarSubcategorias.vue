@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <b-modal hide-footer hide-header centered id="modal-guardar-subcategorias">
+            <b-modal hide-footer hide-header centered id="modal-guardar-subcategorias" @show="getCategorias">
                 <header class="text-center border-bottom">
                     <p style="font-family: cabin">Registrar subcategoria</p>
                 </header>

@@ -207,6 +207,9 @@ public class VendedorService {
                 usuario.setRole(Role.VENDEDOR);
                 usuarioRepository.save(usuario);
             } else if (estado == false) {
+                Usuario usuario = vendedor.getUsuario();
+                usuario.setRole(Role.COMPRADOR);
+                usuarioRepository.save(usuario);
                 return new CustomResponse<>(
                         vendedor,
                         true,

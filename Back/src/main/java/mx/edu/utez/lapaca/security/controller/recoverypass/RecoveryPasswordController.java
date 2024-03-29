@@ -3,13 +3,10 @@ package mx.edu.utez.lapaca.security.controller.recoverypass;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.security.dto.email.EmailDto;
 import mx.edu.utez.lapaca.security.dto.email.UpdatePasswordDto;
-import mx.edu.utez.lapaca.security.services.JWTService;
-import mx.edu.utez.lapaca.security.services.UserService;
 import mx.edu.utez.lapaca.security.services.email.EmailService;
 import mx.edu.utez.lapaca.security.services.impl.JWTServiceImpl;
 import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +24,19 @@ import java.util.Map;
 @RequestMapping("/api-carsi-shop/recovery/")
 @CrossOrigin(origins = {"*"})
 public class RecoveryPasswordController {
-    @Autowired
-    private JWTServiceImpl provider;
-    @Autowired
-    private UsuarioService service;
-    @Autowired
-    private EmailService emailService;
+
+
+    private final JWTServiceImpl provider;
+
+    private final UsuarioService service;
+
+    private final EmailService emailService;
+
+    public RecoveryPasswordController(JWTServiceImpl provider, UsuarioService service, EmailService emailService) {
+        this.provider = provider;
+        this.service = service;
+        this.emailService = emailService;
+    }
 
     //String que se envia al email
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -53,7 +57,7 @@ public class RecoveryPasswordController {
             emailService.sendMail(new EmailDto(
                     user.getEmail(),
                     user.getNombre() + " " ,
-                    "Soporte CarsiShop | Reestablecimiento de contraseña",
+                    "Soporte CarsiShop | Restablecimiento de contraseña",
                     "Tu código de verificación es: " + secretPass + "<br>No lo compartas con nadie"
             ));
             return new ResponseEntity<>(
@@ -95,7 +99,7 @@ public class RecoveryPasswordController {
                 emailService.sendMail(new EmailDto(
                         user.getEmail(),
                         user.getNombre() + " " ,
-                        "Soporte CarsiShop | Cambio de contraseña",
+                        "Soporte CarsiShop | Restablecimiento de contraseña",
                         "Se ha actualizado correctamente la contraseña de tu cuenta para el sistema CarsiShop"
                 ));
                 return new ResponseEntity<>(

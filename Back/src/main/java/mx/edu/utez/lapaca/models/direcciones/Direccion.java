@@ -44,6 +44,4 @@ public class Direccion {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
-
-    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
 }

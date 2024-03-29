@@ -212,7 +212,7 @@
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="vendedores"><b-icon
                                                                 icon="clock"></b-icon> Solicitudes de
                                                             vendedores</b-button>
                                                     </b-col>

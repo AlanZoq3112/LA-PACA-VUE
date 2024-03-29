@@ -11,14 +11,12 @@ import mx.edu.utez.lapaca.security.dto.SignUpRequest;
 import mx.edu.utez.lapaca.security.dto.SinginRequest;
 import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import mx.edu.utez.lapaca.security.services.JWTService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

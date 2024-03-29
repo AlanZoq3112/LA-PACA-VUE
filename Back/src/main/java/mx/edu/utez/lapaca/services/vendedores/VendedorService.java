@@ -1,12 +1,11 @@
-package mx.edu.utez.lapaca.services.productos;
+package mx.edu.utez.lapaca.services.vendedores;
 
 
-import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
+import mx.edu.utez.lapaca.models.vendedores.VendedorRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,62 +20,71 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class ProductoService {
+public class VendedorService {
 
 
-    private final ProductoRepository repository;
-
-
+    private final VendedorRepository repository;
     private final UsuarioRepository usuarioRepository;
 
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository) {
+    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
     }
 
 
+
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> insert(Producto producto) {
+    public CustomResponse<Vendedor> insert(Vendedor vendedor) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
+            // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
+            String username = authentication.getName(); // obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
-            Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
-            // Asignar el usuario al producto
-            producto.setUsuario(usuario.get());
-
-
-            // Verificar si el producto ya existe
-            Optional<Producto> exists = repository.findByNombre(producto.getNombre());
-            if (exists.isPresent()) {
+            // verificar si el usuario ya tiene una solicitud de vendedor pendiente
+            Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+            if (usuarioOptional.isPresent()) {
+                Usuario usuario = usuarioOptional.get();
+                Optional<Vendedor> existingVendedorOptional = repository.findByUsuario(usuario);
+                if (existingVendedorOptional.isPresent()) {
+                    // si ya existe una solicitud de vendedor, papi ya has realizado la solicitud
+                    return new CustomResponse<>(
+                            null,
+                            true,
+                            HttpStatus.BAD_REQUEST.value(),
+                            "Ya has realizado una solicitud de vendedor previamente"
+                    );
+                }
+            } else {
+                // si no se encuentra el usuario, msj de error
                 return new CustomResponse<>(
                         null,
                         true,
-                        400,
-                        "Error... Producto ya registrado"
+                        HttpStatus.BAD_REQUEST.value(),
+                        "No se pudo encontrar el usuario autenticado"
                 );
             }
+            // se asigna el usuario al vendedor
+            vendedor.setUsuario(usuarioOptional.get());
 
             // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
-            producto.setEstado(false);
+            vendedor.setEstado(false);
 
-            // Guardar el producto
-            Producto savedProducto = repository.save(producto);
+            // se guarda la solicitud de vendedor
+            Vendedor savedVendedor = repository.save(vendedor);
+
             return new CustomResponse<>(
-                    savedProducto,
+                    savedVendedor,
                     false,
                     200,
-                    "Producto registrado exitosamente... En espera de aprobación"
+                    "Solicitud de vendedor registrada. Pendiente de aprobación"
             );
+
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
                     true,
                     500,
-                    "Error interno del servidor al registrar el producto"
+                    "Error interno del servidor al registrar la solicitud"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -89,7 +97,7 @@ public class ProductoService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<List<Producto>> getAll() {
+    public CustomResponse<List<Vendedor>> getAll() {
         return new CustomResponse<>(
                 this.repository.findAll(),
                 false,
@@ -99,22 +107,22 @@ public class ProductoService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> getOne(Long id) {
-        Optional<Producto> producto = repository.findById(id);
+    public CustomResponse<Vendedor> getOne(String curp) {
+        Optional<Vendedor> vendedor = repository.findByCurp(curp);
         try {
-            if (producto.isPresent()) {
+            if (vendedor.isPresent()) {
                 return new CustomResponse<>(
-                        producto.get(),
+                        vendedor.get(),
                         false,
                         200,
-                        "Producto con el id " + producto.get().getId() + " encontrado"
+                        "Vendedor con el CURP: " + curp + " encontrado"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "El producto con el id " + id + " no existe"
+                        "El usuario con el CURP " + curp + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -122,7 +130,7 @@ public class ProductoService {
                     null,
                     true,
                     500,
-                    "Error interno del servidor al buscar el usuario solicitado"
+                    "Error interno del servidor al buscar el vendedor solicitado"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -134,45 +142,44 @@ public class ProductoService {
         }
     }
 
+
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> update(Producto producto) {
+    public CustomResponse<Vendedor> update(Vendedor vendedor) {
         try {
+
             // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
-
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
-            Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
-            // Asignar el usuario al producto
-            producto.setUsuario(usuario.get());
+            // se asigna el usuario al vendedor
+            Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+            vendedor.setUsuario(usuarioOptional.get());
 
             // Verificar si el usuario existe en la base de datos
-            Optional<Producto> existingProductoOptional = repository.findById(producto.getId());
-            if (existingProductoOptional.isEmpty()) {
+            Optional<Usuario> existingUsuarioOptional = usuarioRepository.findById(vendedor.getId());
+            if (existingUsuarioOptional.isEmpty()) {
                 return new CustomResponse<>(
                         null,
                         true,
                         HttpStatus.NOT_FOUND.value(),
-                        "El producto no existe");
+                        "El usuario no existe");
             }
+            // se guarda la solicitud de vendedor
+            vendedor.setEstado(true);
+            Vendedor savedVendedor = repository.save(vendedor);
 
-            // se guarda la solicitud de producto
-            producto.setEstado(true);
-            // Guardar el producto
-            Producto savedProducto = repository.save(producto);
             return new CustomResponse<>(
-                    savedProducto,
+                    savedVendedor,
                     false,
                     200,
-                    "Producto actualizado exitosamente"
+                    "Perfil modificado exitosamente"
             );
+
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
                     true,
                     500,
-                    "Error interno del servidor al actualizar el producto"
+                    "Error interno del servidor al modificarel perfil de vendedor"
             );
         } catch (IllegalArgumentException e) {
             return new CustomResponse<>(
@@ -185,27 +192,31 @@ public class ProductoService {
     }
 
 
+
+
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> aprobarSolicitudProducto(long id, boolean estado) {
-        Optional<Producto> productoOptional = repository.findById(id);
-        if (productoOptional.isPresent()) {
-            Producto producto = productoOptional.get();
-            producto.setEstado(estado);
-            repository.save(producto);
+    public CustomResponse<Vendedor> aprobarSolicitudVendedor(long id, boolean estado) {
+        Optional<Vendedor> vendedorOptional = repository.findById(id);
+        if (vendedorOptional.isPresent()) {
+            Vendedor vendedor = vendedorOptional.get();
+            vendedor.setEstado(estado);
+            repository.save(vendedor);
             // Actualizar el rol del usuario asociado si se aprueba como vendedor
             if (estado) {
-                Usuario usuario = producto.getUsuario();
+                Usuario usuario = vendedor.getUsuario();
+                usuario.setRole(Role.VENDEDOR);
                 usuarioRepository.save(usuario);
             } else if (estado == false) {
                 return new CustomResponse<>(
-                        producto,
+                        vendedor,
                         true,
                         HttpStatus.OK.value(),
                         "Solicitud denegada correctamente"
                 );
+
             }
             return new CustomResponse<>(
-                    producto,
+                    vendedor,
                     false,
                     HttpStatus.OK.value(),
                     "Solicitud aprobada correctamente"
@@ -216,62 +227,6 @@ public class ProductoService {
                     true,
                     HttpStatus.NOT_FOUND.value(),
                     "No se encontró el vendedor con el ID proporcionado"
-            );
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> delete(Long id) {
-        try {
-            Optional<Producto> optionalProducto = repository.findById(id);
-            if (optionalProducto.isPresent()) {
-                Producto producto = optionalProducto.get();
-                producto.setEstado(false); // Establecer el estado como inactivo
-                repository.save(producto);
-                return new CustomResponse<>(
-                        null,
-                        false,
-                        200,
-                        "Producto con " + id + " marcado como inactivo"
-                );
-            } else {
-                return new CustomResponse<>(
-                        null,
-                        true,
-                        404,
-                        "Producto con id " + id +" no encontrado"
-                );
-            }
-        } catch (DataAccessException e) {
-            return new CustomResponse<>(
-                    null,
-                    true,
-                    500,
-                    "Error interno del servidor al borrar el producto"
-            );
-        } catch (IllegalArgumentException e) {
-            return new CustomResponse<>(
-                    null,
-                    true,
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
             );
         }
     }

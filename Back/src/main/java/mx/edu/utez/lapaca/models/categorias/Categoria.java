@@ -7,10 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +29,6 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria") //(cascade = CascadeType.ALL, orphanRemoval = true) | las subcategorías asociadas a una categoría eliminada también se eliminen de la base de datos
     @JsonIgnore
     private List<SubCategoria> subcategorias;
-    //una categoria puede tener asociadas muchas subcategorias
 
 }
 

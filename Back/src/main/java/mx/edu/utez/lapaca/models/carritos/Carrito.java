@@ -24,12 +24,10 @@ public class Carrito {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
-    //un/muchos carrito pertenece a un único usuario
 
     @ManyToOne
     @JoinColumn(name = "carrito_producto_id", nullable = false)
     private CarritoProducto carritoProducto;
-    // Un producto en el carrito pertenece a un solo carrito
 
 
 }

@@ -11,7 +11,6 @@ import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
-import java.util.List;
 
 @Entity
 @Table(name = "pedidos")

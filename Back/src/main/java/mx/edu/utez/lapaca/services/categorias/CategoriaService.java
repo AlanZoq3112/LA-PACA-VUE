@@ -3,10 +3,7 @@ package mx.edu.utez.lapaca.services.categorias;
 
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
-import mx.edu.utez.lapaca.models.usuarios.Usuario;
-import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,8 +17,12 @@ import java.util.Optional;
 @Transactional
 public class CategoriaService {
 
-    @Autowired
-    private CategoriaRepository repository;
+
+    private final CategoriaRepository repository;
+
+    public CategoriaService(CategoriaRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> insert(Categoria categoria) {

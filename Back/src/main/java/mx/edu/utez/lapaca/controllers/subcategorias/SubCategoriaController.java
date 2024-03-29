@@ -2,14 +2,10 @@ package mx.edu.utez.lapaca.controllers.subcategorias;
 
 
 import jakarta.validation.Valid;
-import mx.edu.utez.lapaca.dto.categorias.CategoriaDto;
 import mx.edu.utez.lapaca.dto.subcategorias.SubCategoriaDto;
-import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
-import mx.edu.utez.lapaca.services.categorias.CategoriaService;
 import mx.edu.utez.lapaca.services.subcategorias.SubCategoriaService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,9 +19,10 @@ import java.util.Map;
 @CrossOrigin(origins = {"*"})
 public class SubCategoriaController {
 
-
-    @Autowired
-    SubCategoriaService service;
+    private final SubCategoriaService service;
+    public SubCategoriaController(SubCategoriaService service) {
+        this.service = service;
+    }
 
     @PostMapping("/insert")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

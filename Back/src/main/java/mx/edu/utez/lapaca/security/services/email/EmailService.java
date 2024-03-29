@@ -2,7 +2,6 @@ package mx.edu.utez.lapaca.security.services.email;
 
 import jakarta.mail.internet.MimeMessage;
 import mx.edu.utez.lapaca.security.dto.email.EmailDto;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -15,9 +14,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailService {
-    @Autowired
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private JavaMailSender mailSender;
+
+
+    private final JavaMailSender mailSender;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public boolean sendMail(EmailDto email) {
         try {

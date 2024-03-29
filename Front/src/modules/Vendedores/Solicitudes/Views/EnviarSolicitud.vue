@@ -112,22 +112,21 @@ export default {
                         return;
                     }
                     console.log("Datos del vendedor: ", this.vendedor);
-                    const response = await axios.post("http://localhost:8091/api-carsi-shop/vendedor/insert", this.vendedor, {
-                        headers: {
-                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
-                        }
-                    });
-
-                    if (response.status === 201) {
-                        Swal.fire({
-                            title: "Enviada!",
-                            text: "Solicitud enviada correctamente",
-                            icon: "success"
+                    axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        })
+                        .then(response => {
+                            console.log(response.data);
+                            Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
+                            this.$router.push({ name: 'profile-screen' });
+                        })
+                        .catch(error => {
+                            let errorMessage = "Hubo un problema al enviar la solicitud de vendedor";
+                            if (error.response && error.response.data && error.response.data.length > 0) {
+                                errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                            }
+                            Swal.fire('Error', errorMessage, 'error');
                         });
-                        this.$router.push({ name: 'profile-screen' });
-                    } else {
-                        console.log("Error al enviar la solicitud de vendedor. Estado del servidor:", response.status);
-                    }
                 }
             } catch (error) {
                 console.error("Error al realizar la solicitud de guardado:", error);

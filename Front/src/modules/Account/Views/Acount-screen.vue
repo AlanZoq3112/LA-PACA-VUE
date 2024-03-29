@@ -319,6 +319,12 @@ export default {
                 console.log("Datos del usuario logueado", this.user1);
             } catch (error) {
                 console.error("Error al obtener la información del usuario", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",
+                    icon: "error"
+                });
+                this.$router.push({ name: 'login' });
             }
         }
 

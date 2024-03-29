@@ -6,6 +6,7 @@ import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public class ProductoService {
 
 
-    private  final ProductoRepository repository;
+    private final ProductoRepository repository;
 
 
     private final UsuarioRepository usuarioRepository;
@@ -47,12 +48,6 @@ public class ProductoService {
             // Asignar el usuario al producto
             producto.setUsuario(usuario.get());
 
-            // Establecer el estado del producto dependiendo del rol del usuario
-            if (usuario.get().getRole() == Role.ADMIN) {
-                producto.setEstado(true); // Si es admin, el producto se inserta como activo
-            } else {
-                producto.setEstado(false); // Si es vendedor u otro rol, el producto se inserta como pendiente
-            }
 
             // Verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
@@ -64,13 +59,17 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
+
+            // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
+            producto.setEstado(false);
+
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
             return new CustomResponse<>(
                     savedProducto,
                     false,
                     200,
-                    "Producto registrado exitosamente"
+                    "Producto registrado exitosamente... En espera de aprobación"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(
@@ -148,16 +147,18 @@ public class ProductoService {
             // Asignar el usuario al producto
             producto.setUsuario(usuario.get());
 
-
-
-
-            // Establecer el estado del producto dependiendo del rol del usuario
-            if (usuario.get().getRole() == Role.ADMIN) {
-                producto.setEstado(true); // Si es admin, el producto se inserta como activo
-            } else {
-                producto.setEstado(false); // Si es vendedor u otro rol, el producto se inserta como pendiente
+            // Verificar si el usuario existe en la base de datos
+            Optional<Producto> existingProductoOptional = repository.findById(producto.getId());
+            if (existingProductoOptional.isEmpty()) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        HttpStatus.NOT_FOUND.value(),
+                        "El producto no existe");
             }
 
+            // se guarda la solicitud de producto
+            producto.setEstado(true);
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
             return new CustomResponse<>(
@@ -182,6 +183,59 @@ public class ProductoService {
             );
         }
     }
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<Producto> aprobarSolicitudProducto(long id, boolean estado) {
+        Optional<Producto> productoOptional = repository.findById(id);
+        if (productoOptional.isPresent()) {
+            Producto producto = productoOptional.get();
+            producto.setEstado(estado);
+            repository.save(producto);
+            // Actualizar el rol del usuario asociado si se aprueba como vendedor
+            if (estado) {
+                Usuario usuario = producto.getUsuario();
+                usuarioRepository.save(usuario);
+            } else if (estado == false) {
+                return new CustomResponse<>(
+                        producto,
+                        true,
+                        HttpStatus.OK.value(),
+                        "Solicitud denegada correctamente"
+                );
+            }
+            return new CustomResponse<>(
+                    producto,
+                    false,
+                    HttpStatus.OK.value(),
+                    "Solicitud aprobada correctamente"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.NOT_FOUND.value(),
+                    "No se encontró el vendedor con el ID proporcionado"
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> delete(Long id) {

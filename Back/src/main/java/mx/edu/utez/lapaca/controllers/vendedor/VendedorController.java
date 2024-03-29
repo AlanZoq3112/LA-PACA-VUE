@@ -85,10 +85,10 @@ public class VendedorController {
             ));
         }
 
-        long vendedorId = Long.parseLong(requestBody.get("id").toString());
+        long id = Long.parseLong(requestBody.get("id").toString());
         boolean estadoAprobado = (boolean) requestBody.get("estado");
 
-        CustomResponse<Vendedor> response = service.aprobarSolicitudVendedor(vendedorId, estadoAprobado);
+        CustomResponse<Vendedor> response = service.aprobarSolicitudVendedor(id, estadoAprobado);
         if (response.getError()) {
             return ResponseEntity.status(response.getStatusCode()).body(response);
         } else {

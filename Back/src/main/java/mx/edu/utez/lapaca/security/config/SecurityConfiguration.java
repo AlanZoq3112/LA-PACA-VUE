@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/api-carsi-shop/producto/insert").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/getAll").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/getOne").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/producto/aprobarSolicitudProducto").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/producto/update").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
                         .anyRequest().authenticated())
 

@@ -195,8 +195,8 @@ public class VendedorService {
 
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Vendedor> aprobarSolicitudVendedor(long vendedorId, boolean estado) {
-        Optional<Vendedor> vendedorOptional = repository.findById(vendedorId);
+    public CustomResponse<Vendedor> aprobarSolicitudVendedor(long id, boolean estado) {
+        Optional<Vendedor> vendedorOptional = repository.findById(id);
         if (vendedorOptional.isPresent()) {
             Vendedor vendedor = vendedorOptional.get();
             vendedor.setEstado(estado);

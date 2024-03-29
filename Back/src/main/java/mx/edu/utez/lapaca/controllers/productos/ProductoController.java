@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.dto.productos.ProductoDto;
 import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.services.productos.ProductoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,34 @@ public class ProductoController {
                 HttpStatus.OK
         );
     }
+
+    @PutMapping("/aprobarSolicitudProducto")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<CustomResponse<Producto>> updateProductoStatus(@RequestBody Map<String, Object> requestBody) {
+        if (!requestBody.containsKey("id") || !requestBody.containsKey("estado")) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "El cuerpo de la solicitud debe contener el ID del producto y el estado"
+            ));
+        }
+
+        long id = Long.parseLong(requestBody.get("id").toString());
+        boolean estadoAprobado = (boolean) requestBody.get("estado");
+
+        CustomResponse<Producto> response = service.aprobarSolicitudProducto(id, estadoAprobado);
+        if (response.getError()) {
+            return ResponseEntity.status(response.getStatusCode()).body(response);
+        } else {
+            return ResponseEntity.ok(response);
+        }
+    }
+
+
+
+
+
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")

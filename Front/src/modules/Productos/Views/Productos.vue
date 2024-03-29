@@ -9,12 +9,12 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-4 tabla">
                                         <div>
-                                            <h4>Usuarios <b-icon icon="person"></b-icon></h4>
+                                            <h4>Productos <i class="fa fa-shopping-basket" aria-hidden="true"></i></h4>
 
                                         </div>
                                         <div class="">
                                             <b-button v-b-modal.modal-save-user class="btnAdd">
-                                                <b-icon icon="person-plus"></b-icon> Registrar usuario
+                                                <i class="fa fa-shopping-basket" aria-hidden="true"></i> Registrar usuario
                                             </b-button>
                                         </div>
                                     </div>
@@ -77,12 +77,12 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import ModalGuardarUsuario from './ModalGuardarUsuario.vue';
+import ModalGuardarProducto from './ModalGuardarProducto.vue';
 export default {
     components: {
-        ModalGuardarUsuario,
+        ModalGuardarProducto,
     },
-    name: 'Usuarios',
+    name: 'Productos',
     data() {
         return {
             usuarios: [],
@@ -151,7 +151,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .tabla {
     width: 100%;
     border-collapse: collapse;

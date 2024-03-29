@@ -86,8 +86,7 @@
         </div>
         <ModalGuardarCategorias @categoria-saved="getCategorias" />
         <!-- Pasa la categoría seleccionada al modal de edición -->
-        <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria"
-            @categoria-saved="getCategorias" />
+        <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria" @categoria-saved="getCategorias" />
     </div>
 </template>
 
@@ -124,7 +123,7 @@ export default {
         async getCategorias() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/categoria/getAll', {
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/categoria/getAll', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -148,7 +147,7 @@ export default {
 
                 if (result.isConfirmed) {
                     const token = localStorage.getItem('token');
-                    await axios.delete('http://localhost:8090/api-carsi-shop/admin/categoria/delete', {
+                    await axios.delete('http://localhost:8090/api-carsi-shop/categoria/delete', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         },
@@ -158,20 +157,19 @@ export default {
                     Swal.fire('Eliminada', 'La categoria ha sido eliminada correctamente', 'success');
                 }
             } catch (error) {
-                console.error("Error al eliminar la categoria", error);
-                Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
+
+                Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria, intente mas tarde', 'error');
             }
         },
         async getSubcategoriaategorias() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/subcategoria/getAll', {
+                const response = await axios.get('http://localhost:8090/api-carsi-shop/subcategoria/getAll', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
                 this.subcategorias = response.data.data;
-                console.log("Sub xd: ", this.subcategorias);
             } catch (error) {
                 console.error("Error al obtener las subcategorias", error);
             }
@@ -190,7 +188,7 @@ export default {
 
                 if (result.isConfirmed) {
                     const token = localStorage.getItem('token');
-                    await axios.delete('http://localhost:8090/api-carsi-shop/admin/subcategoria/delete', {
+                    await axios.delete('http://localhost:8090/api-carsi-shop/subcategoria/delete', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         },
@@ -207,8 +205,7 @@ export default {
         },
         edit(categoria) {
             this.selectCategoria = categoria;
-            console.log(categoria);
-            this.$refs['modal-editar-categorias'].show();
+            this.$bvModal.show('modal-editar-categorias');
         },
     },
     mounted() {

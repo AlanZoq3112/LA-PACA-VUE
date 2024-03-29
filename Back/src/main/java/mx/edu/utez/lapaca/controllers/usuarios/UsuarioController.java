@@ -4,6 +4,7 @@ package mx.edu.utez.lapaca.controllers.usuarios;
 import jakarta.validation.Valid;
 
 import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
+import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api-carsi-shop/admin/usuario")
+@RequestMapping("/api-carsi-shop/usuario")
 @CrossOrigin(origins = {"*"})
 public class UsuarioController {
 
@@ -64,12 +65,12 @@ public class UsuarioController {
     }
 
     //get one
-    @GetMapping("/getOne")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPADOR')")
-    public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
-        Long userId = requestBody.get("id");
+    @PostMapping("/getOne")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
+    public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody EmailDTO emailDTO){
+        String email = emailDTO.getEmail();
         return new ResponseEntity<>(
-                this.service.getOne(userId),
+                this.service.getOne(email),
                 HttpStatus.OK
         );
     }

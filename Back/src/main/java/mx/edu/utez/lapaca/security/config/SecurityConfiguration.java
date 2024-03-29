@@ -32,21 +32,25 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/api-carsi-shop/auth/**")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/admin/usuario/insert").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/admin/usuario/getAll").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/admin/usuario/getOne").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
-                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/admin/usuario/update").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/api-carsi-shop/admin/usuario/delete").hasAnyAuthority(Role.ADMIN.name())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api-carsi-shop/auth/**").permitAll()
+                        .requestMatchers("/api-carsi-shop/email/**").permitAll()
+                        .requestMatchers("/api-carsi-shop/recovery/**").permitAll()
 
-                        .requestMatchers("/api-carsi-shop/admin/categoria/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/usuario/insert").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/usuario/getAll").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/usuario/getOne").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
+                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/usuario/update").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/api-carsi-shop/usuario/delete").hasAnyAuthority(Role.ADMIN.name())
 
+                        .requestMatchers("/api-carsi-shop/categoria/**").hasAnyAuthority(Role.ADMIN.name())
 
+                        .requestMatchers("/api-carsi-shop/subcategoria/**").hasAnyAuthority(Role.ADMIN.name())
 
-
-                        .requestMatchers("/api-carsi-shop/usuario/**").hasAnyAuthority(
-                                Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/producto/insert").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name(), Role.COMPRADOR.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/getAll").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/getOne").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/producto/update").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
                         .anyRequest().authenticated())
 
 
@@ -58,6 +62,7 @@ public class SecurityConfiguration {
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
                         }))
+
 
 
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

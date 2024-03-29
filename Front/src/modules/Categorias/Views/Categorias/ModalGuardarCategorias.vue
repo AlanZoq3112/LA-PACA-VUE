@@ -36,9 +36,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 export default {
     name: "modal-guardar-categorias",
-    props: {
-        categoriaSeleccionada: Object // Define una prop para recibir la categoría seleccionada
-    },
     data() {
         return {
             categoria: {
@@ -69,7 +66,7 @@ export default {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
-                    const response = await axios.post("http://localhost:8090/api-carsi-shop/admin/categoria/insert", this.categoria, {
+                    const response = await axios.post("http://localhost:8090/api-carsi-shop/categoria/insert", this.categoria, {
                         headers: {
                             Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
                         }

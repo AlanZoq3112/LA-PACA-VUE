@@ -10,7 +10,12 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <b-row>
                                         <b-col cols="2">
-                                            <img src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg"
+                                            <!-- Aquí se mostrará la imagen de perfil -->
+                                            <img v-if="user1.imagenUrl" :src="user1.imagenUrl"
+                                                class="rounded-circle img-thumbnail" alt="Avatar"
+                                                style="width: 150px; height: 150px;">
+                                            <img v-else
+                                                src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
                                         </b-col>
@@ -18,8 +23,8 @@
                                         <b-col cols="8">
                                             <br>
                                             <br>
-                                            <h4>{{ user.Nombre }} {{ user.Apellidos }}</h4>
-                                            <h5>{{ user.Correo }}</h5>
+                                            <h4 style="color:black">{{ user1.nombre }}</h4>
+                                            <h5>{{ user1.email }}</h5>
                                         </b-col>
 
                                         <b-col>
@@ -55,22 +60,22 @@
                                                 <b-row class="mb-3">
                                                     <b-col cols="5" class="pr-2">
                                                         <label for=""><b>Nombre y apellido</b></label>
-                                                        <p>{{ user.Nombre }} {{ user.Apellidos }}</p>
+                                                        <p>{{ user1.nombre }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Correo</b></label>
-                                                        <p>{{ user.Correo }}</p>
+                                                        <p>{{ user1.email }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user.Telefono }}</p>
+                                                        <p>{{ user1.telefono }}</p>
                                                     </b-col>
                                                 </b-row>
 
                                                 <b-row>
                                                     <b-col cols="8">
-                                                        <label for=""><b>Dirección</b></label>
-                                                        <p>{{ user.Direccion }}</p>
+                                                        <label for=""><b>Fecha de Nacimiento</b></label>
+                                                        <p>{{ user1.fechaNacimiento }}</p>
                                                     </b-col>
                                                     <b-col>
                                                         <br>
@@ -96,31 +101,7 @@
                                             </b-card>
                                         </b-collapse>
                                     </div>
-                                    <!-- Info fiscal -->
-                                    <br>
-                                    <div>
-                                        <b-button v-b-toggle.collapseFiscal class="m-1" variant="faded">Datos vendedor
-                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
-                                        </b-button>
-                                        <b-collapse id="collapseFiscal">
-                                            <b-card>
-                                                <b-row class="mb-3">
-                                                    <b-col class="pr-2">
-                                                        <label for=""><b>CURP</b></label>
-                                                        <p>{{ user.datosFiscales.CURP }}</p>
-                                                    </b-col>
-                                                    <b-col class="pl-2">
-                                                        <label for=""><b>RFC</b></label>
-                                                        <p>{{ user.datosFiscales.RFC }}</p>
-                                                    </b-col>
-                                                    <b-col class="pl-2">
-                                                        <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user.datosFiscales.Telefono }}</p>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-card>
-                                        </b-collapse>
-                                    </div>
+
                                     <br>
                                     <!-- Productos -->
                                     <div>
@@ -130,23 +111,29 @@
                                         </b-button>
                                         <b-collapse id="collapsVendedor">
                                             <b-card>
-                                                <div class="d-flex align-items-center justify-content-center pb-4">
-                                                    <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                                        <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                    </div>
+                                                    <div class="d-flex pb-4">
+                                                        <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
+                                                                <b-link class="text-muted"
+                                                                    href="enviarSolicitdVendedor">Enviar solicitud de
+                                                                    vendedor</b-link></b>
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div class="d-flex pb-4">
-                                                    <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
-                                                            <b-link class="text-muted"
-                                                                href="enviarSolicitdVendedor">Enviar solicitud de
-                                                                vendedor</b-link></b></p>
-                                                </div>
-
-                                                <b-row>
+                                                <b-row v-if="user1.role == 'VENDEDOR' || user1.role === 'ADMIN'">
                                                     <b-col>
-                                                        <b-button to="productos" variant="faded" style="color: blue;"><i
+                                                        <b-button  to="productos"
+                                                            variant="faded" style="color: blue;"><i
                                                                 class="fa fa-shopping-bag" aria-hidden="true"></i>
                                                             Administrar productos</b-button>
+                                                        <b-button to="productos" variant="faded"
+                                                            style="color: blue;"><i class="fa fa-shopping-bag"
+                                                                aria-hidden="true"></i> Ver productos</b-button>
                                                     </b-col>
-                                                    <b-col>
+                                                    <b-col >
                                                         <b-button to="historialVentas" variant="faded"
                                                             style="color: blue;"><i class="fa fa-credit-card"
                                                                 aria-hidden="true"></i> Administrar ventas</b-button>
@@ -155,7 +142,44 @@
                                                         <b-button to="historialVentas" variant="faded"
                                                             style="color: blue;"><i class="fa fa-truck"
                                                                 aria-hidden="true"></i> Administrar envios</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-card>
+                                        </b-collapse>
+                                    </div>
 
+                                    <!-- Info fiscal -->
+                                    <br>
+                                    <div v-if="user1.role == 'VENDEDOR' || user1.role === 'COMPRADOR'">
+                                        <b-button v-b-toggle.collapseFiscal class="m-1" variant="faded">Datos vendedor
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapseFiscal">
+                                            <b-card>
+                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                                        <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
+                                                    </div>
+                                                    <div class="d-flex pb-4">
+                                                        <p class="mb-0 me-2"><b>¿Quieres vender tus productos?
+                                                                <b-link class="text-muted"
+                                                                    href="enviarSolicitdVendedor">Enviar solicitud de
+                                                                    vendedor</b-link></b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <b-row class="mb-3" v-if="user1.role == 'VENDEDOR'">
+                                                    <b-col class="pr-2">
+                                                        <label for=""><b>CURP</b></label>
+                                                        <p>{{ user1.nombre }}</p>
+                                                    </b-col>
+                                                    <b-col class="pl-2">
+                                                        <label for=""><b>RFC</b></label>
+                                                        <p>{{ user1.email }}</p>
+                                                    </b-col>
+                                                    <b-col class="pl-2">
+                                                        <label for=""><b>Teléfono</b></label>
+                                                        <p>{{ user1.username }}</p>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>
@@ -163,7 +187,7 @@
                                     </div>
                                     <!-- Administrador -->
                                     <br>
-                                    <div>
+                                    <div v-if="user1.role == 'ADMIN'">
                                         <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
                                             Administrar
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
@@ -240,61 +264,65 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { jwtDecode } from "jwt-decode";
 export default {
     name: "profile-screen",
     data() {
         return {
-            user: {
-                Nombre: "Alan Matthew Esteban",
-                Apellidos: "Dominguez Castañeda",
-                Correo: "alanmat3112@gmail.com",
-                Contraseña: "******",
-                Telefono: "7775992016",
-                Direccion: "20 de Noviembre, 204, Emiliano Zapata, Puente de Ixtla, Morelos",
-                Fecha_de_nacimiento: "31/12/2003",
-                Genero: "Masculino",
-                Imagen_de_perfil: [],
-                datosFiscales: {
-                    Telefono: "7513440461",
-                    Direccion: "Carretera Temixco, Lote 17 Bodega 1 D.I.E.Z., Col. Palo Escrito, 62760 Emiliano Zapata, Mor.",
-                    CURP: "DOCA031231HMSMSLA4",
-                    RFC: "DOCA0312312D8",
-                }
-            },
-            user1:{},
-            usuario: {
-                id: 1,
-            }
+            user1: {},
         }
     },
 
     methods: {
         logout() {
-            localStorage.clear();
-            this.$router.push({ name: 'login' });
+            // Mostrar una alerta de confirmación antes de cerrar la sesión
+            Swal.fire({
+                title: 'Cerrar sesión',
+                text: '¿Estás seguro de que deseas cerrar la sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#008c6f',
+                cancelButtonColor: '#e11c24',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si se confirma la acción, limpiar el localStorage y redirigir a la página de inicio de sesión
+                    localStorage.clear();
+                    Swal.fire({
+                        title: '¡Vuelve pronto!',
+                        text: 'Has cerrado sesión correctamente.',
+                        icon: 'success',
+                        position: 'top-end', // Posiciona la alerta en la esquina superior derecha
+                        toast: true, // Activa el modo toast para la alerta
+                        showConfirmButton: false, // No muestra el botón de confirmación
+                        timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                    });
+                    this.$router.push({ name: 'login' });
+                }
+            });
         },
-
         async getInfo() {
             try {
-                const id = this.usuario.id;
-                console.log(id);
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:8090/api-carsi-shop/admin/usuario/getOne', {
+                const decoded = jwtDecode(token);
+                const email = decoded.sub;
+
+                const response = await axios.post('http://localhost:8090/api-carsi-shop/usuario/getOne', { email }, {
                     headers: {
-                        Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
-                    },
-                    data: {
-                        id: id
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-                this.user1 = response.data.data; // Guardar los datos del usuario en el estado del componente
-                console.log(this.user1);
-            } catch (error) {
-                console.error("Error al obtener los datos del usuario", error);
-            }
-        },
 
-        
+                this.user1 = response.data.data; // Asignar los datos del usuario a user1 del componente
+                console.log("Datos del usuario logueado", this.user1);
+            } catch (error) {
+                console.error("Error al obtener la información del usuario", error);
+            }
+        }
+
+
     },
     mounted() {
         this.getInfo();

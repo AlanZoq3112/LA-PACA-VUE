@@ -113,7 +113,7 @@ export default {
         },
         continuar() {
             console.log(this.direccionElegida);
-            // Aquí podrías hacer algo con la dirección elegida, como enviarla al servidor o almacenarla en el estado global
+            this.$router.push({ name: 'checkoutMetodoPago' });
         },
         agregarDireccion() {
             // Aquí podrías implementar la lógica para agregar una nueva dirección

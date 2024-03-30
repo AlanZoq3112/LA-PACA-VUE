@@ -1,11 +1,18 @@
 package mx.edu.utez.lapaca.services.pagos;
 
 
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.models.cantidadPago.CantidadPago;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
+import mx.edu.utez.lapaca.utils.StripePaymentException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -14,11 +21,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class PagoService {
+
+
+    @Value("${stripe.secretKey}")
+    private String secretKey;
+
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = secretKey;
+    }
+
+
 
 
     private final PagoRepository repository;
@@ -80,5 +100,27 @@ public class PagoService {
             );
         }
     }
+
+
+
+
+    public String procesarPago(CantidadPago cantidadPago) throws StripePaymentException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (int) (cantidadPago.getMonto() * 100)); // La cantidad se expresa en centavos
+        params.put("currency", "usd");
+        params.put("description", "Pago por producto: " + cantidadPago.getProducto().getNombre());
+        params.put("source", "tok_visa"); // Token generado por Stripe.js o Stripe Elements
+
+        try {
+            Charge charge = Charge.create(params);
+            return charge.getId();
+        } catch (StripeException e) {
+            throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }

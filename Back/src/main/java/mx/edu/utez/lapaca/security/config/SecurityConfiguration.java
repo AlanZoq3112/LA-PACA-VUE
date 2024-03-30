@@ -66,6 +66,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/direccion/update").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.DELETE,"/api-carsi-shop/direccion/delete").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 
+                        .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/realizar-pago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+                        .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/insertarFormaPago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+
+
 
                         .anyRequest().authenticated())
 

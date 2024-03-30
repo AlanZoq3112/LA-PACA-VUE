@@ -26,11 +26,10 @@ public class Pago {
     private TipoPago tipo;
 
     @Column(nullable = false)
-    @Check(constraints = "numero BETWEEN 13 AND 19")
-    private Long numero;
+    private String numero;
 
     @Column(nullable = false)
-    private Integer cvv;
+    private String cvv;
 
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String titular;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loading-overlay" >
+        <div class="loading-overlay">
             <div class="loading-spinner"></div>
         </div>
 
@@ -37,9 +37,25 @@ export default {
     },
 
     methods: {
-        recuperarPassword(){
-            Swal.fire('Enviadad', 'Solicitud de cambio de contraseña enviada correctamente', 'success');
-            console.log(this.email);
+        recuperarPassword() {
+            axios.post('http://localhost:8090/api-carsi-shop/recovery/', {
+                email: this.email
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        Swal.fire('Enviada', 'Solicitud de cambio de contraseña enviada correctamente', 'success');
+                        console.log(response.data); // Puedes hacer algo con la respuesta si es necesario
+                    } else {
+                        Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
+                    }
+                })
+                .catch(error => {
+                    let errorMessage = "Hubo un problema al crear la cuenta";
+                    if (error.response && error.response.data && error.response.data.length > 0) {
+                        errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                    }
+                    Swal.fire('Error', errorMessage, 'error');
+                });
         }
     },
 }
@@ -49,7 +65,7 @@ export default {
 #buttonPassword {
     width: 35%;
     margin-top: 1px;
-    background: #c6bedd !important;
-    color: black;
+    background: #008c6f !important;
+    color: rgb(255, 255, 255);
 }
 </style>

@@ -1,8 +1,6 @@
 package mx.edu.utez.lapaca.dto.comentarios;
 
 
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

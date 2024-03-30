@@ -18,29 +18,28 @@
                                     <b-row>
                                         <b-col>
                                             <label class="form-label" for="curp">CURP: </label>
-                                            <input v-model="user.CURP" type="text" id="curp" class="form-control"
+                                            <input v-model="vendedor.curp" type="text" id="curp" class="form-control"
                                                 placeholder="CURP" />
                                         </b-col>
                                         <b-col>
                                             <label class="form-label" for="rfc">RFC: </label>
-                                            <input v-model="user.RFC" type="text" id="rfc" class="form-control"
+                                            <input v-model="vendedor.rfc" type="text" id="rfc" class="form-control"
                                                 placeholder="RFC" />
                                         </b-col>
                                     </b-row>
 
                                     <div class="form-outline mb-4">
-                                        <label class="form-label" for="direccion">Dirección: </label>
-                                        <input v-model="user.Direccion" type="text" id="direccion" class="form-control"
-                                            placeholder="Calle, número, colonia, ciudad, estado" />
-                                    </div>
-
-                                    <div class="form-outline mb-4">
                                         <label class="form-label" for="telefono">Teléfono: </label>
-                                        <input v-model="user.Telefono" type="tel" id="telefono" class="form-control"
-                                            placeholder="Teléfono" />
+                                        <input v-model="vendedor.telefonoVendedor" type="tel" id="telefono"
+                                            class="form-control" placeholder="Teléfono" />
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="telefono">Ine: </label>
+                                        <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
+                                            placeholder="INE" />
                                     </div>
 
-                                    <div class="form-outline mb-4">
+                                    <!-- <div class="form-outline mb-4">
                                         <label class="form-label" for="imagen">Identificación oficial (INE o IFE) por
                                             ambos lados:</label>
                                         <div class="input-group">
@@ -52,13 +51,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-outline mb-4" v-if="user.imagenes && user.imagenes.length > 0">
+                                    <div class="form-outline mb-4" v-if="vendedor.ine && vendedor.ine.length > 0">
                                         <h5>Vista previa de las imágenes:</h5>
                                         <div class="image-preview-container">
-                                            <img v-for="(imagen, index) in user.imagenes" :key="index" :src="imagen"
+                                            <img v-for="(imagen, index) in vendedor.ine" :key="index" :src="imagen"
                                                 alt="Vista previa de la imagen" class="image-preview" />
                                         </div>
-                                    </div>
+                                    </div> -->
 
 
                                     <div class="text-center pt-1 mb-5 pb-1">
@@ -85,45 +84,83 @@ export default {
     name: "enviarSolicitdVendedor",
     data() {
         return {
-            user: {
-                Telefono: "",
-                Direccion: "",
-                CURP: "",
-                RFC: "",
-                imagenes: [],
+            vendedor: {
+                telefonoVendedor: "",
+                curp: "",
+                rfc: "",
+                ine: "",
             },
         };
     },
     methods: {
-        enviarSolicitud() {
-            console.log(this.user);
-            Swal.fire('Enviada', 'Tu solicitud fue enviada correctamente', 'success');
-            this.$router.push({ name: 'profile-screen' });
-        },
+        async enviarSolicitud() {
+            try {
+                const result = await Swal.fire({
+                    title: "¿Estás seguro de enviar la solicitud de vededor?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#008c6f',
+                    cancelButtonColor: '#e11c24',
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: 'Cancelar',
+                });
 
-        handleImageUpload(event) {
-            if (this.user.imagenes.length >= 2) {
-                Swal.fire('Error', 'No puedes agregar mas de 2 imagenes', 'error');
-                return;
-            }
-
-            const files = event.target.files;
-
-            // Itera sobre los archivos seleccionados
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-
-                if (file) {
-                    // Convierte la imagen a una URL de datos para la vista previa
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        // Agrega la imagen al arreglo de imágenes
-                        this.user.imagenes.push(reader.result);
-                    };
-                    reader.readAsDataURL(file);
+                if (result.isConfirmed) {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        Swal.fire('Error', 'No se encontró un token válido', 'error');
+                        return;
+                    }
+                    console.log("Datos del vendedor: ", this.vendedor);
+                    axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        })
+                        .then(response => {
+                            console.log(response.data);
+                            Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
+                            this.$router.push({ name: 'profile-screen' });
+                        })
+                        .catch(error => {
+                            let errorMessage = "Hubo un problema al enviar la solicitud de vendedor";
+                            if (error.response && error.response.data && error.response.data.length > 0) {
+                                errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                            }
+                            Swal.fire('Error', errorMessage, 'error');
+                        });
                 }
+            } catch (error) {
+                console.error("Error al realizar la solicitud de guardado:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Hubo un problema al intentar guardar el usuario",
+                    icon: "error"
+                });
             }
         },
+
+        // handleImageUpload(event) {
+        //     if (this.vendedor.ine.length >= 2) {
+        //         Swal.fire('Error', 'No puedes agregar mas de 2 imagenes', 'error');
+        //         return;
+        //     }
+
+        //     const files = event.target.files;
+
+        //     // Itera sobre los archivos seleccionados
+        //     for (let i = 0; i < files.length; i++) {
+        //         const file = files[i];
+
+        //         if (file) {
+        //             // Convierte la imagen a una URL de datos para la vista previa
+        //             const reader = new FileReader();
+        //             reader.onload = () => {
+        //                 // Agrega la imagen al arreglo de imágenes
+        //                 this.vendedor.ine.push(reader.result);
+        //             };
+        //             reader.readAsDataURL(file);
+        //         }
+        //     }
+        // },
 
 
     }

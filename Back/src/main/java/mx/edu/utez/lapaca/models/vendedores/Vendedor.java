@@ -32,11 +32,11 @@ public class Vendedor {
     @Column(columnDefinition = "VARCHAR(13)", nullable = false)
     private String rfc;
 
+    @Column(nullable = false)
+    private boolean estado;
 
     @OneToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
-
 
 }

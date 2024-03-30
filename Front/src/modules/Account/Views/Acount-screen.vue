@@ -212,7 +212,7 @@
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="vendedores"><b-icon
                                                                 icon="clock"></b-icon> Solicitudes de
                                                             vendedores</b-button>
                                                     </b-col>
@@ -308,7 +308,7 @@ export default {
                 const decoded = jwtDecode(token);
                 const email = decoded.sub;
 
-                const response = await axios.post('http://localhost:8090/api-carsi-shop/usuario/getOne', { email }, {
+                const response = await axios.post('http://localhost:8091/api-carsi-shop/usuario/getOne', { email }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -319,6 +319,12 @@ export default {
                 console.log("Datos del usuario logueado", this.user1);
             } catch (error) {
                 console.error("Error al obtener la información del usuario", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",
+                    icon: "error"
+                });
+                this.$router.push({ name: 'login' });
             }
         }
 

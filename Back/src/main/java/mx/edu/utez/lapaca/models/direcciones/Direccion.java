@@ -35,15 +35,13 @@ public class Direccion {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String municipio;
 
-    @Column(nullable = false, precision = 5)
-    private int codigoPostal;
+    @Column(nullable = false)
+    private String codigoPostal;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String referencia;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
-    // un usuario puede tener muchas direcciones Y una dirección pertenece a un único usuario
 }

@@ -1,7 +1,6 @@
 package mx.edu.utez.lapaca.dto.pedidos;
 
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +11,6 @@ import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

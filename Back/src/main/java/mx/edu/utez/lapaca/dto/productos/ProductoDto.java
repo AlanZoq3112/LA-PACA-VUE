@@ -9,9 +9,7 @@ import lombok.Setter;
 import mx.edu.utez.lapaca.dto.productos.validators.ValidBase64ImageSize;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
-import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 import java.util.List;
@@ -48,7 +46,6 @@ public class ProductoDto {
     @NotNull(message = "El estado no puede ser nulo")
     private boolean estado;
 
-    @NotNull(message = "El id de usuario no puede ser nulo")
     private Usuario usuario;
 
     @NotNull(message = "El id de categoria no puede ser nulo")

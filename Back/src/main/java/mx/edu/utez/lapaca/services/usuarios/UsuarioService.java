@@ -1,30 +1,32 @@
 package mx.edu.utez.lapaca.services.usuarios;
 
 
-import mx.edu.utez.lapaca.models.roles.Role;
+
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
 
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     //insert
     @Transactional(rollbackFor = {SQLException.class})
@@ -113,7 +115,16 @@ public class UsuarioService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> update(Usuario usuario) {
+        Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
+            if (exists.isPresent()) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        400,
+                        "Error... Usuario con correo ya registrado"
+                );
+            }
             if (!this.repository.existsById(usuario.getId())) {
                 return new CustomResponse<>(
                         null,
@@ -185,4 +196,45 @@ public class UsuarioService {
             );
         }
     }
+
+
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<Usuario> updatePassword(Usuario usuario) {
+        if (!this.repository.existsById(usuario.getId())) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    400,
+                    "El usuario no existe"
+            );
+        }
+        usuario.setPassword(
+                passwordEncoder.encode(usuario.getPassword())
+        );
+        return new CustomResponse<>(
+                this.repository.saveAndFlush(usuario),
+                false,
+                200,
+                "Usuario Actualizado!"
+        );
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public void updateSecretPass(Usuario usuario, String secretPass) {
+        usuario.setSecretPass(secretPass);
+        this.repository.saveAndFlush(usuario);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Usuario getUserByEmail(String email) {
+        Optional<Usuario> user = this.repository.findByEmail(email);
+        return user.orElse(null);
+    }
+
+
+
+
 }

@@ -38,7 +38,7 @@
                                                 @click="login" type="button">
                                                 Iniciar Sesion <i class="fas fa-sign-in-alt"></i>
                                             </button>
-                                            <a class="text-muted" v-b-modal.EnviarCorreo>¿Olvidaste tu contraseña?</a>
+                                            <a class="text-muted" href="recuperarContrasena">¿Olvidaste tu contraseña?</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
@@ -91,7 +91,7 @@ export default {
         async login() {
             try {
                 // Envia las credenciales al backend
-                const response = await axios.post('http://localhost:8090/api-carsi-shop/auth/signin', {
+                const response = await axios.post('http://localhost:8091/api-carsi-shop/auth/signin', {
                     email: this.user.username,
                     password: this.user.password
                 });
@@ -123,7 +123,6 @@ export default {
                 if (error.response && error.response.data && error.response.data.length > 0) {
                     errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                 }
-                console.error('Error de autenticación:', errorMessage);
                 Swal.fire('Error', errorMessage, 'error');
             }
         },

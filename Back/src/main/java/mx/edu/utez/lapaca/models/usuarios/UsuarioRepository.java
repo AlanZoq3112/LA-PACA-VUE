@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.models.usuarios;
 
-import mx.edu.utez.lapaca.models.roles.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

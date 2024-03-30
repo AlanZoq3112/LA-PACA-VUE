@@ -171,15 +171,15 @@
                                                 <b-row class="mb-3" v-if="user1.role == 'VENDEDOR'">
                                                     <b-col class="pr-2">
                                                         <label for=""><b>CURP</b></label>
-                                                        <p>{{ user1.nombre }}</p>
+                                                        <p>{{ user1.vendedor.curp }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>RFC</b></label>
-                                                        <p>{{ user1.email }}</p>
+                                                        <p>{{ user1.vendedor.rfc }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user1.username }}</p>
+                                                        <p>{{ user1.vendedor.telefonoVendedor }}</p>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>

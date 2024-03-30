@@ -54,6 +54,22 @@ public class VendedorService {
                             "Ya has realizado una solicitud de vendedor previamente"
                     );
                 }
+
+                // Asignar el usuario al vendedor
+                vendedor.setUsuario(usuario);
+
+                // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
+                vendedor.setEstado(false);
+
+                // se guarda la solicitud de vendedor
+                Vendedor savedVendedor = repository.save(vendedor);
+
+                return new CustomResponse<>(
+                        savedVendedor,
+                        false,
+                        200,
+                        "Solicitud de vendedor registrada. Pendiente de aprobación"
+                );
             } else {
                 // si no se encuentra el usuario, msj de error
                 return new CustomResponse<>(
@@ -63,22 +79,6 @@ public class VendedorService {
                         "No se pudo encontrar el usuario autenticado"
                 );
             }
-            // se asigna el usuario al vendedor
-            vendedor.setUsuario(usuarioOptional.get());
-
-            // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
-            vendedor.setEstado(false);
-
-            // se guarda la solicitud de vendedor
-            Vendedor savedVendedor = repository.save(vendedor);
-
-            return new CustomResponse<>(
-                    savedVendedor,
-                    false,
-                    200,
-                    "Solicitud de vendedor registrada. Pendiente de aprobación"
-            );
-
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
@@ -95,6 +95,7 @@ public class VendedorService {
             );
         }
     }
+
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Vendedor>> getAll() {

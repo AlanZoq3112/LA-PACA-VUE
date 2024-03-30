@@ -44,7 +44,7 @@ public class PagoDto {
     @Pattern(regexp = "\\d{2}/\\d{2}", message = "El formato de la fecha de vencimiento debe ser MM/YY")
     private String fechaVencimiento;
 
-    @NotNull(message = "El id de usuario no puede ser nulo")
+
     private Usuario usuario;
 
     public Pago getPago() {

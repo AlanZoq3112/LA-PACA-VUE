@@ -10,6 +10,7 @@ import lombok.Setter;
 import mx.edu.utez.lapaca.dto.usuarios.constraints.IsAdult;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -55,6 +56,8 @@ public class UsuarioDto {
     @NotNull(message = "El rol no puede ser nulo")
     private Role role;
 
+    private Vendedor vendedor;
+
     public Usuario getUsuario() {
         return new Usuario(
                 getId(),
@@ -66,7 +69,8 @@ public class UsuarioDto {
                 getTelefono(),
                 getFechaNacimiento(),
                 getSecretPass(),
-                getRole()
+                getRole(),
+                getVendedor()
         );
     }
 }

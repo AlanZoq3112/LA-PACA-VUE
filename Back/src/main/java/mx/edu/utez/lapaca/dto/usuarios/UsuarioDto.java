@@ -29,7 +29,7 @@ public class UsuarioDto {
     private Long id;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 50, message = "El nombre debe tener como máximo {max} caracteres")
+    @Size(max = 50,min = 10, message = "El nombre debe tener entre {min} y {max} caracteres")
     private String nombre;
 
     @NotBlank(message = "El genero es obligatorio")

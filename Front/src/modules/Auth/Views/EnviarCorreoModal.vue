@@ -50,7 +50,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    let errorMessage = "Hubo un problema al crear la cuenta";
+                    let errorMessage = "Hubo un problema al mandar el correo";
                     if (error.response && error.response.data && error.response.data.length > 0) {
                         errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                     }

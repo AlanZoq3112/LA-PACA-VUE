@@ -36,17 +36,15 @@ public class VendedorService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Vendedor> insert(Vendedor vendedor) {
         try {
-            // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
 
-            // verificar si el usuario ya tiene una solicitud de vendedor pendiente
             Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
             if (usuarioOptional.isPresent()) {
                 Usuario usuario = usuarioOptional.get();
                 Optional<Vendedor> existingVendedorOptional = repository.findByUsuario(usuario);
                 if (existingVendedorOptional.isPresent()) {
-                    // si ya existe una solicitud de vendedor, papi ya has realizado la solicitud
+                    // si ya existe una solicitud de vendedor, pues epale epale
                     return new CustomResponse<>(
                             null,
                             true,
@@ -55,13 +53,10 @@ public class VendedorService {
                     );
                 }
 
-                // Asignar el usuario al vendedor
                 vendedor.setUsuario(usuario);
 
-                // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
                 vendedor.setEstado(false);
 
-                // se guarda la solicitud de vendedor
                 Vendedor savedVendedor = repository.save(vendedor);
 
                 return new CustomResponse<>(
@@ -147,15 +142,13 @@ public class VendedorService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Vendedor> update(Vendedor vendedor) {
         try {
-
-            // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
             // se asigna el usuario al vendedor
             Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
             vendedor.setUsuario(usuarioOptional.get());
 
-            // Verificar si el usuario existe en la base de datos
+            // verificar si el usuario existe en la base de datos
             Optional<Usuario> existingUsuarioOptional = usuarioRepository.findById(vendedor.getId());
             if (existingUsuarioOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -202,12 +195,12 @@ public class VendedorService {
             Vendedor vendedor = vendedorOptional.get();
             vendedor.setEstado(estado);
             repository.save(vendedor);
-            // Actualizar el rol del usuario asociado si se aprueba como vendedor
+            // se actualiza el rol del usuario asociado si se aprueba como vendedor
             if (estado) {
                 Usuario usuario = vendedor.getUsuario();
                 usuario.setRole(Role.VENDEDOR);
                 usuarioRepository.save(usuario);
-            } else if (estado == false) {
+            } else if (!estado) {
                 Usuario usuario = vendedor.getUsuario();
                 usuario.setRole(Role.COMPRADOR);
                 usuarioRepository.save(usuario);

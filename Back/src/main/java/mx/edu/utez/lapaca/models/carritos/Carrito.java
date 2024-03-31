@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carritoProductos.CarritoProducto;
+import mx.edu.utez.lapaca.models.carrito_productos.CarritoProducto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 @Entity

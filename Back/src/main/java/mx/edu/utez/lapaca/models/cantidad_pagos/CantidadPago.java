@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.models.cantidadPago;
+package mx.edu.utez.lapaca.models.cantidad_pagos;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,17 +23,17 @@ public class CantidadPago {
 
     private Double monto;
 
-    // Relación con Producto
+    // relación con Producto
     @ManyToOne
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
-    // Relación con Pago
+    // relación con Pago
     @ManyToOne
     @JoinColumn(name = "pago_id")
     private Pago pago;
 
-    // Relación con Usuario
+    // relación con Usuario
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;

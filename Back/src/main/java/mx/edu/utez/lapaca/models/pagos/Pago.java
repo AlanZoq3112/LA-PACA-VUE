@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-import org.hibernate.annotations.Check;
-
 @Entity
 @Table(name = "pagos")
 @NoArgsConstructor

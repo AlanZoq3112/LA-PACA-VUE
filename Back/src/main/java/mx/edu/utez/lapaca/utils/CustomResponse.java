@@ -13,21 +13,21 @@ public class CustomResponse <T> {
 
     T data;
     Boolean error;
-    int StatusCode;
+    int statusCode;
     String message;
 
     // Constructor original
-    public CustomResponse(T data, boolean error, int StatusCode) {
+    public CustomResponse(T data, boolean error, int statusCode) {
         this.data = data;
         this.error = error;
-        this.StatusCode = StatusCode;
+        this.statusCode = statusCode;
     }
 
     // Nuevo constructor con mensaje
-    public CustomResponse(boolean error, int StatusCode, String message) {
+    public CustomResponse(boolean error, int statusCode, String message) {
         this.data = null;
         this.error = error;
-        this.StatusCode = StatusCode;
+        this.statusCode = statusCode;
         this.message = message;
     }
 }

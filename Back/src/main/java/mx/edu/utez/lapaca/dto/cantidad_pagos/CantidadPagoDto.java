@@ -1,12 +1,11 @@
-package mx.edu.utez.lapaca.dto.cantidadPagos;
+package mx.edu.utez.lapaca.dto.cantidad_pagos;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.cantidadPago.CantidadPago;
+import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPago;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;

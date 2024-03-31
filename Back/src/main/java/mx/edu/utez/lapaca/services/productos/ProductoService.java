@@ -3,10 +3,8 @@ package mx.edu.utez.lapaca.services.productos;
 
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
-import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
-import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -38,18 +36,15 @@ public class ProductoService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar el usuario al producto
             producto.setUsuario(usuario.get());
 
 
-            // Verificar si el producto ya existe
+            // verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -137,17 +132,14 @@ public class ProductoService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> update(Producto producto) {
         try {
-            // obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar el usuario al producto
             producto.setUsuario(usuario.get());
 
-            // Verificar si el usuario existe en la base de datos
+            // verificar si el usuario existe en la base de datos
             Optional<Producto> existingProductoOptional = repository.findById(producto.getId());
             if (existingProductoOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -159,7 +151,7 @@ public class ProductoService {
 
             // se guarda la solicitud de producto
             producto.setEstado(true);
-            // Guardar el producto
+            // se guardar el producto
             Producto savedProducto = repository.save(producto);
             return new CustomResponse<>(
                     savedProducto,
@@ -192,11 +184,11 @@ public class ProductoService {
             Producto producto = productoOptional.get();
             producto.setEstado(estado);
             repository.save(producto);
-            // Actualizar el rol del usuario asociado si se aprueba como vendedor
+            // se actualiza el rol del usuario asociado si se aprueba como vendedor
             if (estado) {
                 Usuario usuario = producto.getUsuario();
                 usuarioRepository.save(usuario);
-            } else if (estado == false) {
+            } else if (!estado) {
                 return new CustomResponse<>(
                         producto,
                         true,
@@ -220,30 +212,13 @@ public class ProductoService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> delete(Long id) {
         try {
             Optional<Producto> optionalProducto = repository.findById(id);
             if (optionalProducto.isPresent()) {
                 Producto producto = optionalProducto.get();
-                producto.setEstado(false); // Establecer el estado como inactivo
+                producto.setEstado(false); // establecer el estado como inactivo
                 repository.save(producto);
                 return new CustomResponse<>(
                         null,

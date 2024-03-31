@@ -3,11 +3,9 @@ package mx.edu.utez.lapaca.controllers.pagos;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.pagos.PagoDto;
-import mx.edu.utez.lapaca.dto.vendedores.VendedorDto;
-import mx.edu.utez.lapaca.models.cantidadPago.CantidadPago;
-import mx.edu.utez.lapaca.models.cantidadPago.CantidadPagoRepository;
+import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPago;
+import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPagoRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
-import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.services.pagos.PagoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
@@ -42,10 +40,10 @@ public class PagoController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
     public String realizarPago(@Valid @RequestBody CantidadPago cantidadPago) {
         try {
-            // Procesar el pago con Stripe
+            // procesar el pago con Stripe
             String idPago = service.procesarPago(cantidadPago);
 
-            // Guardar el pago en la base de datos
+            // guardar el pago en la pinche bd
             cantidadPagoRepository.save(cantidadPago);
 
             return "Pago exitoso. ID de pago: " + idPago;

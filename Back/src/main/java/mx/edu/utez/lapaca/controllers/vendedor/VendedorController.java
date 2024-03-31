@@ -2,25 +2,17 @@ package mx.edu.utez.lapaca.controllers.vendedor;
 
 
 import jakarta.validation.Valid;
-import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
-import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
 import mx.edu.utez.lapaca.dto.vendedores.VendedorDto;
-import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.services.vendedores.VendedorService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api-carsi-shop/vendedor")

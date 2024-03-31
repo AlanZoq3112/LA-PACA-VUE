@@ -1,10 +1,8 @@
 package mx.edu.utez.lapaca.services.direcciones;
 
 
-import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -35,17 +33,17 @@ public class DireccionService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> insert(Direccion direccion) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
+            // se obtiene el usuario autenticado desde el contexto de spring security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
+            // se ecupera el usuario de la bd usando el correo
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar la dirección al usuario
+            // se asignaa la dirección al usuario
             direccion.setUsuario(usuario.get());
 
-            // Guardar la dirección
+            // se guarda la dirección
             Direccion savedDireccion = repository.save(direccion);
             return new CustomResponse<>(
                     savedDireccion,
@@ -119,17 +117,14 @@ public class DireccionService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> update(Direccion direccion) {
         try {
-            // obtener el usuario autenticado desde el contexto de Spring Security
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar el usuario al producto
             direccion.setUsuario(usuario.get());
 
-            // Verificar si el usuario existe en la base de datos
             Optional<Direccion> existingDireccionOptional = repository.findById(direccion.getId());
             if (existingDireccionOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -139,7 +134,6 @@ public class DireccionService {
                         "La dirección no existe");
             }
 
-            // Guardar el producto
             Direccion savedDireccion = repository.save(direccion);
             return new CustomResponse<>(
                     savedDireccion,

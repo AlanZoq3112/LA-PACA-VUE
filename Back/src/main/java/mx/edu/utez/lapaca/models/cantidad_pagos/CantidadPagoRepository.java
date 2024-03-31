@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.models.cantidadPago;
+package mx.edu.utez.lapaca.models.cantidad_pagos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

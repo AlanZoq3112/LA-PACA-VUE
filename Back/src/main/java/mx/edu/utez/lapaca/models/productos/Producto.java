@@ -29,7 +29,7 @@ public class Producto {
 
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String imagen_url;
+    private String imagenUrl;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;

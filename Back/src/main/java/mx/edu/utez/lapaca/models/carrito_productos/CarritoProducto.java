@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.models.carritoProductos;
+package mx.edu.utez.lapaca.models.carrito_productos;
 
 
 import jakarta.persistence.*;

@@ -12,6 +12,7 @@ public class IsAdultValidator implements ConstraintValidator<IsAdult, LocalDate>
     // Sobreescribe initialize
     @Override
     public void initialize(IsAdult constraintAnnotation) {
+        // No se requiere inicialización especial en este validador
     }
 
     // Sobreescribe isValid

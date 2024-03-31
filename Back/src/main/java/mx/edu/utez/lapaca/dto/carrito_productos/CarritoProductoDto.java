@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.dto.carritoProductos;
+package mx.edu.utez.lapaca.dto.carrito_productos;
 
 
 import jakarta.validation.constraints.Min;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carritoProductos.CarritoProducto;
+import mx.edu.utez.lapaca.models.carrito_productos.CarritoProducto;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @AllArgsConstructor

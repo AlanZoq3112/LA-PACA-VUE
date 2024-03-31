@@ -2,10 +2,8 @@ package mx.edu.utez.lapaca.controllers.productos;
 
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.dto.productos.ProductoDto;
 import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.services.productos.ProductoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;

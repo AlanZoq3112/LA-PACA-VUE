@@ -5,7 +5,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import jakarta.annotation.PostConstruct;
-import mx.edu.utez.lapaca.models.cantidadPago.CantidadPago;
+import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPago;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -38,9 +38,6 @@ public class PagoService {
         Stripe.apiKey = secretKey;
     }
 
-
-
-
     private final PagoRepository repository;
 
     private final UsuarioRepository usuarioRepository;
@@ -54,18 +51,15 @@ public class PagoService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar el usuario al producto
             pago.setUsuario(usuario.get());
 
 
-            // Verificar si el producto ya existe
+            // verificar si el producto ya existe
             Optional<Pago> exists = repository.findByNumero(pago.getNumero());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -75,8 +69,6 @@ public class PagoService {
                         "Error... Tarjeta ya registrada"
                 );
             }
-
-            // Guardar el producto
             Pago savedPago = repository.save(pago);
             return new CustomResponse<>(
                     savedPago,
@@ -106,10 +98,10 @@ public class PagoService {
 
     public String procesarPago(CantidadPago cantidadPago) throws StripePaymentException {
         Map<String, Object> params = new HashMap<>();
-        params.put("amount", (int) (cantidadPago.getMonto() * 100)); // La cantidad se expresa en centavos
+        params.put("amount", (int) (cantidadPago.getMonto() * 100)); // la cantidad se expresa en centavos
         params.put("currency", "usd");
         params.put("description", "Pago por producto: " + cantidadPago.getProducto().getNombre());
-        params.put("source", "tok_visa"); // Token generado por Stripe.js o Stripe Elements
+        params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
 
         try {
             Charge charge = Charge.create(params);

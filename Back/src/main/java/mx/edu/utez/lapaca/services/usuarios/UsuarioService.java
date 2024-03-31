@@ -2,7 +2,9 @@ package mx.edu.utez.lapaca.services.usuarios;
 
 
 
+import mx.edu.utez.lapaca.models.bitacora.Bitacora;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import mx.edu.utez.lapaca.services.bitacora.BitacoraService;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
@@ -11,9 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Console;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -23,14 +27,27 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+    private final BitacoraService bitacoraService;
+
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder, BitacoraService bitacoraService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.bitacoraService = bitacoraService;
     }
 
     //insert
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> insert(Usuario usuario) {
+        Usuario savedUser = repository.save(usuario);
+        Bitacora bitacora = new Bitacora();
+        bitacora.setTabla("bitacora");
+        bitacora.setDescripcion("Inserción");
+        bitacora.setDescripcion("Nuevo usuario registrado: " + savedUser.getEmail());
+        bitacora.setFechaHora(LocalDateTime.now());
+        bitacora.setUsuario(usuario.getId());
+        bitacoraService.registrarLog(bitacora);
+        System.out.println("Usuario Creado");
+
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
@@ -41,13 +58,15 @@ public class UsuarioService {
                         "Error... Usuario con correo ya registrado"
                 );
             }
-            Usuario savedUser = repository.save(usuario);
             return new CustomResponse<>(
+
                     savedUser,
                     false,
                     200,
                     "Usuario registrado"
+
             );
+
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
@@ -134,6 +153,13 @@ public class UsuarioService {
                 );
             }
             Usuario savedUser = repository.save(usuario);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("carsi_shop");
+            bitacora.setDescripcion("Actualización");
+            bitacora.setDescripcion("Se actualizo el sigueinte usuario: " + savedUser.getEmail());
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
+            System.out.println("Usuario creado");
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -174,6 +200,12 @@ public class UsuarioService {
             }
             Usuario usuario = usuarioId.get();
             repository.delete(usuario);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("carsi_shop");
+            bitacora.setDescripcion("Eliminación");
+            bitacora.setDescripcion("Se elimino el siguiente usuario: " + usuario.getEmail());
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
             return new CustomResponse<>(
                     null,
                     false,

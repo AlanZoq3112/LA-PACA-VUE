@@ -1,8 +1,10 @@
 package mx.edu.utez.lapaca.services.categorias;
 
 
+import mx.edu.utez.lapaca.models.bitacora.Bitacora;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
+import mx.edu.utez.lapaca.services.bitacora.BitacoraService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -20,8 +23,11 @@ public class CategoriaService {
 
     private final CategoriaRepository repository;
 
-    public CategoriaService(CategoriaRepository repository) {
+    private final BitacoraService bitacoraService;
+
+    public CategoriaService(CategoriaRepository repository, BitacoraService bitacoraService) {
         this.repository = repository;
+        this.bitacoraService = bitacoraService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -37,6 +43,13 @@ public class CategoriaService {
                 );
             }
             Categoria savedUser = repository.save(categoria);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("carsi_shop");
+            bitacora.setDescripcion("Inserción");
+            bitacora.setDescripcion("Nueva categoria creada: " + savedUser.getNombre());
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
+
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -117,6 +130,13 @@ public class CategoriaService {
                 );
             }
             Categoria savedCategoria = repository.save(categoria);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("carsi_shop");
+            bitacora.setDescripcion("Actualización");
+            bitacora.setDescripcion("Se actualizo la sigueinte categoria: " + savedCategoria.getNombre());
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
+
             return new CustomResponse<>(
                     savedCategoria,
                     false,
@@ -155,6 +175,13 @@ public class CategoriaService {
             }
             Categoria categoria = categoriaId.get();
             repository.delete(categoria);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("carsi_shop");
+            bitacora.setDescripcion("Eliminación");
+            bitacora.setDescripcion("Se elimino la siguiente categoria: " + categoria);
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
+
             return new CustomResponse<>(
                     null,
                     false,

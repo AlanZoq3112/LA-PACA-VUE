@@ -2,7 +2,6 @@ package mx.edu.utez.lapaca.models.bitacora;
 
 import jakarta.persistence.*;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,4 +25,54 @@ public class Bitacora {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOperacion() {
+        return operacion;
+    }
+
+    public void setOperacion(String operacion) {
+        this.operacion = operacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(String tabla) {
+        this.tabla = tabla;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setUsuario(Long id) {
+    }
 }

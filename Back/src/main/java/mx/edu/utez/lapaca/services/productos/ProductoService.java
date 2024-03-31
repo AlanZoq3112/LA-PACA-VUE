@@ -1,12 +1,14 @@
 package mx.edu.utez.lapaca.services.productos;
 
 
+import mx.edu.utez.lapaca.models.bitacora.Bitacora;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
+import mx.edu.utez.lapaca.services.bitacora.BitacoraService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,9 +32,12 @@ public class ProductoService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository) {
+    private final BitacoraService bitacoraService;
+
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, BitacoraService bitacoraService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.bitacoraService = bitacoraService;
     }
 
 
@@ -65,12 +71,20 @@ public class ProductoService {
 
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
+            Bitacora bitacora = new Bitacora();
+            bitacora.setTabla("bitacora");
+            bitacora.setDescripcion("Inserción");
+            bitacora.setDescripcion("Nueva producto creado: " + savedProducto.getNombre());
+            bitacora.setFechaHora(LocalDateTime.now());
+            bitacoraService.registrarLog(bitacora);
             return new CustomResponse<>(
                     savedProducto,
                     false,
                     200,
                     "Producto registrado exitosamente... En espera de aprobación"
             );
+
+
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,

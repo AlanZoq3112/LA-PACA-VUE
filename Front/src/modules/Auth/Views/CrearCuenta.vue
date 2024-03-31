@@ -16,16 +16,16 @@
                                     <b-row>
                                         <b-col>
                                             <div class="form-outline mb-4">
-                                                <InputText @name="dataChildText" @check="valid"/>                                                
+                                                <InputText @name="dataChildText" @check="validNombre" />                                                
                                             </div>
                                         </b-col>
                                         <b-col>
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="genero">Género: </label>
                                                 <multi-select id="genero" :class="{
-                                                        'is-invalid': v$.user.genero.$error,
-                                                        'is-valid': !v$.user.genero.$invalid,
-                                                    }" v-model="v$.user.genero.$model"
+                                                    'is-invalid': v$.user.genero.$error,
+                                                    'is-valid': !v$.user.genero.$invalid,
+                                                }" v-model="v$.user.genero.$model"
                                                     placeholder="Selecciona un género" label="name" :options="generos"
                                                     track-by="name" :multiple="false"
                                                     selectLabel="Presiona para seleccionar"
@@ -42,8 +42,7 @@
                                     <b-row>
                                         <b-col>
                                             <div class="form-outline mb-4">
-                                                <InputEmail @email="dataChild"/> 
-                                                <p>{{ confirmPassword }}</p>                                                                                               
+                                                <InputEmail @email="dataChild" @check="validEmail"/>                                                
                                             </div>
                                         </b-col>
                                         <b-col>
@@ -51,9 +50,9 @@
                                                 <label class="form-label" for="contrasena">Contraseña: </label>
                                                 <b-form-input id="contrasena" type="password" placeholder="Contraseña"
                                                     v-model="v$.user.password.$model" :state="v$.user.password.$dirty
-                                                        ? !v$.user.password.$error
-                                                        : null
-                                                        " @blur="v$.user.password.$touch()" />
+                                                    ? !v$.user.password.$error
+                                                    : null
+                                                    " @blur="v$.user.password.$touch()" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.password.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -67,9 +66,9 @@
                                                 <label class="form-label" for="telefono">Teléfono: </label>
                                                 <b-form-input id="telefono" type="text" placeholder="Teléfono"
                                                     v-model="v$.user.telefono.$model" :state="v$.user.telefono.$dirty
-                                                        ? !v$.user.telefono.$error
-                                                        : null
-                                                        " @blur="v$.user.telefono.$touch()" maxlength="10"
+                                                    ? !v$.user.telefono.$error
+                                                    : null
+                                                    " @blur="v$.user.telefono.$touch()" maxlength="10"
                                                     @keypress="onlynumbers" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.telefono.$errors"
                                                     :key="error.$uid">
@@ -84,12 +83,12 @@
                                                 <b-form-datepicker id="fechaNacimiento" class="mb-2"
                                                     placeholder="Selecciona una fecha" :label-help="null"
                                                     v-model="v$.user.fechaNacimiento.$model" :state="v$.user.fechaNacimiento.$dirty ? !v$.user.fechaNacimiento.$error : null
-                                                        " @blur="v$.user.fechaNacimiento.$touch()"
+                                                    " @blur="v$.user.fechaNacimiento.$touch()"
                                                     label-current-month="Fecha máxima" hide-header :date-format-options="{
-                                                        year: 'numeric',
-                                                        month: 'numeric',
-                                                        day: 'numeric',
-                                                    }" :max="fechaMax"
+                                                    year: 'numeric',
+                                                    month: 'numeric',
+                                                    day: 'numeric',
+                                                }" :max="fechaMax"
                                                     @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
                                                 <b-form-invalid-feedback
                                                     v-for="error in v$.user.fechaNacimiento.$errors" :key="error.$uid">
@@ -99,9 +98,8 @@
                                         </b-col>
                                     </b-row>
                                     <div class="form-outline mb-4">
-                                        <InputFile @img="dataChildImg"/>                                                                             
-                                    </div>
-                                    
+                                        <InputFile @img="dataChildImg" @check="validFile" />                                        
+                                    </div>                                                                        
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                             @click="createAccount" type="button">
@@ -130,6 +128,13 @@ import Swal from 'sweetalert2';
 import { useVuelidate } from "@vuelidate/core";
 import moment from "moment/moment";
 import { required, helpers, minLength, maxLength, } from "@vuelidate/validators";
+const base64Encode = data =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(data);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 export default {
     name: "crearCuenta",
     components: {
@@ -166,46 +171,68 @@ export default {
             },
             generoOption: "",
             confirmPassword: "",
+            valueNombre: "",
+            valueEmail: "",
+            valueFile:""
         };
     },
     methods: {
-        dataChild(data){            
-            this.confirmPassword = data;
-        },
-        valid(data){            
+        dataChild(data) {
             this.user.email = data;
         },
-        dataChildText(data){            
+        validNombre(data) {
+            this.valueNombre = data;
+        },
+        validEmail(data) {
+            this.valueEmail = data;
+        },
+        validFile(data) {
+            this.valueFile = data;
+        },
+        dataChildText(data) {
             this.user.nombre = data;
         },
-        dataChildImg(data){            
-            this.user.imagenUrl = data;
+        dataChildImg(data) {
+            console.log(data);
+            if (data) {
+                    base64Encode(data).then((data) => {
+                        this.user.imagenUrl = data;
+                    }).catch((error) => {
+                        this.user.imagenUrl = null;
+                    });
+                }
+                console.log(this.user.imagenUrl)
         },
         onlynumbers(evt) {
             signal(evt);
         },
         createAccount() {
-            console.log(this.user);
-            const generoFinal = this.user.genero.name;
-            this.user.genero = generoFinal;
-            axios.post('http://localhost:8090/api-carsi-shop/auth/singupUser', this.user)
-                .then(response => {
-                    console.log(response.data);
-                    Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
-                    this.$router.push({ name: 'login' });
-                })
-                .catch(error => {
-                    let errorMessage = "Hubo un problema al crear la cuenta";
-                    if (error.response && error.response.data && error.response.data.length > 0) {
-                        errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
-                    }
-                    Swal.fire('Error', errorMessage, 'error');
-                });
-        },        
+            if (this.valueNombre && this.valueEmail && this.valueFile) {
+                console.log(this.user);
+                const generoFinal = this.user.genero.name;
+                this.user.genero = generoFinal;
+                axios.post('http://localhost:8090/api-carsi-shop/auth/singupUser', this.user)
+                    .then(response => {
+                        console.log(response.data);
+                        Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
+                        this.$router.push({ name: 'login' });
+                    })
+                    .catch(error => {
+                        let errorMessage = "Hubo un problema al crear la cuenta";
+                        if (error.response && error.response.data && error.response.data.length > 0) {
+                            errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                        }
+                        Swal.fire('Error', errorMessage, 'error');
+                    });
+            } else {
+                let errorMessage = "Revise todos los campos";
+                Swal.fire('Error', errorMessage, 'error');
+            }
+        },
     },
-    validations() {        
+    validations() {
         return {
-            user: {                
+            user: {
                 telefono: {
                     required: helpers.withMessage("Campo obligatorio", required),
                     validFormat: helpers.withMessage(
@@ -234,13 +261,11 @@ export default {
                 password: {
                     required: helpers.withMessage("Campo obligatorio", required),
                     minLength: helpers.withMessage("Mínimo 8 caracteres", minLength(8))
-                },                
+                },
             },
         };
     },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,13 +1,14 @@
 <template>
     <div>
-        
-            <label for="name">Nombre:</label>
-            <b-form-input id="name" type="text" placeholder="Nombre" required v-model="v$.form.name.$model"
-                @blur="v$.form.name.$touch()" :state="v$.form.name.$dirty ? !v$.form.name.$error : null" trim @input="sendName"/>
-            <b-form-invalid-feedback v-for="error in v$.form.name.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </b-form-invalid-feedback>
-        
+
+        <label for="name">Nombre:</label>
+        <b-form-input id="name" type="text" placeholder="Nombre" required v-model="v$.form.name.$model"
+            @blur="v$.form.name.$touch()" :state="v$.form.name.$dirty ? !v$.form.name.$error : null" trim
+            @input="sendName" />
+        <b-form-invalid-feedback v-for="error in v$.form.name.$errors" :key="error.$uid">
+            {{ error.$message }}
+        </b-form-invalid-feedback>
+
 
     </div>
 </template>
@@ -22,15 +23,24 @@ export default Vue.extend({
     setup() {
         return { v$: useVuelidate() };
     },
-    methods:{
-        sendName() {            
-            this.$emit('name', this.form.name);            
+    methods: {
+        sendName() {
+            const isValid = this.v$.form.$invalid; 
+            if (!isValid) {
+                this.$emit('check', true);
+                this.$emit('name', this.form.name);
+            } else {
+                this.$emit('check', false);
+                this.$emit('name', this.form.name);
+            }
         },
+
     },
     data() {
         return {
             form: {
                 name: "",
+                valid: false
             },
         };
     },

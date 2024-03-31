@@ -38,33 +38,46 @@ export default Vue.extend({
         return { v$: useVuelidate() };
     },
     methods:{
-        sendImage() {            
-            this.$emit('img', this.imageSrc);            
+        sendImage() {     
+            const isValid = this.v$.form.$invalid;
+            console.log(this.form.file)
+            if (!isValid) {
+                this.$emit('check', true);
+                this.$emit('img', this.form.file); 
+            } else {
+                this.$emit('check', false);
+                this.$emit('img', this.form.file); 
+            }                 
         },
     },
     watch: {
         "form.file": function (newValue, oldValue) {
-            if (newValue !== oldValue) {
+        if (newValue !== oldValue) {
+            if (newValue) {
+                const file = newValue;
+                const img = new Image();
+                img.src = URL.createObjectURL(file);                    
+
+                // Verificar si newValue no es nulo antes de asignar imageSrc
                 if (newValue) {
-                    const file = newValue;
-                    const img = new Image();
-                    img.src = URL.createObjectURL(file);                    
-
-
                     base64Encode(newValue).then((data) => {
                         this.imageSrc = data;
                     }).catch((error) => {
                         this.imageSrc = null;
                     });
-                } else this.imageSrc = null;
+                }
+            } else {
+                this.imageSrc = null;
             }
-        },
+        }
+    },
     },
     data() {
         return {
             form: {
                 file: null,
             },
+            valid: false,
             imageSrc: null,
         };
     },

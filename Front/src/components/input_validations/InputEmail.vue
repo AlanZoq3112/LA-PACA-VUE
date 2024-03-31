@@ -37,10 +37,15 @@ export default Vue.extend({
         };
     },
     methods: {
-        sendEmail() {       
-               
-            this.$emit('email', this.form.name);     
-            this.$emit('check', this.valid);        
+        sendEmail() {
+            const isValid = this.v$.form.$invalid;
+            if (!isValid) {
+                this.$emit('check', true);
+                this.$emit('email', this.form.name);
+            } else {
+                this.$emit('check', false);
+                this.$emit('email', this.form.name);
+            }            
         },
     },
     validations: {

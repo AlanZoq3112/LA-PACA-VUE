@@ -5,7 +5,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import jakarta.annotation.PostConstruct;
-import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPago;
+import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -48,6 +48,8 @@ public class PagoService {
         this.usuarioRepository = usuarioRepository;
     }
 
+
+    //insertar forma de pago
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
@@ -88,7 +90,7 @@ public class PagoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar una forma de pago ilegal" + e.getMessage()
             );
         }
     }
@@ -96,13 +98,20 @@ public class PagoService {
 
 
 
-    public String procesarPago(CantidadPago cantidadPago) throws StripePaymentException {
-        Map<String, Object> params = new HashMap<>();
-        params.put("amount", (int) (cantidadPago.getMonto() * 100)); // la cantidad se expresa en centavos
-        params.put("currency", "usd");
-        params.put("description", "Pago por producto: " + cantidadPago.getProducto().getNombre());
-        params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
+    //stripe
+    public String procesarPago(Carrito carrito) throws StripePaymentException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Obtener el nombre de usuario
 
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
+
+        carrito.setUsuario(usuario.get());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (int) (carrito.getMonto() * 100)); // la cantidad se expresa en centavos
+        params.put("currency", "mxn");
+        params.put("description", "Pago por producto: " + carrito.getProducto().getNombre());
+        params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
         try {
             Charge charge = Charge.create(params);
             return charge.getId();
@@ -110,6 +119,7 @@ public class PagoService {
             throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
         }
     }
+
 
 
 

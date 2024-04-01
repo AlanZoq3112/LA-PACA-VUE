@@ -2,9 +2,11 @@ package mx.edu.utez.lapaca.controllers.pagos;
 
 
 import jakarta.validation.Valid;
+import mx.edu.utez.lapaca.dto.carritos.CarritoDto;
 import mx.edu.utez.lapaca.dto.pagos.PagoDto;
-import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPago;
-import mx.edu.utez.lapaca.models.cantidad_pagos.CantidadPagoRepository;
+
+import mx.edu.utez.lapaca.models.carritos.Carrito;
+import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.services.pagos.PagoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -19,11 +21,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"*"})
 public class PagoController {
     private final PagoService service;
-    private final CantidadPagoRepository cantidadPagoRepository;
+    private final CarritoRepository carritoRepository;
 
-    public PagoController( PagoService service, CantidadPagoRepository cantidadPagoRepository) {
+
+
+    public PagoController(PagoService service, CarritoRepository carritoRepository) {
         this.service = service;
-        this.cantidadPagoRepository = cantidadPagoRepository;
+        this.carritoRepository = carritoRepository;
+
     }
 
     @PostMapping("/insertarFormaPago")
@@ -38,17 +43,19 @@ public class PagoController {
 
     @PostMapping("/realizar-pago")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
-    public String realizarPago(@Valid @RequestBody CantidadPago cantidadPago) {
+    public String realizarPago(@Valid @RequestBody Carrito carrito) {
         try {
             // procesar el pago con Stripe
-            String idPago = service.procesarPago(cantidadPago);
+            String idPago = service.procesarPago(carrito);
 
             // guardar el pago en la pinche bd
-            cantidadPagoRepository.save(cantidadPago);
+            carritoRepository.save(carrito);
 
             return "Pago exitoso. ID de pago: " + idPago;
         } catch (StripePaymentException e) {
             return "Error al procesar el pago: " + e.getMessage();
         }
     }
+
+
 }

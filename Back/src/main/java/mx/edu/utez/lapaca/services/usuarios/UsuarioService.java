@@ -60,7 +60,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -108,7 +108,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener un usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -153,7 +153,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar un usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -192,7 +192,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar un usuario ilegal" + e.getMessage()
             );
         }
     }

@@ -27,7 +27,6 @@ public class Producto {
     @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
-
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String imagenUrl;
 

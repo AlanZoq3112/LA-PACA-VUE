@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.carrito_productos.CarritoProducto;
+import mx.edu.utez.lapaca.models.pagos.Pago;
+import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 @Entity
@@ -21,13 +22,25 @@ public class Carrito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private int cantidad;
+
+    private Double monto;
+
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "carrito_producto_id", nullable = false)
-    private CarritoProducto carritoProducto;
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
+
+    // relación con Pago
+    @ManyToOne
+    @JoinColumn(name = "pago_id")
+    private Pago pago;
+
+
 
 
 }

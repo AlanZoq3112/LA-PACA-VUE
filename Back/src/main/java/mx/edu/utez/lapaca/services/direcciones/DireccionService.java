@@ -63,7 +63,7 @@ public class DireccionService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar una dirección ilegales" + e.getMessage()
             );
         }
     }
@@ -109,7 +109,7 @@ public class DireccionService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener una dirección ilegal" + e.getMessage()
             );
         }
     }
@@ -153,7 +153,7 @@ public class DireccionService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar una dirección ilegal" + e.getMessage()
             );
         }
     }
@@ -191,7 +191,7 @@ public class DireccionService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar una dirección incorrectos" + e.getMessage()
             );
         }
     }

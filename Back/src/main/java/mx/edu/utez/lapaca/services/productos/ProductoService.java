@@ -78,7 +78,7 @@ public class ProductoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar un producto ilegal" + e.getMessage()
             );
         }
     }
@@ -124,7 +124,7 @@ public class ProductoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener un producto ilegal" + e.getMessage()
             );
         }
     }
@@ -171,7 +171,7 @@ public class ProductoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar un producto ilegal" + e.getMessage()
             );
         }
     }
@@ -246,7 +246,7 @@ public class ProductoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar un producto ilegal" + e.getMessage()
             );
         }
     }

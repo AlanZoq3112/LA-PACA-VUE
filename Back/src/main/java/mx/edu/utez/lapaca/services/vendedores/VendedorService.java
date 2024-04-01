@@ -86,7 +86,7 @@ public class VendedorService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar vendededor ilegal" + e.getMessage()
             );
         }
     }
@@ -133,7 +133,7 @@ public class VendedorService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obetener un vendededor ilegal" + e.getMessage()
             );
         }
     }
@@ -180,7 +180,7 @@ public class VendedorService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar un vendededor ilegal" + e.getMessage()
             );
         }
     }

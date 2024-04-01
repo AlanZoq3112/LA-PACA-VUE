@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.models.vendedores;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,8 +36,8 @@ public class Vendedor {
     @Column(nullable = false)
     private boolean estado;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Usuario usuario;
 
 }

@@ -69,7 +69,6 @@ export default {
         return {
             vendedores: [],
             fields: [
-                { key: 'usuario', label: 'Nombre', sortable: true },
                 { key: 'curp', label: 'CURP', sortable: true },
                 { key: 'telefonoVendedor', label: 'Telefono', sortable: true },
                 { key: 'rfc', label: 'RFC', sortable: true },
@@ -86,6 +85,7 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 this.vendedores = response.data.data;
+                console.log(this.vendedores);
             } catch (error) {
                 console.error("Error al obtener los datos de los vendedores", error);
             }

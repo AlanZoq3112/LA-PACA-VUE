@@ -36,6 +36,7 @@
                                             </div>
                                         </template>
                                     </b-table>
+                                    <div v-if="categorias.length === 0" class="text-center">No hay categorías disponibles.</div>
                                 </div>
 
                                 <br>
@@ -74,6 +75,7 @@
                                                 </div>
                                             </template>
                                         </b-table>
+                                        <div v-if="subcategorias.length === 0" class="text-center">No hay subcategorías disponibles.</div>
                                     </div>
                                 </div>
                             </div>

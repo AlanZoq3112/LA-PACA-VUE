@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <div>
             <div class="custom-container py-1 h-200">
                 <h4>Mi cuenta <b-icon icon="person"></b-icon></h4>
@@ -25,6 +25,7 @@
                                             <br>
                                             <h4 style="color:black">{{ user1.nombre }}</h4>
                                             <h5>{{ user1.email }}</h5>
+                                            <p>{{ user1.role }}</p>
                                         </b-col>
 
                                         <b-col>

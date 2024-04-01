@@ -1,19 +1,18 @@
 <template>
     <div>
-
-        <div class="custom-container py-1 h-200">
+        <div class="custom-container py-1">
             <div class="row">
-                <div v-for="usuario in usuarios" :key="usuario.id" class="col-lg-3 mb-4">
-                    <b-card :img-src="usuario.imageObj.src" img-alt="Image" img-top img-height="250px" max-width="150px"
-                        class="mb-2">
+                <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                    <b-card class="card-custom mb-2" img-top img-height="250px" max-width="150px">
                         <b-card-text>
-                            <h5>{{ usuario.nombre }}</h5>
-                            <p>Email: {{ usuario.email }}</p>
-                            <p>Rol: {{ usuario.role }}</p>
+                            <h5>{{ producto.nombre }}</h5>
+                            <p>Description: {{ producto.descripcion }}</p>
+                            <p>Categoria: {{ producto.categoria.nombre }}</p>
+                            <p>Stock: {{ producto.stock }}</p>
                         </b-card-text>
                         <template #footer>
                             <b-row>
-                                <b-col>Precio: $240</b-col>
+                                <b-col>Precio: ${{ producto.precio }}</b-col>
                                 <b-col>
                                     <div class="d-flex justify-content-end">
                                         <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
@@ -29,7 +28,6 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -39,31 +37,23 @@ export default {
     name: "Inicio",
     data() {
         return {
-            usuarios: [],
+            productos: [],
         };
     },
     methods: {
-        async getUsuarios() {
+        async getProductos() {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/usuario/getAll",
+                    "http://localhost:8091/api-carsi-shop/producto/getAll",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     }
                 );
-                this.usuarios = response.data.data;
-
-                // Convertir URLs base64 en objetos de imagen
-                for (const usuario of this.usuarios) {
-                    const base64 = usuario.imagenUrl.split(',')[1]; // Extraer la parte base64 de la URL
-                    const imageUrl = `data:image/png;base64,${base64}`; // Construir la URL base64 completa
-                    usuario.imageObj = { src: imageUrl }; // Convertir la URL en un objeto de imagen
-                }
-
-                console.log(this.usuarios);
+                this.productos = response.data.data;
+                console.log(this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
@@ -93,7 +83,7 @@ export default {
                             },
                         }
                     );
-                    this.getUsuarios();
+                    this.getProductos();
                     Swal.fire(
                         "Eliminado",
                         "El usuario ha sido eliminado correctamente",
@@ -109,12 +99,9 @@ export default {
                 );
             }
         },
-        edit(usuario) {
-            // Método edit
-        },
     },
     mounted() {
-        this.getUsuarios();
+        this.getProductos();
     },
 };
 </script>
@@ -128,5 +115,9 @@ export default {
 .custom-container {
     max-width: 3000px;
     margin: 0 auto;
+}
+
+.card-custom {
+    height: 250px; 
 }
 </style>

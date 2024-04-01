@@ -218,7 +218,7 @@
                                                             vendedores</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="productos"><b-icon
                                                                 icon="hourglass-split"></b-icon> Solicitudes de
                                                             productos</b-button>
                                                     </b-col>

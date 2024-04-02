@@ -42,7 +42,6 @@ public class UsuarioController {
         );
     }
 
-    //get all
     @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<List<Usuario>>> getAll(){
@@ -52,7 +51,6 @@ public class UsuarioController {
         );
     }
 
-    //get one
     @PostMapping("/getOne")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
     public ResponseEntity<CustomResponse<Usuario>> getOne(@Valid @RequestBody EmailDTO emailDTO){

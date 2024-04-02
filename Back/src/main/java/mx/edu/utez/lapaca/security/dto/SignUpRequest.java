@@ -33,7 +33,7 @@ public class SignUpRequest {
     private String password;
 
     @NotNull(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
+    @Pattern(regexp = "^\\d{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefono;
 
     @NotNull(message = "La fecha de nacimiento es obligatoria")

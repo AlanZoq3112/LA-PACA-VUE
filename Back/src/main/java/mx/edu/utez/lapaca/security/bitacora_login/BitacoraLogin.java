@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.security.bitacoraLogin;
+package mx.edu.utez.lapaca.security.bitacora_login;
 
 import jakarta.persistence.*;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -6,7 +6,7 @@ import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bitacoraLogin")
+@Table(name = "bitacora_login")
 public class BitacoraLogin {
 
     @Id

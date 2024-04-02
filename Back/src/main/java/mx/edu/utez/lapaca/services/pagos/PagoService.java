@@ -1,11 +1,18 @@
 package mx.edu.utez.lapaca.services.pagos;
 
 
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
+import mx.edu.utez.lapaca.utils.StripePaymentException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -14,12 +21,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class PagoService {
 
+
+    @Value("${stripe.secretKey}")
+    private String secretKey;
+
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = secretKey;
+    }
 
     private final PagoRepository repository;
 
@@ -31,21 +48,20 @@ public class PagoService {
         this.usuarioRepository = usuarioRepository;
     }
 
+
+    //insertar forma de pago
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
-            // Obtener el usuario autenticado desde el contexto de Spring Security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
 
-            // Aquí puedes recuperar el usuario de tu base de datos usando el nombre de usuario o cualquier otro identificador
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
-            // Asignar el usuario al producto
             pago.setUsuario(usuario.get());
 
 
-            // Verificar si el producto ya existe
+            // verificar si el producto ya existe
             Optional<Pago> exists = repository.findByNumero(pago.getNumero());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -55,8 +71,6 @@ public class PagoService {
                         "Error... Tarjeta ya registrada"
                 );
             }
-
-            // Guardar el producto
             Pago savedPago = repository.save(pago);
             return new CustomResponse<>(
                     savedPago,
@@ -76,9 +90,39 @@ public class PagoService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar una forma de pago ilegal" + e.getMessage()
             );
         }
     }
+
+
+
+
+    //stripe
+    public String procesarPago(Carrito carrito) throws StripePaymentException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Obtener el nombre de usuario
+
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
+
+        carrito.setUsuario(usuario.get());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (int) (carrito.getMonto() * 100)); // la cantidad se expresa en centavos
+        params.put("currency", "mxn");
+        params.put("description", "Pago por producto: " + carrito.getProducto().getNombre());
+        params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
+        try {
+            Charge charge = Charge.create(params);
+            return charge.getId();
+        } catch (StripeException e) {
+            throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
+        }
+    }
+
+
+
+
+
 
 }

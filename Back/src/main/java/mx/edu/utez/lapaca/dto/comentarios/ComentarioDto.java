@@ -20,7 +20,7 @@ public class ComentarioDto {
 
     @NotBlank(message = "Este campo es obligatorio")
     @Size(max = 150, message = "El comentario debe tener como máximo {max} caracteres")
-    private String comentario;
+    private String comentarioTexto;
 
     @Min(value = 0, message = "El puntaje mínimo es 0")
     @Max(value = 5L, message = "El puntaje máximo es 5")
@@ -36,7 +36,7 @@ public class ComentarioDto {
     public Comentario getComentario() {
         return new Comentario(
                 getId(),
-                getComentario().getComentario(),
+                getComentarioTexto(),
                 getPuntaje(),
                 getProducto(),
                 getPedidos()

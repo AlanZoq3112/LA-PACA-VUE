@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 
-
 @Entity
 @Table(name = "subcategorias")
 @NoArgsConstructor

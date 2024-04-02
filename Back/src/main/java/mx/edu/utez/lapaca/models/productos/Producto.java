@@ -27,8 +27,8 @@ public class Producto {
     @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String imagenUrl;
+    @Column(nullable = false)
+    private byte[] imagenUrl;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;

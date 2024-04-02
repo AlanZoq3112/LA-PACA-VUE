@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,10 @@ public class ProductoController {
 
     @PostMapping("/insert")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
-    public ResponseEntity<CustomResponse<Producto>> insert(@Valid @RequestBody ProductoDto productoDto){
+    public ResponseEntity<CustomResponse<Producto>> insert(@Valid @ModelAttribute ProductoDto productoDto){
+        MultipartFile imagenUrl = productoDto.getImagenUrl();
         return new ResponseEntity<>(
-                this.service.insert(productoDto.getProducto()),
+                this.service.insert(productoDto.getProducto(), imagenUrl),
                 HttpStatus.CREATED
         );
     }

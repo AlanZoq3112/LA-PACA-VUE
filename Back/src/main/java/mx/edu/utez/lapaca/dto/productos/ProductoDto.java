@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.dto.productos.validators.ValidBase64ImageSize;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,9 +26,8 @@ public class ProductoDto {
     @Size(max = 40, message = "El nombre del producto debe tener como máximo {max} caracteres")
     private String nombre;
 
-    @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    @ValidBase64ImageSize
-    private String imagenUrl;
+
+    private MultipartFile imagenUrl;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -55,10 +54,17 @@ public class ProductoDto {
     private List<Oferta> ofertas;
     public Producto getProducto() {
 
+        byte[] imagenUrl = null;
+
+        if (getImagenUrl() != null) {
+            imagenUrl = getImagenUrl().getOriginalFilename().getBytes();
+        }
+
+
         return new Producto(
                 getId(),
                 getNombre(),
-                getImagenUrl(),
+                imagenUrl,
                 getDescripcion(),
                 getPrecio(),
                 getStock(),

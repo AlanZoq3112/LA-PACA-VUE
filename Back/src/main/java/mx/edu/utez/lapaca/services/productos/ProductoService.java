@@ -12,7 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -33,17 +38,14 @@ public class ProductoService {
     }
 
 
+    private String uploadDirectory =  ".//src//main//resources//files//";
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> insert(Producto producto) {
+    public CustomResponse<Producto> insert(Producto producto, MultipartFile imagenUrl) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
-
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             producto.setUsuario(usuario.get());
-
-
             // verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
             if (exists.isPresent()) {
@@ -54,10 +56,21 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
-
+            String fileName = imagenUrl.getOriginalFilename();
+            Path filePath = Paths.get(uploadDirectory, fileName);
+            try {
+                Files.write(filePath, imagenUrl.getBytes());
+            } catch (IOException e) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        500,
+                        "Error al guardar el producto"
+                );
+            }
+            producto.setImagenUrl(fileName.getBytes());
             // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
             producto.setEstado(false);
-
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
             return new CustomResponse<>(

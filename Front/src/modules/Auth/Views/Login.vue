@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div v-if="loading" class="overlay">
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
@@ -8,8 +14,7 @@
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
-                                        <img src="./../../../assets/Logo.png"
-                                            style="width: 200px;" alt="logo">
+                                        <img src="./../../../assets/Logo.png" style="width: 200px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">Carsi Shop</h4>
                                     </div>
 
@@ -36,10 +41,11 @@
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="login" type="button">
+                                                @click="login" type="button" style="background-color: black;">
                                                 Iniciar Sesion <i class="fas fa-sign-in-alt"></i>
                                             </button>
-                                            <a class="text-muted" v-b-modal.EnviarCorreo>¿Olvidaste tu contraseña?</a>
+                                            <a class="text-muted" href="recuperarContrasena">¿Olvidaste tu
+                                                contraseña?</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
@@ -66,17 +72,14 @@
                 </div>
             </div>
         </div>
-        <EnviarCorreoModal />
     </div>
 </template>
 <script>
-import EnviarCorreoModal from './EnviarCorreoModal.vue';
+
 import axios from 'axios';
 import Swal from 'sweetalert2';
 export default {
-    components: {
-        EnviarCorreoModal,
-    },
+
     name: "login",
     data() {
         return {
@@ -84,15 +87,16 @@ export default {
                 username: "",
                 password: ""
             },
-            showPassword: false
+            showPassword: false,
+            loading: false
         }
     },
 
     methods: {
         async login() {
             try {
-                // Envia las credenciales al backend
-                const response = await axios.post('http://localhost:8090/api-carsi-shop/auth/signin', {
+                this.loading = true;
+                const response = await axios.post('http://localhost:8091/api-carsi-shop/auth/signin', {
                     email: this.user.username,
                     password: this.user.password
                 });
@@ -120,8 +124,13 @@ export default {
                 });
             } catch (error) {
                 // Si hay un error en la autenticación, muestra un mensaje de error
-                console.error('Error de autenticación:', error.response.data);
-                Swal.fire('Error', 'Error al iniciar sesión, revisa correctamente tu correo y contraseña', 'error');
+                let errorMessage = 'Error al iniciar sesión, revisa correctamente tu correo y contraseña';
+                if (error.response && error.response.data && error.response.data.length > 0) {
+                    errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                }
+                Swal.fire('Error', errorMessage, 'error');
+            } finally {
+                this.loading = false;
             }
         },
         togglePasswordVisibility() {
@@ -137,53 +146,45 @@ export default {
     box-sizing: border-box;
 }
 
-.login-container {
-    background: linear-gradient(110.52deg,
-            #ffffff 81.1%,
-            #edf5fd 81.1%);
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.login {
-    width: 100%;
-    /* Ajusta el ancho aquí según tus necesidades */
-    max-width: 700px;
-    padding: 40px;
-    border-radius: 15px;
-    background: #f9f9f9;
+.loader {
+    color: white;
+    font-size: 20px;
     text-align: center;
-    border: 1px solid #808080;
-    height: 100%;
 }
 
-.login-form input,
-.login-form button {
-    height: 60px;
-    font-family: inherit;
-    font-size: 16px;
-    border-radius: 8px;
+.loading-text {
+    margin-bottom: 10px;
 }
 
-.login-form input {
-    background: transparent;
-    border: solid rgb(169, 165, 165);
-    font-size: 18px;
-    padding: 0 20px 0 20px;
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 5px solid #ffffff;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
 }
 
-#loginBtn {
-    cursor: pointer;
-    background: #f5f5f5;
-    color: #f9f9f9;
-    font-weight: 600;
-    width: 100%;
-}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
 
-.login-form a {
-    color: #f5f5f5;
-    font-size: 15px;
-    text-align: center;
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

@@ -21,15 +21,14 @@ public class VendedorDto {
     private String curp;
 
     @NotNull(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y" +
-            " tener como máximo 10 dígitos")
+    @Pattern(regexp = "^\\d{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefonoVendedor;
 
     @NotBlank(message = "La URL de la ine no puede estar vacía")
     private String ine;
 
     @NotBlank(message = "El RFC no puede estar vacío")
-    @Pattern(regexp = "^[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$", message = "RFC no válido")
+    @Pattern(regexp = "^[A-Z]{4}\\d{6}[A-Z\\d]{3}$", message = "RFC no válido")
     @Size(min = 13, max = 13, message = "El RFC debe tener exactamente 13 caracteres")
     private String rfc;
 

@@ -21,7 +21,7 @@ public class CustomExceptionHandler {
 
         List<String> list = ex.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
+                .toList();
 
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
     }

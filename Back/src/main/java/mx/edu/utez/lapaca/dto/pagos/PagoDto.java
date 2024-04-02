@@ -21,19 +21,19 @@ public class PagoDto {
 
     private Long id;
 
-    @NotBlank(message = "Debes seleccionar un tipo de pago válido")
+    @NotNull(message = "Debes seleccionar un tipo de pago válido")
     private TipoPago tipo;
 
     @NotNull(message = "Este campo es obligatorio")
     @NotBlank(message = "No puede contener espacios en blanco")
     @Size(min = 13, max = 19, message = "El número de tarjeta debe tener entre {min} y {max} dígitos")
     @Pattern(regexp = "\\d+", message = "El número de tarjeta debe contener solo dígitos")
-    private Long numero;
+    private String numero;
 
     @NotNull(message = "Este campo es obligatorio")
     @Size(min = 3, max = 4, message = "El CVV debe tener entre {min} y {max} dígitos")
     @Pattern(regexp = "\\d+", message = "El CVV debe contener solo dígitos")
-    private Integer cvv;
+    private String cvv;
 
     @NotBlank(message = "Este campo es obligatorio")
     @Size(max = 50, message = "El titular de la tarjeta no puede exceder los {max} caracteres")

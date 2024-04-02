@@ -55,7 +55,7 @@ public class CategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar de categoria ilegal" + e.getMessage()
             );
         }
     }
@@ -101,7 +101,7 @@ public class CategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener una categoria ilegal" + e.getMessage()
             );
         }
     }
@@ -136,7 +136,7 @@ public class CategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar una categoria ilegal" + e.getMessage()
             );
         }
     }
@@ -173,7 +173,7 @@ public class CategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar una categoria ilegal" + e.getMessage()
             );
         }
     }

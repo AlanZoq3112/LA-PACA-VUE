@@ -54,7 +54,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -100,7 +100,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -136,7 +136,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -173,7 +173,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar una subcategoria ilegal" + e.getMessage()
             );
         }
     }

@@ -28,7 +28,7 @@ public class ProductoDto {
 
     @NotBlank(message = "La URL de la imagen no puede estar vacía")
     @ValidBase64ImageSize
-    private String imagen_url;
+    private String imagenUrl;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -58,7 +58,7 @@ public class ProductoDto {
         return new Producto(
                 getId(),
                 getNombre(),
-                getImagen_url(),
+                getImagenUrl(),
                 getDescripcion(),
                 getPrecio(),
                 getStock(),

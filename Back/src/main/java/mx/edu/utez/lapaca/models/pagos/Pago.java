@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-import org.hibernate.annotations.Check;
-
 @Entity
 @Table(name = "pagos")
 @NoArgsConstructor
@@ -26,11 +24,10 @@ public class Pago {
     private TipoPago tipo;
 
     @Column(nullable = false)
-    @Check(constraints = "numero BETWEEN 13 AND 19")
-    private Long numero;
+    private String numero;
 
     @Column(nullable = false)
-    private Integer cvv;
+    private String cvv;
 
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String titular;

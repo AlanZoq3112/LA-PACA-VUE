@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div v-if="loading" class="overlay">
+            <div class="loader">Cargando</div>
+        </div>
+
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
@@ -26,8 +30,8 @@
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="sendEmail" type="button">
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" 
+                                                @click="sendEmail" type="button" :disabled="showRecoveryForm" style="background-color: black;">
                                                 Enviar correo de recuperación <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -62,7 +66,7 @@
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="recoveriPassword" type="button">
+                                                @click="recoveriPassword" type="button" style="background-color: black;">
                                                 Restaurar contraseña <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -94,13 +98,15 @@ export default {
                 secretPass: ""
             },
             repitNewPassword: "",
-            showRecoveryForm: false
+            showRecoveryForm: false,
+            loading: false
         }
     },
 
     methods: {
         sendEmail() {
-            axios.post('http://localhost:8090/api-carsi-shop/recovery/', {
+            this.loading = true;
+            axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
                 email: this.recoverPassword.email
             })
                 .then(response => {
@@ -119,19 +125,18 @@ export default {
                         errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                     }
                     Swal.fire('Error', errorMessage, 'error');
+                }).finally(() => {
+                    this.loading = false;
                 });
         },
         recoveriPassword() {
-            console.log(this.recoverPassword.email, this.newPassword.newPassword, this.newPassword.secretPass);
-            axios.put('http://localhost:8090/api-carsi-shop/recovery/updatePassword', {
-                email: this.recoverPassword.email,
-                newPassword: this.newPassword.newPassword,
-                secretPass: this.newPassword.secretPass
-            })
+            this.newPassword.email = this.recoverPassword.email;
+            this.loading = true;
+            axios.put('http://localhost:8091/api-carsi-shop/recovery/updatePassword', this.newPassword)
                 .then(response => {
-                    if (response.status === 200) {
+                    if (response.status === 201) {
                         Swal.fire('Actualizada', 'Tu contraseña fue restaurada correctamente', 'success');
-                        console.log(response.data);
+                        this.$router.push({ name: 'login' });
                     } else {
                         Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
                     }
@@ -142,6 +147,8 @@ export default {
                         errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                     }
                     Swal.fire('Error', errorMessage, 'error');
+                }).finally(() => {
+                    this.loading = false;
                 });
         }
 
@@ -155,53 +162,35 @@ export default {
     box-sizing: border-box;
 }
 
-.login-container {
-    background: linear-gradient(110.52deg,
-            #ffffff 81.1%,
-            #edf5fd 81.1%);
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.login {
-    width: 100%;
-    /* Ajusta el ancho aquí según tus necesidades */
-    max-width: 700px;
-    padding: 40px;
-    border-radius: 15px;
-    background: #f9f9f9;
-    text-align: center;
-    border: 1px solid #808080;
-    height: 100%;
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
 }
 
-.login-form input,
-.login-form button {
-    height: 60px;
-    font-family: inherit;
-    font-size: 16px;
-    border-radius: 8px;
-}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
 
-.login-form input {
-    background: transparent;
-    border: solid rgb(169, 165, 165);
-    font-size: 18px;
-    padding: 0 20px 0 20px;
-}
-
-#loginBtn {
-    cursor: pointer;
-    background: #f5f5f5;
-    color: #f9f9f9;
-    font-weight: 600;
-    width: 100%;
-}
-
-.login-form a {
-    color: #f5f5f5;
-    font-size: 15px;
-    text-align: center;
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

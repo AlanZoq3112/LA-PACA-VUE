@@ -94,6 +94,20 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/vendedores',
+      name: 'vendedores',
+      component: () => import('./../modules/Vendedores/ListaVendedores/Vendedores.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
       path: '/Productos',
       name: 'productos',
       component: () => import('./../modules/Productos/Views/Productos.vue'),

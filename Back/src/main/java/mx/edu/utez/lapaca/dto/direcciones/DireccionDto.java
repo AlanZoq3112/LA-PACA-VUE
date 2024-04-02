@@ -40,16 +40,16 @@ public class DireccionDto {
     @Size(max = 15, message = "El municipio debe tener como máximo {max} caracteres")
     private String municipio;
 
-    @NotNull(message = "el cp es obligatorio")
-    @Size(min = 5, max = 5, message = "el cp debe tener {max} caracteres")
-    private int codigoPostal;
+    @NotNull(message = "El código postal es obligatorio")
+    @Size(min = 5, max = 5, message = "El código postal debe tener exactamente 5 dígitos")
+    private String codigoPostal;
 
     @NotBlank(message = "La referencia es obligatoria")
     @Size(max = 100, message = "el cp debe tener {max} caracteres")
     private String referencia;
 
 
-    @NotNull(message = "El id de usuario no puede ser nulo")
+
     private Usuario usuario;
 
     public Direccion getDireccion() {

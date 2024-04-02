@@ -84,7 +84,7 @@ export default {
                     }
 
                     // Reemplaza la URL con la correcta para la edición de categorías
-                    const response = await axios.put(`http://localhost:8090/api-carsi-shop/categoria/update/${categoriaId}`, this.categoriaEdit, {
+                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/categoria/update/${categoriaId}`, this.categoriaEdit, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

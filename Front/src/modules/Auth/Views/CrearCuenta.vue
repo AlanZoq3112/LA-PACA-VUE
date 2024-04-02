@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div v-if="loading" class="overlay">
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
@@ -102,7 +109,7 @@
                                     </div>                                                                        
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="createAccount" type="button">
+                                            @click="createAccount" type="button" style="background-color: black;">
                                             Crear Cuenta
                                         </button>
                                     </div>
@@ -171,6 +178,7 @@ export default {
             },
             generoOption: "",
             confirmPassword: "",
+<<<<<<< HEAD
             valueNombre: "",
             valueEmail: "",
             valueFile:""
@@ -179,6 +187,29 @@ export default {
     methods: {
         dataChild(data) {
             this.user.email = data;
+=======
+            loading: false
+        };
+    },
+    methods: {
+        createAccount() {
+            this.loading = true;
+            axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
+                .then(response => {
+                    console.log(response.data);
+                    Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
+                    this.$router.push({ name: 'login' });
+                })
+                .catch(error => {
+                    let errorMessage = "Hubo un problema al crear la cuenta";
+                    if (error.response && error.response.data && error.response.data.length > 0) {
+                        errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                    }
+                    Swal.fire('Error', errorMessage, 'error');
+                }).finally(() => {
+                    this.loading = false;
+                });
+>>>>>>> main
         },
         validNombre(data) {
             this.valueNombre = data;
@@ -268,4 +299,64 @@ export default {
 };
 </script>
 
+<<<<<<< HEAD
 <style scoped></style>
+=======
+<style scoped>
+.image-preview-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.image-preview {
+    width: 200px;
+    height: 200px;
+    object-fit: fill;
+}
+
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
+
+.loading-text {
+    margin-bottom: 10px;
+}
+
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 5px solid #ffffff;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
+>>>>>>> main

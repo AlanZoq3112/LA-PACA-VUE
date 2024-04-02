@@ -3,10 +3,7 @@ package mx.edu.utez.lapaca.models.ofertas;
 
 import jakarta.persistence.*;
 import lombok.*;
-import mx.edu.utez.lapaca.models.productos.Producto;
-
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "ofertas")

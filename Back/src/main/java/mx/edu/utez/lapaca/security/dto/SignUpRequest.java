@@ -3,12 +3,10 @@ package mx.edu.utez.lapaca.security.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import mx.edu.utez.lapaca.dto.usuarios.constraints.IsAdult;
-import mx.edu.utez.lapaca.models.roles.Role;
-import mx.edu.utez.lapaca.utils.Validations;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 
@@ -35,7 +33,7 @@ public class SignUpRequest {
     private String password;
 
     @NotNull(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "^[0-9]{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
+    @Pattern(regexp = "^\\d{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefono;
 
     @NotNull(message = "La fecha de nacimiento es obligatoria")

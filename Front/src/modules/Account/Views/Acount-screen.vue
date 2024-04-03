@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <div>
             <div class="custom-container py-1 h-200">
                 <h4>Mi cuenta <b-icon icon="person"></b-icon></h4>
@@ -25,6 +25,7 @@
                                             <br>
                                             <h4 style="color:black">{{ user1.nombre }}</h4>
                                             <h5>{{ user1.email }}</h5>
+                                            <p>{{ user1.role }}</p>
                                         </b-col>
 
                                         <b-col>
@@ -171,15 +172,15 @@
                                                 <b-row class="mb-3" v-if="user1.role == 'VENDEDOR'">
                                                     <b-col class="pr-2">
                                                         <label for=""><b>CURP</b></label>
-                                                        <p>{{ user1.nombre }}</p>
+                                                        <p>{{ user1.vendedor.curp }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>RFC</b></label>
-                                                        <p>{{ user1.email }}</p>
+                                                        <p>{{ user1.vendedor.rfc }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user1.username }}</p>
+                                                        <p>{{ user1.vendedor.telefonoVendedor }}</p>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>
@@ -212,12 +213,12 @@
                                                 <br>
                                                 <b-row>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="vendedores"><b-icon
                                                                 icon="clock"></b-icon> Solicitudes de
                                                             vendedores</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                        <b-button variant="fades" to="productos"><b-icon
                                                                 icon="hourglass-split"></b-icon> Solicitudes de
                                                             productos</b-button>
                                                     </b-col>
@@ -308,7 +309,7 @@ export default {
                 const decoded = jwtDecode(token);
                 const email = decoded.sub;
 
-                const response = await axios.post('http://localhost:8090/api-carsi-shop/usuario/getOne', { email }, {
+                const response = await axios.post('http://localhost:8091/api-carsi-shop/usuario/getOne', { email }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -319,6 +320,12 @@ export default {
                 console.log("Datos del usuario logueado", this.user1);
             } catch (error) {
                 console.error("Error al obtener la información del usuario", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",
+                    icon: "error"
+                });
+                this.$router.push({ name: 'login' });
             }
         }
 

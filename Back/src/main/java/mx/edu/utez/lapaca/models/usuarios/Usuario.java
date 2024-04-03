@@ -1,21 +1,19 @@
 package mx.edu.utez.lapaca.models.usuarios;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.pagos.Pago;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.roles.Role;
+import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -61,8 +59,14 @@ public class Usuario implements UserDetails {
 
 
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Role role;
+
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    @JsonManagedReference
+    private Vendedor vendedor;
+
 
 
     @Override

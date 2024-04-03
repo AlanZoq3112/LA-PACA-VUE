@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
-import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
-import mx.edu.utez.lapaca.models.pedidos.Pedido;
-import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 import java.util.List;
@@ -30,9 +27,8 @@ public class Producto {
     @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
-
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String imagen_url;
+    private String imagenUrl;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;
@@ -54,9 +50,7 @@ public class Producto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-
-
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "producto_id") // Nombre de la columna en la tabla Producto que hace referencia a la Oferta
+    @JoinColumn(name = "producto_id")
     private List<Oferta> ofertas;
 }

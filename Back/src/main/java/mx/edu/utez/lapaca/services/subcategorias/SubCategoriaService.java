@@ -3,7 +3,6 @@ package mx.edu.utez.lapaca.services.subcategorias;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoriaRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,12 @@ import java.util.Optional;
 @Transactional
 public class SubCategoriaService {
 
-    @Autowired
-    private SubCategoriaRepository repository;
+
+    private final SubCategoriaRepository repository;
+
+    public SubCategoriaService(SubCategoriaRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> insert(SubCategoria subCategoria) {
@@ -51,7 +54,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -97,7 +100,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -133,7 +136,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar una subcategoria ilegal" + e.getMessage()
             );
         }
     }
@@ -170,7 +173,7 @@ public class SubCategoriaService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar una subcategoria ilegal" + e.getMessage()
             );
         }
     }

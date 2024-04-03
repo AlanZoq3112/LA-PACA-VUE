@@ -22,7 +22,7 @@ public class Comentario {
     private Long id;
 
     @Column(columnDefinition = "VARCHAR(150)", nullable = false)
-    private String comentario;
+    private String comentarioTexto;
 
     @Column(nullable = false, length = 150)
     private int puntaje;

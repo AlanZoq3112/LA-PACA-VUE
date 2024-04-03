@@ -1,4 +1,6 @@
 package mx.edu.utez.lapaca.models.carritos;
 
-public interface CarritoRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CarritoRepository extends JpaRepository<Carrito, Long> {
 }

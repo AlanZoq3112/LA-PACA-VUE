@@ -1,38 +1,32 @@
 package mx.edu.utez.lapaca.services.usuarios;
 
 
-import mx.edu.utez.lapaca.models.roles.Role;
+
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+        this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     //insert
     @Transactional(rollbackFor = {SQLException.class})
@@ -66,7 +60,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para insertar usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -114,7 +108,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para obtener un usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -159,7 +153,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para actualizar un usuario ilegal" + e.getMessage()
             );
         }
     }
@@ -198,7 +192,7 @@ public class UsuarioService {
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Error... argumento ilegal" + e.getMessage()
+                    "Error... datos para eliminar un usuario ilegal" + e.getMessage()
             );
         }
     }

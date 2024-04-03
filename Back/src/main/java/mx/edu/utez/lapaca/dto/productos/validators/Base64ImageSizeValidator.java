@@ -9,6 +9,8 @@ public class Base64ImageSizeValidator implements ConstraintValidator<ValidBase64
 
     @Override
     public void initialize(ValidBase64ImageSize constraintAnnotation) {
+        // No se requiere inicialización especial en este validador
+
     }
 
     @Override

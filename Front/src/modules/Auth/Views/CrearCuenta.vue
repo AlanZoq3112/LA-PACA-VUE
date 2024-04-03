@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div v-if="loading" class="overlay">
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
@@ -102,7 +109,7 @@
                                     </div>                                                                        
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="createAccount" type="button">
+                                            @click="createAccount" type="button" style="background-color: black;">
                                             Crear Cuenta
                                         </button>
                                     </div>

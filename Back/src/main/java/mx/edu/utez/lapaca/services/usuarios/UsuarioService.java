@@ -1,7 +1,7 @@
 package mx.edu.utez.lapaca.services.usuarios;
 
 
-
+import mx.edu.utez.lapaca.models.bitacora.Log;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import mx.edu.utez.lapaca.services.logs.LogService;
+
 
 import java.sql.SQLException;
 import java.util.List;
@@ -23,17 +25,20 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+    private final LogService logService;
+
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder, LogService logService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.logService = logService;
     }
-
     //insert
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> insert(Usuario usuario) {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
+                logService.log("Insert", "Usuario insertado", "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -42,12 +47,15 @@ public class UsuarioService {
                 );
             }
             Usuario savedUser = repository.save(usuario);
+            logService.log("Insert", "Usuario insertado", "usuario");
             return new CustomResponse<>(
                     savedUser,
                     false,
                     200,
                     "Usuario registrado"
+
             );
+
         } catch (DataAccessException e) {
             return new CustomResponse<>(
                     null,
@@ -82,6 +90,7 @@ public class UsuarioService {
         Optional<Usuario> usuario = repository.findByEmail(email);
         try {
             if (usuario.isPresent()) {
+                logService.log("GetOne", "Usuario obtenido", "usuarios");
                 return new CustomResponse<>(
                         usuario.get(),
                         false,
@@ -118,6 +127,7 @@ public class UsuarioService {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
+                logService.log("Update", "Usuario actualizado", "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -165,6 +175,7 @@ public class UsuarioService {
         try {
             Optional<Usuario> usuarioId = repository.findById(id);
             if (!usuarioId.isPresent()) {
+                logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -203,6 +214,7 @@ public class UsuarioService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> updatePassword(Usuario usuario) {
         if (!this.repository.existsById(usuario.getId())) {
+            logService.log("UpdatePassword", "Contraseña actualizada", "usuario");
             return new CustomResponse<>(
                     null,
                     true,
@@ -234,7 +246,7 @@ public class UsuarioService {
         return user.orElse(null);
     }
 
-
-
-
+    public Log getAuthenticatedUser() {
+        return null;
+    }
 }

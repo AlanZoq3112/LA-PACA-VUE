@@ -5,6 +5,7 @@ import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,19 @@ public class ProductoService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository) {
+    private final LogService logService;
+
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.logService = logService;
     }
 
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
+        logService.log("Insert", "Producto Agregado", "Productos");
+
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
@@ -60,6 +66,7 @@ public class ProductoService {
 
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
+            logService.log("Insert", "Producto Agregado", "Productos");
             return new CustomResponse<>(
                     savedProducto,
                     false,
@@ -95,6 +102,7 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> getOne(Long id) {
+        logService.log("GetOne", "Consulta del producto con el ID: " + id, "Productos");
         Optional<Producto> producto = repository.findById(id);
         try {
             if (producto.isPresent()) {
@@ -131,6 +139,8 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> update(Producto producto) {
+        logService.log("Update", "Producto Actualizado","Productos");
+
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
@@ -153,6 +163,7 @@ public class ProductoService {
             producto.setEstado(true);
             // se guardar el producto
             Producto savedProducto = repository.save(producto);
+            logService.log("Update", "Producto Actualizado","Productos");
             return new CustomResponse<>(
                     savedProducto,
                     false,
@@ -179,6 +190,7 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> aprobarSolicitudProducto(long id, boolean estado) {
+        logService.log("Aprobación", "El Administrador aprobo el producto con el ID: " + id,"Productos");
         Optional<Producto> productoOptional = repository.findById(id);
         if (productoOptional.isPresent()) {
             Producto producto = productoOptional.get();
@@ -214,6 +226,7 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> delete(Long id) {
+        logService.log("Delete", "Producto elimminado con el ID: " + id,"Productos");
         try {
             Optional<Producto> optionalProducto = repository.findById(id);
             if (optionalProducto.isPresent()) {

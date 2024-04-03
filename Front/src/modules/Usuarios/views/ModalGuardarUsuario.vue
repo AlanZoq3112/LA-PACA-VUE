@@ -3,7 +3,7 @@
         <div>
             <b-modal hide-footer hide-header centered id="modal-save-user">
                 <header class="text-center border-bottom">
-                    <p style="font-family: cabin">Registrar usuario</p>
+                    <p>Registrar usuario</p>
                 </header>
                 <main>
                     <form id="registrarUsuario">
@@ -122,7 +122,7 @@ export default {
                     console.log("Usuario a guardar: ", this.usuario);
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/usuario/insert", this.usuario, {
                         headers: {
-                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                            Authorization: `Bearer ${token}`
                         }
                     });
 
@@ -168,13 +168,11 @@ export default {
 
 <style scoped>
 .success {
-    font-family: Cabin;
     background-color: #009475;
     color: white;
 }
 
 .cancel {
-    font-family: Cabin;
     background-color: #ffce50;
     color: black;
 }

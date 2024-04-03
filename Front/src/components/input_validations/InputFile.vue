@@ -40,7 +40,6 @@ export default Vue.extend({
     methods:{
         sendImage() {     
             const isValid = this.v$.form.$invalid;
-            console.log(this.form.file)
             if (!isValid) {
                 this.$emit('check', true);
                 this.$emit('img', this.form.file); 

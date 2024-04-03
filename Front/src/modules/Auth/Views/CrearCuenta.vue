@@ -193,21 +193,20 @@ export default {
             this.user.nombre = data;
         },
         dataChildImg(data) {
-            console.log(data);
             if (data) {
                     base64Encode(data).then((data) => {
                         this.user.imagenUrl = data;
                     }).catch((error) => {
                         this.user.imagenUrl = null;
                     });
-                }
-                console.log(this.user.imagenUrl)
+                }                
         },
         onlynumbers(evt) {
             signal(evt);
         },
         createAccount() {
-            if (this.valueNombre && this.valueEmail && this.valueFile) {
+            const isValid = this.v$.user.$invalid;            
+            if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
                 console.log(this.user);
                 const generoFinal = this.user.genero.name;
                 this.user.genero = generoFinal;
@@ -220,7 +219,7 @@ export default {
                     .catch(error => {
                         let errorMessage = "Hubo un problema al crear la cuenta";
                         if (error.response && error.response.data && error.response.data.length > 0) {
-                            errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                            errorMessage = error.response.data[0];
                         }
                         Swal.fire('Error', errorMessage, 'error');
                     });

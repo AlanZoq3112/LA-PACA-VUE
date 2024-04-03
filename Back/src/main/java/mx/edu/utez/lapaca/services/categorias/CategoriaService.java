@@ -1,8 +1,10 @@
 package mx.edu.utez.lapaca.services.categorias;
 
 
+import mx.edu.utez.lapaca.models.bitacora.Log;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,12 @@ public class CategoriaService {
 
 
     private final CategoriaRepository repository;
+    private final LogService logService;
 
-    public CategoriaService(CategoriaRepository repository) {
+    public CategoriaService(CategoriaRepository repository, LogService logService) {
+
         this.repository = repository;
+        this.logService = logService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -37,6 +42,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedUser = repository.save(categoria);
+            logService.log("Insert", "Categoria registrada", "Categorias");
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -75,6 +81,7 @@ public class CategoriaService {
         Optional<Categoria> categoria = repository.findById(id);
         try {
             if (categoria.isPresent()) {
+                logService.log("GetOne", "Se encontro la categoria con id_:" + id, "Categorias");
                 return new CustomResponse<>(
                         categoria.get(),
                         false,
@@ -107,6 +114,7 @@ public class CategoriaService {
     }
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> update(Categoria categoria) {
+        logService.log("Update", "Categoria Actualizada", "Categorias");
         try {
             if (!this.repository.existsById(categoria.getId())) {
                 return new CustomResponse<>(
@@ -117,6 +125,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedCategoria = repository.save(categoria);
+            logService.log("Update", "Categoria Actualizada", "Categorias");
             return new CustomResponse<>(
                     savedCategoria,
                     false,
@@ -143,6 +152,7 @@ public class CategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> deleteById(Long id) {
+        logService.log("Delete", "Categoria Eliminada con el ID: " + id,  "Categorias");
         try {
             Optional<Categoria> categoriaId = repository.findById(id);
             if (!categoriaId.isPresent()) {
@@ -154,6 +164,7 @@ public class CategoriaService {
                 );
             }
             Categoria categoria = categoriaId.get();
+            logService.log("Delete", "Categoria Eliminada con el ID: " + id,  "Categorias");
             repository.delete(categoria);
             return new CustomResponse<>(
                     null,

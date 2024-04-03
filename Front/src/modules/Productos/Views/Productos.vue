@@ -71,6 +71,7 @@
 
 
                                         </b-table>
+                                        <div v-if="productos.length === 0" class="text-center">No hay solicitudes de productos.</div>
                                     </div>
                                 </div>
                             </div>

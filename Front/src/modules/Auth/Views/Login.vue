@@ -103,11 +103,9 @@ export default {
 
                 // Extrae el token JWT y los datos del usuario de la respuesta
                 const token = response.data.token;
-                const usuario = response.data.usuario;
 
-                // Guarda el token JWT y los datos del usuario en el localStorage
+                // Guarda el token JWT en el localStorage
                 localStorage.setItem('token', token);
-                localStorage.setItem('usuario', JSON.stringify(usuario));
 
                 // Redirige al usuario a la pantalla de perfil
                 this.$router.push({ name: 'profile-screen' });

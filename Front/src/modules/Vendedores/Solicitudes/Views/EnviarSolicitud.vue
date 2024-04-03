@@ -138,30 +138,6 @@ export default {
             }
         },
 
-        // handleImageUpload(event) {
-        //     if (this.vendedor.ine.length >= 2) {
-        //         Swal.fire('Error', 'No puedes agregar mas de 2 imagenes', 'error');
-        //         return;
-        //     }
-
-        //     const files = event.target.files;
-
-        //     // Itera sobre los archivos seleccionados
-        //     for (let i = 0; i < files.length; i++) {
-        //         const file = files[i];
-
-        //         if (file) {
-        //             // Convierte la imagen a una URL de datos para la vista previa
-        //             const reader = new FileReader();
-        //             reader.onload = () => {
-        //                 // Agrega la imagen al arreglo de imágenes
-        //                 this.vendedor.ine.push(reader.result);
-        //             };
-        //             reader.readAsDataURL(file);
-        //         }
-        //     }
-        // },
-
 
     }
 };

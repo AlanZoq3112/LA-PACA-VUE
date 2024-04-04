@@ -48,6 +48,7 @@
                                                 </div>
                                             </template>
                                         </b-table>
+                                        <div v-if="vendedores.length === 0" class="text-center">No hay solicitudes de vendedores.</div>
                                     </div>
                                 </div>
                             </div>

@@ -24,7 +24,7 @@
                                     <form>
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example11">Correo electrónico: </label>
-                                            <input v-model="recoverPassword.email" type="email" id="form2Example11"
+                                            <input v-model="sendEmail.email" type="email" id="form2Example11"
                                                 class="form-control" placeholder="Correo electronico de tu cuenta"
                                                 :disabled="showRecoveryForm" />
                                         </div>
@@ -66,7 +66,7 @@
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="recoveriPassword" type="button" style="background-color: black;">
+                                                @click="resetPassword" type="button" style="background-color: black;">
                                                 Restaurar contraseña <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -84,13 +84,11 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useVuelidate } from "@vuelidate/core";
-import { required, alphaNum, helpers, maxLength, minLength, email } from "@vuelidate/validators";
 export default {
     name: "RecuperarPassword",
     data() {
         return {
-            recoverPassword: {
+            sendEmail: {
                 email: ""
             },
             newPassword: {
@@ -107,7 +105,7 @@ export default {
         sendEmail() {
             this.loading = true;
             axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
-                email: this.recoverPassword.email
+                email: this.sendEmail.email
             })
                 .then(response => {
                     if (response.status === 200) {
@@ -129,8 +127,8 @@ export default {
                     this.loading = false;
                 });
         },
-        recoveriPassword() {
-            this.newPassword.email = this.recoverPassword.email;
+        resetPassword() {
+            this.newPassword.email = this.sendEmail.email;
             this.loading = true;
             axios.put('http://localhost:8091/api-carsi-shop/recovery/updatePassword', this.newPassword)
                 .then(response => {

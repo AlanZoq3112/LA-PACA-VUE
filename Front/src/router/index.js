@@ -1,17 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import { jwtDecode } from "jwt-decode";
+import Inicio from './../views/Inicio.vue'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
-  base: import.meta.env.BASE_URL,
   routes: [
-    {
-      path: '/',
-      component: () => import('../views/Inicio.vue')
-    },
+
+    { path: '/', component: Inicio },
     {
       path: '/login',
       name: 'login',
@@ -28,10 +26,12 @@ const router = new VueRouter({
       component: () => import('../modules/Vendedores/Solicitudes/Views/EnviarSolicitud.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
-        if (token) {
+        const tokenDecoded = jwtDecode(token);
+
+        if (tokenDecoded.rol === '[COMPRADOR]') {
           next();
         } else {
-          next('/login');
+          next('/inicio');
         }
       }
     },
@@ -99,11 +99,12 @@ const router = new VueRouter({
       component: () => import('./../modules/Vendedores/ListaVendedores/Vendedores.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
 
-        if (token) {
+        if (tokenDecoded.rol === '[ADMIN]') {
           next();
         } else {
-          next('/login');
+          next('/inicio');
         }
       }
     },
@@ -113,11 +114,12 @@ const router = new VueRouter({
       component: () => import('./../modules/Productos/Views/Productos.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
 
-        if (token) {
+        if (tokenDecoded.rol === '[ADMIN]') {
           next();
         } else {
-          next('/login');
+          next('/inicio');
         }
       }
     },
@@ -127,11 +129,12 @@ const router = new VueRouter({
       component: () => import('./../modules/Categorias/Views/Categorias/Categorias.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
 
-        if (token) {
+        if (tokenDecoded.rol === '[ADMIN]') {
           next();
         } else {
-          next('/login');
+          next('/inicio');
         }
       }
     },
@@ -174,7 +177,7 @@ const router = new VueRouter({
     {
       path: '/kid-producto',
       name: 'kid-producto',
-      component: () => import ('./../views/Nenes/Productos/kid-producto.vue')
+      component: () => import('./../views/Nenes/Productos/kid-producto.vue')
     },
     {
       path: '/ofertas-screen',
@@ -200,7 +203,17 @@ const router = new VueRouter({
     {
       path: '/usuarios',
       name: 'usuarios',
-      component: () => import('./../modules/Usuarios/views/Usuarios.vue')
+      component: () => import('./../modules/Usuarios/views/Usuarios.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
+
+        if (tokenDecoded.rol === '[ADMIN]') {
+          next();
+        } else {
+          next('/inicio');
+        }
+      }
     },
     {
       path: '*',
@@ -208,5 +221,6 @@ const router = new VueRouter({
     },
   ]
 })
+
 
 export default router

@@ -11,7 +11,7 @@
                                     <b-row>
                                         <b-col cols="2">
                                             <!-- Aquí se mostrará la imagen de perfil -->
-                                            <img v-if="user1.imagenUrl" :src="user1.imagenUrl"
+                                            <img v-if="user.imagenUrl" :src="user.imagenUrl"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
                                             <img v-else
@@ -23,9 +23,9 @@
                                         <b-col cols="8">
                                             <br>
                                             <br>
-                                            <h4 style="color:black">{{ user1.nombre }}</h4>
-                                            <h5>{{ user1.email }}</h5>
-                                            <p>{{ user1.role }}</p>
+                                            <h4 style="color:black">{{ user.nombre }}</h4>
+                                            <h5>{{ user.email }}</h5>
+                                            <p>{{ user.role }}</p>
                                         </b-col>
 
                                         <b-col>
@@ -61,26 +61,26 @@
                                                 <b-row class="mb-3">
                                                     <b-col cols="5" class="pr-2">
                                                         <label for=""><b>Nombre y apellido</b></label>
-                                                        <p>{{ user1.nombre }}</p>
+                                                        <p>{{ user.nombre }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Correo</b></label>
-                                                        <p>{{ user1.email }}</p>
+                                                        <p>{{ user.email }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user1.telefono }}</p>
+                                                        <p>{{ user.telefono }}</p>
                                                     </b-col>
                                                 </b-row>
 
                                                 <b-row>
                                                     <b-col cols="8">
                                                         <label for=""><b>Fecha de Nacimiento</b></label>
-                                                        <p>{{ user1.fechaNacimiento }}</p>
+                                                        <p>{{ user.fechaNacimiento }}</p>
                                                     </b-col>
                                                     <b-col>
                                                         <br>
-                                                        <b-button style="color: blue;" variant="faded">
+                                                        <b-button style="color: black;" variant="faded">
                                                             <b-icon icon="pencil-square"></b-icon> Actualizar datos
                                                         </b-button>
                                                     </b-col>
@@ -112,7 +112,7 @@
                                         </b-button>
                                         <b-collapse id="collapsVendedor">
                                             <b-card>
-                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                <div v-if="user.role == 'COMPRADOR'">
                                                     <div class="d-flex align-items-center justify-content-center pb-4">
                                                         <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
                                                     </div>
@@ -124,24 +124,19 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <b-row v-if="user1.role == 'VENDEDOR' || user1.role === 'ADMIN'">
+                                                <b-row v-if="user.role == 'VENDEDOR' || user.role === 'ADMIN'">
                                                     <b-col>
                                                         <b-button  to="productos"
-                                                            variant="faded" style="color: blue;"><i
+                                                            variant="faded" ><i
                                                                 class="fa fa-shopping-bag" aria-hidden="true"></i>
                                                             Administrar productos</b-button>
-                                                        <b-button to="productos" variant="faded"
-                                                            style="color: blue;"><i class="fa fa-shopping-bag"
-                                                                aria-hidden="true"></i> Ver productos</b-button>
                                                     </b-col>
                                                     <b-col >
-                                                        <b-button to="historialVentas" variant="faded"
-                                                            style="color: blue;"><i class="fa fa-credit-card"
+                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-credit-card"
                                                                 aria-hidden="true"></i> Administrar ventas</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"
-                                                            style="color: blue;"><i class="fa fa-truck"
+                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-truck"
                                                                 aria-hidden="true"></i> Administrar envios</b-button>
                                                     </b-col>
                                                 </b-row>
@@ -151,13 +146,13 @@
 
                                     <!-- Info fiscal -->
                                     <br>
-                                    <div v-if="user1.role == 'VENDEDOR' || user1.role === 'COMPRADOR'">
+                                    <div v-if="user.role == 'VENDEDOR' || user.role === 'COMPRADOR'">
                                         <b-button v-b-toggle.collapseFiscal class="m-1" variant="faded">Datos vendedor
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
                                         </b-button>
                                         <b-collapse id="collapseFiscal">
                                             <b-card>
-                                                <div v-if="user1.role == 'COMPRADOR'">
+                                                <div v-if="user.role == 'COMPRADOR'">
                                                     <div class="d-flex align-items-center justify-content-center pb-4">
                                                         <p class="mb-0 me-2"><b>Aún no eres un vendedor </b></p>
                                                     </div>
@@ -169,18 +164,18 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <b-row class="mb-3" v-if="user1.role == 'VENDEDOR'">
+                                                <b-row class="mb-3" v-if="user.role == 'VENDEDOR'">
                                                     <b-col class="pr-2">
                                                         <label for=""><b>CURP</b></label>
-                                                        <p>{{ user1.vendedor.curp }}</p>
+                                                        <p>{{ user.vendedor.curp }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>RFC</b></label>
-                                                        <p>{{ user1.vendedor.rfc }}</p>
+                                                        <p>{{ user.vendedor.rfc }}</p>
                                                     </b-col>
                                                     <b-col class="pl-2">
                                                         <label for=""><b>Teléfono</b></label>
-                                                        <p>{{ user1.vendedor.telefonoVendedor }}</p>
+                                                        <p>{{ user.vendedor.telefonoVendedor }}</p>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>
@@ -188,7 +183,7 @@
                                     </div>
                                     <!-- Administrador -->
                                     <br>
-                                    <div v-if="user1.role == 'ADMIN'">
+                                    <div v-if="user.role == 'ADMIN'">
                                         <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
                                             Administrar
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
@@ -270,13 +265,12 @@ export default {
     name: "profile-screen",
     data() {
         return {
-            user1: {},
+            user: {},
         }
     },
 
     methods: {
         logout() {
-            // Mostrar una alerta de confirmación antes de cerrar la sesión
             Swal.fire({
                 title: 'Cerrar sesión',
                 text: '¿Estás seguro de que deseas cerrar la sesión?',
@@ -288,16 +282,15 @@ export default {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Si se confirma la acción, limpiar el localStorage y redirigir a la página de inicio de sesión
                     localStorage.clear();
                     Swal.fire({
                         title: '¡Vuelve pronto!',
                         text: 'Has cerrado sesión correctamente.',
                         icon: 'success',
-                        position: 'top-end', // Posiciona la alerta en la esquina superior derecha
-                        toast: true, // Activa el modo toast para la alerta
-                        showConfirmButton: false, // No muestra el botón de confirmación
-                        timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                        position: 'top-end', 
+                        toast: true, 
+                        showConfirmButton: false, 
+                        timer: 3000 
                     });
                     this.$router.push({ name: 'login' });
                 }
@@ -316,8 +309,8 @@ export default {
                     }
                 });
 
-                this.user1 = response.data.data; // Asignar los datos del usuario a user1 del componente
-                console.log("Datos del usuario logueado", this.user1);
+                this.user = response.data.data;
+                console.log("Datos del usuario logueado", this.user);
             } catch (error) {
                 console.error("Error al obtener la información del usuario", error);
                 Swal.fire({

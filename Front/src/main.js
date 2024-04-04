@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import Multiselect from 'vue-multiselect';
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
@@ -15,12 +16,14 @@ import VueSweetalert2 from 'vue-sweetalert2';
 
 // If you don't need the styles, do not connect
 import 'sweetalert2/dist/sweetalert2.min.css';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 Vue.use(VueAxios, axios);
 Vue.use(VueSweetalert2);
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.component('multi-select', Multiselect);
 
 new Vue({
   router,

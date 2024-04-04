@@ -100,30 +100,23 @@ export default {
                     email: this.user.username,
                     password: this.user.password
                 });
-
                 // Extrae el token JWT y los datos del usuario de la respuesta
                 const token = response.data.token;
-                const usuario = response.data.usuario;
-
-                // Guarda el token JWT y los datos del usuario en el localStorage
+                // Guarda el token JWT en el localStorage
                 localStorage.setItem('token', token);
-                localStorage.setItem('usuario', JSON.stringify(usuario));
-
                 // Redirige al usuario a la pantalla de perfil
                 this.$router.push({ name: 'profile-screen' });
-
                 // Muestra una alerta de bienvenida al sistema
                 Swal.fire({
                     title: '¡Bienvenido!',
                     text: 'Has iniciado sesión correctamente.',
                     icon: 'success',
-                    position: 'top-end', // Posiciona la alerta en la esquina superior derecha
-                    toast: true, // Activa el modo toast para la alerta
-                    showConfirmButton: false, // No muestra el botón de confirmación
-                    timer: 3000 // Cierra automáticamente la alerta después de 3 segundos
+                    position: 'top-end', 
+                    toast: true, 
+                    showConfirmButton: false, 
+                    timer: 3000
                 });
             } catch (error) {
-                // Si hay un error en la autenticación, muestra un mensaje de error
                 let errorMessage = 'Error al iniciar sesión, revisa correctamente tu correo y contraseña';
                 if (error.response && error.response.data && error.response.data.length > 0) {
                     errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
@@ -134,7 +127,7 @@ export default {
             }
         },
         togglePasswordVisibility() {
-            this.showPassword = !this.showPassword; // Cambia el estado de visibilidad de la contraseña
+            this.showPassword = !this.showPassword; 
         }
 
     },

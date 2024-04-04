@@ -39,26 +39,6 @@
                                             placeholder="INE" />
                                     </div>
 
-                                    <!-- <div class="form-outline mb-4">
-                                        <label class="form-label" for="imagen">Identificación oficial (INE o IFE) por
-                                            ambos lados:</label>
-                                        <div class="input-group">
-                                            <input type="file" id="imagen" @change="handleImageUpload" accept="image/*"
-                                                multiple style="display: none;" />
-                                            <label class="input-group-text" for="imagen">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-outline mb-4" v-if="vendedor.ine && vendedor.ine.length > 0">
-                                        <h5>Vista previa de las imágenes:</h5>
-                                        <div class="image-preview-container">
-                                            <img v-for="(imagen, index) in vendedor.ine" :key="index" :src="imagen"
-                                                alt="Vista previa de la imagen" class="image-preview" />
-                                        </div>
-                                    </div> -->
-
 
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
@@ -137,30 +117,6 @@ export default {
                 });
             }
         },
-
-        // handleImageUpload(event) {
-        //     if (this.vendedor.ine.length >= 2) {
-        //         Swal.fire('Error', 'No puedes agregar mas de 2 imagenes', 'error');
-        //         return;
-        //     }
-
-        //     const files = event.target.files;
-
-        //     // Itera sobre los archivos seleccionados
-        //     for (let i = 0; i < files.length; i++) {
-        //         const file = files[i];
-
-        //         if (file) {
-        //             // Convierte la imagen a una URL de datos para la vista previa
-        //             const reader = new FileReader();
-        //             reader.onload = () => {
-        //                 // Agrega la imagen al arreglo de imágenes
-        //                 this.vendedor.ine.push(reader.result);
-        //             };
-        //             reader.readAsDataURL(file);
-        //         }
-        //     }
-        // },
 
 
     }

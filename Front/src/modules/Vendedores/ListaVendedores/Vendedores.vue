@@ -86,9 +86,8 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 this.vendedores = response.data.data;
-                console.log(this.vendedores);
             } catch (error) {
-                console.error("Error al obtener los datos de los vendedores", error);
+                Swal.fire('Error', 'Hubo un problema al intentar obtener los vendedores, intente mas tarde', 'error');
             }
         },
         async changeStatus(vendedorId, status) {
@@ -105,7 +104,6 @@ export default {
 
                 if (result.isConfirmed) {
                     const token = localStorage.getItem('token');
-                    console.log(status, vendedorId);
                     const response = await axios.put('http://localhost:8091/api-carsi-shop/vendedor/aprobarSolicitudVendedor', {
                         id: vendedorId,
                         estado: status

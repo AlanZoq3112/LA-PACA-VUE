@@ -310,9 +310,7 @@ export default {
                 });
 
                 this.user = response.data.data;
-                console.log("Datos del usuario logueado", this.user);
             } catch (error) {
-                console.error("Error al obtener la información del usuario", error);
                 Swal.fire({
                     title: "Error",
                     text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",

@@ -108,9 +108,8 @@ export default {
                     }
                 });
                 this.usuarios = response.data.data; // Asumiendo que la respuesta tiene una propiedad 'data'
-                console.log(this.usuarios);
             } catch (error) {
-                console.error("Error al obtener los datos del usuario", error);
+                Swal.fire('Error', 'Hubo un problema al intentar obtener los usuarios, intente mas tarde', 'error');
             }
         },
         async deleteUser(userId) {
@@ -140,7 +139,6 @@ export default {
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
                 }
             } catch (error) {
-                console.error("Error al eliminar el usuario", error);
                 Swal.fire('Error', 'Hubo un problema al intentar eliminar el usuario', 'error');
             }
         },

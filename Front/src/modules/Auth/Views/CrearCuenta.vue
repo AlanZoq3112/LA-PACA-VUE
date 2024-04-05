@@ -14,7 +14,7 @@
                         <div class="col-lg-12">
                             <div class="card-body p-md-5 mx-md-4">
                                 <div class="text-center">
-                                    <img src="https://png.pngtree.com/template/20191024/ourmid/pngtree-shopping-cart-vector-logo-design-shopping-logo-design-on-line-shopping-image_322990.jpg"
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4230/4230652.png"
                                         style="width: 200px;" alt="logo" />
                                     <h4 class="mt-1 mb-5 pb-1">Crear cuenta</h4>
                                 </div>
@@ -216,12 +216,10 @@ export default {
             this.loading = true;
             const isValid = this.v$.user.$invalid;
             if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
-                console.log(this.user);
                 const generoFinal = this.user.genero.name;
                 this.user.genero = generoFinal;
                 axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
                     .then(response => {
-                        console.log(response.data);
                         Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
                         this.$router.push({ name: 'login' });
                     })

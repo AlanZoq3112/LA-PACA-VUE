@@ -91,12 +91,10 @@ export default {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
-                    console.log("Datos del vendedor: ", this.vendedor);
                     axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
                             headers: { Authorization: `Bearer ${token}` }
                         })
                         .then(response => {
-                            console.log(response.data);
                             Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
                             this.$router.push({ name: 'profile-screen' });
                         })
@@ -109,7 +107,6 @@ export default {
                         });
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de guardado:", error);
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al intentar guardar el usuario",

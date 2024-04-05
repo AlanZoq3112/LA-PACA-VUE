@@ -126,7 +126,7 @@
                                                 </div>
                                                 <b-row v-if="user.role == 'VENDEDOR' || user.role === 'ADMIN'">
                                                     <b-col>
-                                                        <b-button  to="productos"
+                                                        <b-button  to="MisProductos"
                                                             variant="faded" ><i
                                                                 class="fa fa-shopping-bag" aria-hidden="true"></i>
                                                             Administrar productos</b-button>

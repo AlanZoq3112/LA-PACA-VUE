@@ -3,7 +3,7 @@
         <div>
             <b-modal hide-footer hide-header centered id="modal-guardar-subcategorias" @show="getCategorias">
                 <header class="text-center border-bottom">
-                    <p style="font-family: cabin">Registrar subcategoria</p>
+                    <p>Registrar subcategoria</p>
                 </header>
                 <main>
                     <form id="registrarSubcategoria" @submit.prevent="registrarSubcategoria">
@@ -141,13 +141,11 @@ export default {
 
 <style>
 .success {
-    font-family: Cabin;
     background-color: #009475;
     color: white;
 }
 
 .cancel {
-    font-family: Cabin;
     background-color: #ffce50;
     color: black;
 }

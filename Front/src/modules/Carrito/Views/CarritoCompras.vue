@@ -16,8 +16,7 @@
                                 <p>Cantidad: {{ product.Cantidad }}</p>
                             </div>
                             <div class="col-md-5">
-                                <img style="height: 200px; width: 200px;" :src="product.Imagenes[0]"
-                                    alt="Imagen del producto">
+
                             </div>
                         </div>
                         <template #footer>

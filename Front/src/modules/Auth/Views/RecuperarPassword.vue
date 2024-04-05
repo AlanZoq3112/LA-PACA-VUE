@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="loading" class="overlay">
-            <div class="loader">Cargando</div>
+            <div class="loader"></div>
         </div>
 
         <div class="container py-5 h-100">
@@ -31,7 +31,7 @@
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" 
-                                                @click="sendEmail" type="button" :disabled="showRecoveryForm" style="background-color: black;">
+                                                @click="enviarCorreo" type="button" :disabled="showRecoveryForm" style="background-color: black;">
                                                 Enviar correo de recuperación <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -102,8 +102,9 @@ export default {
     },
 
     methods: {
-        sendEmail() {
+        enviarCorreo() {
             this.loading = true;
+            console.log(this.sendEmail.email);
             axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
                 email: this.sendEmail.email
             })

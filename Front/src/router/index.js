@@ -124,6 +124,21 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/MisProductos',
+      name: 'MisProductos',
+      component: () => import('./../modules/Productos/Views/ProductosVendedor/MisProductos.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
+
+        if (tokenDecoded.rol === '[VENDEDOR]') {
+          next();
+        } else {
+          next('/inicio');
+        }
+      }
+    },
+    {
       path: '/categorias-screen',
       name: 'categorias-screen',
       component: () => import('./../modules/Categorias/Views/Categorias/Categorias.vue'),

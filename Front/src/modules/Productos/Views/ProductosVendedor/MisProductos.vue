@@ -21,6 +21,8 @@
                                         </div>
                                     </div>
                                     <div class="text-center tabla">
+
+                                        
                                         <b-table responsive :fields="fields" :items="productos" head-variant="light"
                                             bordered class="text-center shadow" id="table" ref="table">
 
@@ -71,6 +73,7 @@
 
 
                                         </b-table>
+                                        
                                         <div v-if="productos.length === 0" class="text-center">No tienes productos registrados.</div>
                                     </div>
                                 </div>

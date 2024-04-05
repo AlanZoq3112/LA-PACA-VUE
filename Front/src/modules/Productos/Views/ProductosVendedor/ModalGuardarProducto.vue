@@ -144,7 +144,9 @@ export default {
                 descripcion: "",
                 precio: 0.0,
                 stock: 0,
-                categoria: null,
+                categoria: {
+                    id: 0,
+                }
             }
         }
     },

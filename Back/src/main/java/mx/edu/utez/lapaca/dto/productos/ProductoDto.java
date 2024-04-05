@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +27,7 @@ public class ProductoDto {
     private String nombre;
 
 
-    private MultipartFile imagenUrl;
+    private MultipartFile image;
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -47,30 +47,25 @@ public class ProductoDto {
 
     private Usuario usuario;
 
-    @NotNull(message = "El id de categoria no puede ser nulo")
-    private Categoria categoria;
+    @NotNull(message = "El id de subcategoria no puede ser nulo")
+    private SubCategoria subCategoria;
 
 
     private List<Oferta> ofertas;
+
+
+
     public Producto getProducto() {
-
-        byte[] imagenUrl = null;
-
-        if (getImagenUrl() != null) {
-            imagenUrl = getImagenUrl().getOriginalFilename().getBytes();
-        }
-
-
         return new Producto(
                 getId(),
                 getNombre(),
-                imagenUrl,
+                getImage().getOriginalFilename(),
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
                 isEstado(),
                 getUsuario(),
-                getCategoria(),
+                getSubCategoria(),
                 getOfertas()
         );
     }

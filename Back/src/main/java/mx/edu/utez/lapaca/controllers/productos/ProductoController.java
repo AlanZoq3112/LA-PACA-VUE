@@ -4,14 +4,17 @@ package mx.edu.utez.lapaca.controllers.productos;
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.productos.ProductoDto;
 import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.productos.ProductoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,16 +23,25 @@ import java.util.Map;
 @CrossOrigin(origins = {"*"})
 public class ProductoController {
     private final ProductoService service;
-    public ProductoController(ProductoService service) {
+
+    private final FirebaseService firebaseService;
+    public ProductoController(ProductoService service, FirebaseService firebaseService) {
         this.service = service;
+        this.firebaseService = firebaseService;
     }
 
-    @PostMapping("/insert")
+    @PostMapping(value = "/insert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
-    public ResponseEntity<CustomResponse<Producto>> insert(@Valid @ModelAttribute ProductoDto productoDto){
-        MultipartFile imagenUrl = productoDto.getImagenUrl();
+    public ResponseEntity<CustomResponse<Producto>> insert(@Valid @ModelAttribute ProductoDto productoDto) throws Exception {
+        MultipartFile imageFile = productoDto.getImage();
+        // Subir imagen a Firebase y obtener URL
+        String imageUrl = firebaseService.uploadFile(imageFile);
+        productoDto.setImage(imageFile);
+        if (imageUrl == null) {
+            throw new Exception("Failed to upload image to Firebase.");
+        }
         return new ResponseEntity<>(
-                this.service.insert(productoDto.getProducto(), imagenUrl),
+                this.service.insert(productoDto.getProducto()),
                 HttpStatus.CREATED
         );
     }

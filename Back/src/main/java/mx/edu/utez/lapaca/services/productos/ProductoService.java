@@ -1,10 +1,10 @@
 package mx.edu.utez.lapaca.services.productos;
 
-
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
@@ -13,12 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -29,26 +23,21 @@ public class ProductoService {
 
 
     private final ProductoRepository repository;
-
-
     private final UsuarioRepository usuarioRepository;
-
     private final LogService logService;
+    private final FirebaseService firebaseService;
 
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
+
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService, FirebaseService firebaseService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.logService = logService;
+        this.firebaseService = firebaseService;
     }
 
-
-
-
-    private String uploadDirectory =  ".//src//main//resources//files//";
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> insert(Producto producto, MultipartFile imagenUrl) {
+    public CustomResponse<Producto> insert(Producto producto) {
         logService.log("Insert", "Producto Agregado", "Productos");
-
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
@@ -64,19 +53,6 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
-            String fileName = imagenUrl.getOriginalFilename();
-            Path filePath = Paths.get(uploadDirectory, fileName);
-            try {
-                Files.write(filePath, imagenUrl.getBytes());
-            } catch (IOException e) {
-                return new CustomResponse<>(
-                        null,
-                        true,
-                        500,
-                        "Error al guardar el producto"
-                );
-            }
-            producto.setImagenUrl(fileName.getBytes());
             // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
             producto.setEstado(false);
             // Guardar el producto
@@ -102,6 +78,8 @@ public class ProductoService {
                     HttpStatus.BAD_REQUEST.value(),
                     "Error... datos para insertar un producto ilegal" + e.getMessage()
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -279,5 +257,3 @@ public class ProductoService {
         }
     }
 }
-
-

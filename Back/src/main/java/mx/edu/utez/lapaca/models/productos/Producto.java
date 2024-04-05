@@ -6,9 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
+import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Producto {
     private String nombre;
 
     @Column(nullable = false)
-    private byte[] imagenUrl;
+    private String image;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String descripcion;
@@ -47,10 +48,12 @@ public class Producto {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
+    @JoinColumn(name = "subcategoria_id")
+    private SubCategoria subCategoria;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "producto_id")
     private List<Oferta> ofertas;
+
+
 }

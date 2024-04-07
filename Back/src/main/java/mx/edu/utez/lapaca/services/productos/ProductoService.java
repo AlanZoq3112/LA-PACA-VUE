@@ -1,10 +1,10 @@
 package mx.edu.utez.lapaca.services.productos;
 
-
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
@@ -24,32 +24,26 @@ public class ProductoService {
 
 
     private final ProductoRepository repository;
-
-
     private final UsuarioRepository usuarioRepository;
-
     private final LogService logService;
+    private final FirebaseService firebaseService;
 
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
+
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService, FirebaseService firebaseService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.logService = logService;
+        this.firebaseService = firebaseService;
     }
-
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
         logService.log("Insert", "Producto Agregado", "Productos");
-
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
-
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             producto.setUsuario(usuario.get());
-
-
             // verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
             if (exists.isPresent()) {
@@ -60,10 +54,8 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
-
             // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
             producto.setEstado(false);
-
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Insert", "Producto Agregado", "Productos");
@@ -87,6 +79,8 @@ public class ProductoService {
                     HttpStatus.BAD_REQUEST.value(),
                     "Error... datos para insertar un producto ilegal" + e.getMessage()
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -263,6 +257,58 @@ public class ProductoService {
             );
         }
     }
+
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Producto>> getAllByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Producto> productos = repository.findByUsuario(usuario);
+            return new CustomResponse<>(
+                    productos,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Producto>> getAllApprovedProducts() {
+        try {
+            List<Producto> productos = repository.findByEstadoTrue();
+            return new CustomResponse<>(
+                    productos,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al obtener los productos aprobados"
+            );
+        }
+    }
+
+
+
 }
-
-

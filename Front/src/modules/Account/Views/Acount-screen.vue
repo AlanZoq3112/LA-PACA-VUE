@@ -12,7 +12,7 @@
                                         <b-col cols="2">
                                             <!-- Aquí se mostrará la imagen de perfil -->
 
-                                            <img v-if="user.imagenUrl" :src="user.imagenUrl"
+                                            <img v-if="user.image" :src="user.image"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
                                             <img v-else

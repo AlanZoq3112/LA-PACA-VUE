@@ -170,7 +170,7 @@ export default {
             user: {
                 nombre: "",
                 genero: "",
-                imagenUrl: "",
+                image: "",
                 email: "",
                 password: "",
                 telefono: "",
@@ -203,9 +203,9 @@ export default {
         dataChildImg(data) {
             if (data) {
                 base64Encode(data).then((data) => {
-                    this.user.imagenUrl = data;
+                    this.user.image = data;
                 }).catch((error) => {
-                    this.user.imagenUrl = null;
+                    this.user.image = null;
                 });
             }
         },
@@ -218,6 +218,8 @@ export default {
             if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
                 const generoFinal = this.user.genero.name;
                 this.user.genero = generoFinal;
+
+                console.log(this.user);
                 axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
                     .then(response => {
                         Swal.fire('Creada', 'Cuenta creada correctamente', 'success');

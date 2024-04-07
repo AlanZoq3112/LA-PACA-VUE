@@ -12,6 +12,7 @@ import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -31,8 +32,7 @@ public class UsuarioDto {
     @Size(max = 15, message = "El genero debe tener como máximo {max} caracteres")
     private String genero;
 
-    @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    private String imagenUrl;
+    private MultipartFile image;
 
     @NotNull(message = "La dirección de correo electrónico es obligatoria")
     @Email(message = "La dirección de correo electrónico debe ser válida")
@@ -53,17 +53,18 @@ public class UsuarioDto {
 
     private String secretPass;
 
-    @NotNull(message = "El rol no puede ser nulo")
+
     private Role role;
 
     private Vendedor vendedor;
 
     public Usuario getUsuario() {
+
         return new Usuario(
                 getId(),
                 getNombre(),
                 getGenero(),
-                getImagenUrl(),
+                getImage().getResource().getFilename(),
                 getEmail(),
                 getPassword(),
                 getTelefono(),

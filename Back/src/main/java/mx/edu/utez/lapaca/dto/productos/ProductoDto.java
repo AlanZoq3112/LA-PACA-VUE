@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -26,8 +28,7 @@ public class ProductoDto {
     @Size(max = 40, message = "El nombre del producto debe tener como máximo {max} caracteres")
     private String nombre;
 
-
-    private MultipartFile image;
+    private List<MultipartFile> imagenes = new ArrayList<>();
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
     @Size(max = 100, message = "La descripción del producto debe tener como máximo {max} caracteres")
@@ -56,10 +57,23 @@ public class ProductoDto {
 
 
     public Producto getProducto() {
+
+        Producto producto = new Producto();
+        // Asignar otros campos del producto
+        List<ProductoImagen> listaImagenes = new ArrayList<>();
+        for (MultipartFile imagen : imagenes) {
+            ProductoImagen productoImagen = new ProductoImagen();
+            // Configurar otros detalles de la imagen...
+            productoImagen.setProducto(producto); // Establecer la relación con el producto
+            listaImagenes.add(productoImagen);
+        }
+        producto.setImagenes(listaImagenes);
+
+
         return new Producto(
                 getId(),
                 getNombre(),
-                getImage().getOriginalFilename(),
+                listaImagenes,
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
@@ -69,9 +83,4 @@ public class ProductoDto {
                 getOfertas()
         );
     }
-
-
-
-
-
 }

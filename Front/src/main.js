@@ -7,6 +7,7 @@ import Multiselect from 'vue-multiselect';
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
+import '@asika32764/vue-animate/dist/vue-animate.css';
 
 // Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'

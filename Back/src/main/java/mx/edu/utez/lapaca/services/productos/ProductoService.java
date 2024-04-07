@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.services.productos;
 
-import mx.edu.utez.lapaca.dto.productos.ProductoDto;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -14,10 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -260,4 +257,58 @@ public class ProductoService {
             );
         }
     }
+
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Producto>> getAllByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Producto> productos = repository.findByUsuario(usuario);
+            return new CustomResponse<>(
+                    productos,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Producto>> getAllApprovedProducts() {
+        try {
+            List<Producto> productos = repository.findByEstadoTrue();
+            return new CustomResponse<>(
+                    productos,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al obtener los productos aprobados"
+            );
+        }
+    }
+
+
+
 }

@@ -136,4 +136,26 @@ public class ProductoController {
         );
     }
 
+
+    @GetMapping("/mis-productos")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
+    public ResponseEntity<CustomResponse<List<Producto>>> getAllProductosByCurrentUser() {
+        return new ResponseEntity<>(
+                service.getAllByCurrentUser(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/productos-aprobados")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<CustomResponse<List<Producto>>> getAllApprovedProducts() {
+        return new ResponseEntity<>(
+                service.getAllApprovedProducts(),
+                HttpStatus.OK
+        );
+    }
+
+
+
+
 }

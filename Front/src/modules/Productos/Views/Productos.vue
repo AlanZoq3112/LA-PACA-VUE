@@ -121,7 +121,7 @@ export default {
                 });
                 this.productos = response.data.data;
             } catch (error) {
-                console.error("Error al obtener los datos de los productos", error);
+                Swal.fire('Error', 'Hubo un problema al intentar obtener los productos, intente mas tarde', 'error');
             }
         },
         async changeStatus(productoId, status) {
@@ -150,12 +150,10 @@ export default {
                         this.getProductos(); // Método para obtener los productos actualizados
                         Swal.fire('¡Éxito!', `La solicitud ha sido ${status ? 'aceptada' : 'rechazada'} correctamente`, 'success');
                     } else {
-                        console.log(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud. Estado del servidor:`, response.status);
                         Swal.fire('Error', `Hubo un problema al intentar ${status ? 'aceptar' : 'rechazar'} la solicitud`, 'error');
                     }
                 }
             } catch (error) {
-                console.error(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud:`, error);
                 Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
             }
         },

@@ -12,7 +12,7 @@
                                         <b-col cols="2">
                                             <!-- Aquí se mostrará la imagen de perfil -->
 
-                                            <img v-if="user.imagenUrl" :src="user.imagenUrl"
+                                            <img v-if="user.image" :src="user.image"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
                                             <img v-else
@@ -319,9 +319,7 @@ export default {
                 });
 
                 this.user = response.data.data;
-                console.log("Datos del usuario logueado", this.user);
             } catch (error) {
-                console.error("Error al obtener la información del usuario", error);
                 Swal.fire({
                     title: "Error",
                     text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",

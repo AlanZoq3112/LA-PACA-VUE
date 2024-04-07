@@ -83,11 +83,10 @@ export default {
                         this.$emit('categoria-saved');
                         this.$bvModal.hide("modal-guardar-categorias");
                     } else {
-                        console.log("Error al guardar la categoria. Estado del servidor:", response.status);
+                        Swal.fire('Error', 'Hubo un problema al intentar REGISTRAR la categoria, intente mas tarde', 'error');
                     }
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de guardado:", error);
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al intentar guardar el usuario",

@@ -37,7 +37,7 @@ public class Usuario implements UserDetails {
     private String genero;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String imagenUrl;
+    private String image;
 
     @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
     private String email;

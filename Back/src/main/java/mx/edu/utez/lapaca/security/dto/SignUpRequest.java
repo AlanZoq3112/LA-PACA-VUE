@@ -22,8 +22,8 @@ public class SignUpRequest {
     @Size(max = 15, message = "El genero debe tener como máximo {max} caracteres")
     private String genero;
 
-    @NotBlank(message = "La URL de la imagen no puede estar vacía")
-    private String imagenUrl;
+    @NotBlank(message = "La imagen no puede estar vacía")
+    private String image;
 
     @NotNull(message = "La dirección de correo electrónico es obligatoria")
     @Email(message = "La dirección de correo electrónico debe ser válida")

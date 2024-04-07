@@ -101,11 +101,9 @@ export default {
                         this.$emit('categoria-saved');
                         this.$bvModal.hide("modal-editar-categorias");
                     } else {
-                        console.log("Error al editar la categoría. Estado del servidor:", response.status);
-                    }
+                        Swal.fire('Error', 'Hubo un problema al intentar EDITAR la categoria, intente mas tarde', 'error');                    }
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de edición:", error);
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al intentar editar la categoría",

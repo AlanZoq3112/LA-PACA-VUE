@@ -132,9 +132,8 @@ export default {
                     }
                 });
                 this.categorias = response.data.data;
-                console.log(this.categorias);
             } catch (error) {
-                console.error("Error al obtener las categorias", error);
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las categorias, intente mas tarde', 'error');
             }
         },
         async deleteCategoria(categoriaId) {
@@ -176,8 +175,7 @@ export default {
                 });
                 this.subcategorias = response.data.data;
             } catch (error) {
-                console.error("Error al obtener las subcategorias", error);
-            }
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
         },
         async deleteSubcategoria(subcategoriaId) {
             try {
@@ -204,7 +202,6 @@ export default {
                     Swal.fire('Eliminada', 'La subcategoria ha sido eliminada correctamente', 'success');
                 }
             } catch (error) {
-                console.error("Error al eliminar la categoria", error);
                 Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
             }
         },

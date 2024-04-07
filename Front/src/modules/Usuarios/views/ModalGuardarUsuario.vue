@@ -119,7 +119,6 @@ export default {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
-                    console.log("Usuario a guardar: ", this.usuario);
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/usuario/insert", this.usuario, {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -137,11 +136,10 @@ export default {
                         this.$emit('user-updated');
                         this.$bvModal.hide("modal-save-user");
                     } else {
-                        console.log("Error al guardar el usuario. Estado del servidor:", response.status);
+                        Swal.fire('Error', 'Hubo un problema al intentar GUARDAR al usuario, intente mas tarde', 'error');
                     }
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de guardado:", error);
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al intentar guardar el usuario",

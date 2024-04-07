@@ -9,8 +9,8 @@
                     <b-row>
                         <b-col>
                             <label for="nombre">Nombre de la categoria: *</label>
-                            <b-form-input v-model="categoriaEdit.nombre" type="text" class="form-control"
-                                placeholder="Nombre" required />
+                            <InputTextMax @check="validNombre" @name="dataChild" :dato="categoriaEdit.nombre" required
+                                :numMax="maximo" />
                         </b-col>
                     </b-row>
                 </form>
@@ -36,11 +36,16 @@ export default {
     props: {
         categoria: Object
     },
+    components: {
+        InputTextMax: () => import('../../../../components/input_validations/inputTextMax.vue'),
+    },
     data() {
         return {
             categoriaEdit: {
                 nombre: ""
-            }
+            },
+            maximo: 25,
+            valueCategoria: ""
         }
     },
     computed: {
@@ -54,10 +59,15 @@ export default {
         }
     },
     methods: {
-        onClose() {
-            this.$bvModal.hide("modal-editar-categorias");
-            this.resetForm();
+        dataChild(data) {
+            this.categoriaEdit.nombre = data;
         },
+        validNombre(data) {
+            this.valueCategoria = data;
+        },
+        onClose() {
+            this.$bvModal.hide("modal-editar-categorias");            
+        },        
         async update() {
             try {
                 const result = await Swal.fire({
@@ -70,7 +80,7 @@ export default {
                     cancelButtonText: 'Cancelar',
                 });
 
-                if (result.isConfirmed) {
+                if (result.isConfirmed && this.valueCategoria) {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
@@ -82,7 +92,6 @@ export default {
                         Swal.fire('Error', 'No se ha proporcionado un ID de categoría válido', 'error');
                         return;
                     }
-
                     // Reemplaza la URL con la correcta para la edición de categorías
                     const response = await axios.put(`http://localhost:8091/api-carsi-shop/categoria/update/${categoriaId}`, this.categoriaEdit, {
                         headers: {
@@ -101,7 +110,10 @@ export default {
                         this.$emit('categoria-saved');
                         this.$bvModal.hide("modal-editar-categorias");
                     } else {
-                        Swal.fire('Error', 'Hubo un problema al intentar EDITAR la categoria, intente mas tarde', 'error');                    }
+                        Swal.fire('Error', 'Hubo un problema al intentar EDITAR la categoria, intente mas tarde', 'error');
+                    }
+                } else {
+                    Swal.fire('Error', 'Revise los campos', 'error');
                 }
             } catch (error) {
                 Swal.fire({
@@ -111,11 +123,6 @@ export default {
                 });
             }
         },
-        resetForm() {
-            this.categoriaEdit = {
-                nombre: "",
-            }
-        }
     }
 }
 </script>

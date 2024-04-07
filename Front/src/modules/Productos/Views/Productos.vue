@@ -71,7 +71,8 @@
 
 
                                         </b-table>
-                                        <div v-if="productos.length === 0" class="text-center">No hay solicitudes de productos.</div>
+                                        <div v-if="productos.length === 0" class="text-center">No hay solicitudes de
+                                            productos.</div>
                                     </div>
                                 </div>
                             </div>
@@ -137,9 +138,11 @@ export default {
 
                 if (result.isConfirmed) {
                     const token = localStorage.getItem('token');
-                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/update/${productoId}`, {
-                        estado: status
-                    }, {
+                    // Encuentra el producto en la lista de productos basado en el ID
+                    const producto = this.productos.find(p => p.id === productoId);
+
+                    console.log("El producto: ", producto);
+                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/update`, producto, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
 

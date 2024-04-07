@@ -30,10 +30,10 @@
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="genero">Género: </label>
                                                 <multi-select id="genero" :class="{
-            'is-invalid': v$.user.genero.$error,
-            'is-valid': !v$.user.genero.$invalid,
-        }" v-model="v$.user.genero.$model" placeholder="Selecciona un género"
-                                                    label="name" :options="generos" track-by="name" :multiple="false"
+                                                    'is-invalid': v$.user.genero.$error,
+                                                    'is-valid': !v$.user.genero.$invalid,
+                                                }" v-model="v$.user.genero.$model" placeholder="Selecciona un género" label="name" :options="generos"
+                                                    track-by="name" :multiple="false"
                                                     selectLabel="Presiona para seleccionar"
                                                     deselectLabel="Presiona para eliminar" selectedLabel="Seleccionado"
                                                     @close="v$.user.genero.$touch()">
@@ -56,9 +56,9 @@
                                                 <label class="form-label" for="contrasena">Contraseña: </label>
                                                 <b-form-input id="contrasena" type="password" placeholder="Contraseña"
                                                     v-model="v$.user.password.$model" :state="v$.user.password.$dirty
-            ? !v$.user.password.$error
-            : null
-            " @blur="v$.user.password.$touch()" />
+                                                        ? !v$.user.password.$error
+                                                        : null
+                                                        " @blur="v$.user.password.$touch()" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.password.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -72,10 +72,9 @@
                                                 <label class="form-label" for="telefono">Teléfono: </label>
                                                 <b-form-input id="telefono" type="text" placeholder="Teléfono"
                                                     v-model="v$.user.telefono.$model" :state="v$.user.telefono.$dirty
-            ? !v$.user.telefono.$error
-            : null
-            " @blur="v$.user.telefono.$touch()" maxlength="10"
-                                                    @keypress="onlynumbers" />
+                                                        ? !v$.user.telefono.$error
+                                                        : null
+                                                        " @blur="v$.user.telefono.$touch()" maxlength="10" @keypress="onlynumbers" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.telefono.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -89,13 +88,12 @@
                                                 <b-form-datepicker id="fechaNacimiento" class="mb-2"
                                                     placeholder="Selecciona una fecha" :label-help="null"
                                                     v-model="v$.user.fechaNacimiento.$model" :state="v$.user.fechaNacimiento.$dirty ? !v$.user.fechaNacimiento.$error : null
-            " @blur="v$.user.fechaNacimiento.$touch()"
-                                                    label-current-month="Fecha máxima" hide-header :date-format-options="{
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-        }" :max="fechaMax"
-                                                    @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
+                                                        " @blur="v$.user.fechaNacimiento.$touch()" label-current-month="Fecha máxima" hide-header
+                                                    :date-format-options="{
+                                                        year: 'numeric',
+                                                        month: 'numeric',
+                                                        day: 'numeric',
+                                                    }" :max="fechaMax" @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
                                                 <b-form-invalid-feedback
                                                     v-for="error in v$.user.fechaNacimiento.$errors" :key="error.$uid">
                                                     {{ error.$message }}
@@ -107,8 +105,7 @@
                                         <InputFile @img="dataChildImg" @check="validFile" />
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
-                                        <button 
-                                            class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                             @click="createAccount" type="button" style="background-color: black;">
                                             Crear Cuenta
                                         </button>

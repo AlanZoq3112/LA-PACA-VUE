@@ -1,7 +1,6 @@
 package mx.edu.utez.lapaca.services.logs;
 
 import mx.edu.utez.lapaca.models.bitacora.Log;
-import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
 import mx.edu.utez.lapaca.models.bitacora.LogRepository;
 import org.springframework.stereotype.Service;
 

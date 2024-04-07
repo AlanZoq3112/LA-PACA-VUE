@@ -6,13 +6,17 @@ import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
 import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,18 +28,30 @@ public class UsuarioController {
     private final UsuarioService service;
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioController(UsuarioService service, PasswordEncoder passwordEncoder) {
+    private final FirebaseService firebaseService;
+
+    public UsuarioController(UsuarioService service, PasswordEncoder passwordEncoder, FirebaseService firebaseService) {
         this.service = service;
         this.passwordEncoder = passwordEncoder;
+        this.firebaseService = firebaseService;
     }
 
     //insert
-    @PostMapping("/insert")
+    @PostMapping(value = "/insert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @RequestBody UsuarioDto usuarioDto){
-        usuarioDto.setRole(Role.COMPRADOR);
+    public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @ModelAttribute UsuarioDto usuarioDto) throws Exception {
+
         String password = usuarioDto.getPassword();
         usuarioDto.setPassword(passwordEncoder.encode(password));
+
+        MultipartFile imageFile = usuarioDto.getImage();
+        // Subir imagen a Firebase y obtener URL
+        String imageUrl = firebaseService.uploadFileUser(imageFile);
+        usuarioDto.setImage(imageFile);
+        if (imageUrl == null) {
+            throw new Exception("Failed to upload image to Firebase.");
+        }
+        usuarioDto.setRole(Role.COMPRADOR);
         return new ResponseEntity<>(
                 this.service.insert(usuarioDto.getUsuario()),
                 HttpStatus.CREATED

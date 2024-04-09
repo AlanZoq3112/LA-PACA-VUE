@@ -3,11 +3,16 @@
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
-                    <b-card class="card-custom mb-2" img-top img-height="250px" max-width="150px">
+                    <b-card class="card-custom mb-2">
+                        <template #header>
+                            <b-carousel :controls="false" indicators :interval="0">
+                                <b-carousel-slide v-for="(imagen, index) in producto.imagenes" :key="index" :img-src="imagen.imageUrl"></b-carousel-slide>
+                            </b-carousel>
+                        </template>
                         <b-card-text>
                             <h5>{{ producto.nombre }}</h5>
                             <p>Description: {{ producto.descripcion }}</p>
-                            <p>Categoria: {{ producto.categoria.nombre }}</p>
+                            <p>Categoria: {{ producto.subCategoria.nombre }}</p>
                             <p>Stock: {{ producto.stock }}</p>
                         </b-card-text>
                         <template #footer>
@@ -113,11 +118,18 @@ export default {
 }
 
 .custom-container {
-    max-width: 3000px;
+    max-width: 1200px; /* Reducido para hacerlo más responsivo */
     margin: 0 auto;
 }
 
 .card-custom {
-    height: 250px; 
+    max-width: 300px; /* Tamaño máximo de la tarjeta */
+    min-height: 450px; /* Altura mínima de la tarjeta */
+    overflow: hidden; /* Ocultar el desbordamiento de las imágenes */
+}
+
+.card-custom .carousel-inner img {
+    width: 100%; /* Ajustar el ancho de las imágenes al 100% del contenedor */
+    height: auto; /* Altura automática para mantener la proporción */
 }
 </style>

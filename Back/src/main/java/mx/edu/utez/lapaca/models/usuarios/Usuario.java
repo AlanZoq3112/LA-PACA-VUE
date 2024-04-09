@@ -35,7 +35,7 @@ public class Usuario implements UserDetails {
 
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String genero;
-
+  
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String image;
 

@@ -3,7 +3,7 @@
         <div>
             <b-modal hide-footer hide-header centered id="modal-guardar-subcategorias" @show="getCategorias">
                 <header class="text-center border-bottom">
-                    <p style="font-family: cabin">Registrar subcategoria</p>
+                    <p>Registrar subcategoria</p>
                 </header>
                 <main>
                     <form id="registrarSubcategoria" @submit.prevent="registrarSubcategoria">
@@ -68,9 +68,8 @@ export default {
                 this.categorias = response.data.data.map(categoria => {
                     return { text: categoria.nombre, value: categoria.id };
                 });
-                console.log("Categorias en subcategorias ", this.categorias);
             } catch (error) {
-                console.error("Error al obtener las categorias", error);
+                Swal.fire('Error', 'Hubo un problema al intentar OBTENER lsa categorias, intente mas tarde', 'error');
             }
         },
         async save() {
@@ -116,11 +115,10 @@ export default {
                         // Cerrar modal
                         this.$bvModal.hide("modal-guardar-subcategorias");
                     } else {
-                        console.log("Error al guardar la subcategoría. Estado del servidor:", response.status);
+                        Swal.fire('Error', 'Hubo un problema al intentar GUARDAR la subcategoria, intente mas tarde', 'error');
                     }
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de guardado:", error);
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al intentar guardar la subcategoría",
@@ -143,13 +141,11 @@ export default {
 
 <style>
 .success {
-    font-family: Cabin;
     background-color: #009475;
     color: white;
 }
 
 .cancel {
-    font-family: Cabin;
     background-color: #ffce50;
     color: black;
 }

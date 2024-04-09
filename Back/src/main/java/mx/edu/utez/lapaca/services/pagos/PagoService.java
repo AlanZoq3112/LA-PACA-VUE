@@ -5,9 +5,14 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.dto.productos.validators.InsuficienteStockException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
+import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -42,10 +47,13 @@ public class PagoService {
 
     private final UsuarioRepository usuarioRepository;
 
+    private final ProductoRepository productoRepository;
 
-    public PagoService(PagoRepository repository, UsuarioRepository usuarioRepository) {
+
+    public PagoService(PagoRepository repository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.productoRepository = productoRepository;
     }
 
 
@@ -107,10 +115,33 @@ public class PagoService {
 
         carrito.setUsuario(usuario.get());
 
+        // Obtener el producto asociado al carrito por su ID
+        Optional<Producto> productoOptional = productoRepository.findById(carrito.getProducto().getId());
+
+        if (!productoOptional.isPresent()) {
+            throw new ProductoNotFoundException("No se encontró el producto con el ID especificado.");
+        }
+
+        Producto producto = productoOptional.get();
+
+        // Verificar si el producto está activo
+        if (producto.getEstado() != 2) { // Si el estado no es activo
+            throw new ProductoInactivoException("El producto está inactivo y no puede ser comprado.");
+        }
+
+        // Verificar si hay suficiente stock disponible
+        if (carrito.getCantidad() > producto.getStock()) {
+            throw new InsuficienteStockException("No hay suficiente stock disponible para este producto.");
+        }
+
+        // Reducir el stock del producto
+        producto.setStock(producto.getStock() - carrito.getCantidad());
+        productoRepository.save(producto);
+
         Map<String, Object> params = new HashMap<>();
         params.put("amount", (int) (carrito.getMonto() * 100)); // la cantidad se expresa en centavos
         params.put("currency", "mxn");
-        params.put("description", "Pago por producto: " + carrito.getProducto().getNombre());
+        params.put("description", "Pago por producto: " + producto.getNombre());
         params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
         try {
             Charge charge = Charge.create(params);
@@ -119,10 +150,5 @@ public class PagoService {
             throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
         }
     }
-
-
-
-
-
 
 }

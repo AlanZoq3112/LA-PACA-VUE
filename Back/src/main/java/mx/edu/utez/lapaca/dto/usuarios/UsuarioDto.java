@@ -53,7 +53,6 @@ public class UsuarioDto {
 
     private String secretPass;
 
-
     private Role role;
 
     private Vendedor vendedor;

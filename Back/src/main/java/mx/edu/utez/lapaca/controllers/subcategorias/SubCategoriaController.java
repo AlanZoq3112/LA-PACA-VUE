@@ -34,7 +34,7 @@ public class SubCategoriaController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
     public ResponseEntity<CustomResponse<List<SubCategoria>>> getAll(){
         return new ResponseEntity<>(
                 this.service.getAll(),
@@ -43,7 +43,7 @@ public class SubCategoriaController {
     }
 
     @GetMapping("/getOne")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
     public ResponseEntity<CustomResponse<SubCategoria>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
         Long userId = requestBody.get("id");
         return new ResponseEntity<>(

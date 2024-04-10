@@ -74,7 +74,7 @@ export default {
             categoria: null,
             categorias: [],
             maximo: 25,
-            valueSubcategoria: "",            
+            valueSubcategoria: false,            
         }
     },
 

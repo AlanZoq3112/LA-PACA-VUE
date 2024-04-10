@@ -10,15 +10,15 @@
                         <b-row>
                             <b-col>
                                 <label for="nombre">Nombre del producto: *</label>
-                                <b-form-input v-model="producto.nombre" type="text" class="form-control"
-                                    placeholder="Nombre" required />
+                                <InputTextMax @check="validNombre" @name="dataChildName" :numMax="maximoName" required/>                                                             
+                                <p>{{ valueName }}</p>
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col>
                                 <label for="descripcion">Descripción: *</label>
-                                <b-form-textarea v-model="producto.descripcion" rows="4" class="form-control textarea-limit"
-                                    placeholder="Descripción del producto" required />
+                                <InputTextMax @check="validDescription" @name="dataChildDescription" :numMax="maximoDescription" required/>
+                                <p>{{ valueDescription }}</p>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -63,8 +63,18 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useVuelidate } from "@vuelidate/core";
+import { required, helpers, minLength } from "@vuelidate/validators";
 export default {
     name: "ModalGuardarProductos",
+    components: {
+        InputTextMax: () => import('../../../../components/input_validations/inputTextMax.vue'),
+    },
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
+    },
     data() {
         return {
             producto: {
@@ -77,6 +87,10 @@ export default {
                     id: 0,
                 },
             },
+            maximoName:40,
+            maximoDescription: 100,
+            valueName:false,
+            valueDescription:false,
             subcategorias: [],
         }
     },
@@ -85,6 +99,18 @@ export default {
         onClose() {
             this.$bvModal.hide("modal-guardar-productos");
             this.resetForm();
+        },
+        dataChildName(data) {
+            this.producto.nombre = data;
+        },
+        validNombre(data) {
+            this.valueName = data;
+        },
+        dataChildDescription(data) {
+            this.producto.descripcion = data;
+        },
+        validDescription(data) {
+            this.valueDescription = data;
         },
         async save() {
             try {

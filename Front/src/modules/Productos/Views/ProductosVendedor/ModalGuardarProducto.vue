@@ -19,18 +19,21 @@
                         </b-col>
                         <b-col>
                             <b-form-group label="Subcategoria" label-for="nombre">
-                                <b-form-input v-model="producto.subCategoria" type="text" id="nombre" required></b-form-input>
+                                <b-form-input v-model="producto.subCategoria" type="text" id="nombre"
+                                    required></b-form-input>
                             </b-form-group>
                         </b-col>
                     </b-row>
 
                     <b-form-group label="Descripción" label-for="descripcion">
-                        <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4" required></b-form-textarea>
+                        <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4"
+                            required></b-form-textarea>
                     </b-form-group>
                     <b-row>
                         <b-col>
                             <b-form-group label="Precio" label-for="precio">
-                                <b-form-input v-model="producto.precio" type="number" id="precio" required></b-form-input>
+                                <b-form-input v-model="producto.precio" type="number" id="precio"
+                                    required></b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
@@ -40,12 +43,30 @@
                         </b-col>
                     </b-row>
 
+                    <b-row>
+                        <b-form-group label="Imágenes del producto" label-for="imagenes">
+                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
+                                class="form-control" required>
+                            <!-- Vista previa de las imágenes seleccionadas -->
+                            <div v-if="producto.imagenes.length > 0" class="preview-container mt-3">
+                                <div v-for="(imagen, index) in producto.imagenes" :key="index" class="image-preview">
+                                    <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
+                                </div>
+                            </div>
+                        </b-form-group>       
+                    </b-row>
+                    
+                    <b-row>
+                        <b-col></b-col>
+                        <b-col>
+                            <b-button type="button" class="cancel" @click="onClose">Cancelar</b-button>
+                        </b-col>
+                        <b-col>
+                            <b-button type="submit" class="success" variant="success">Registrar</b-button>
+                        </b-col>
+                        <b-col></b-col>
+                    </b-row>
 
-
-                    <b-form-group label="Imagenes del producto" label-for="imagenes">
-                        <input type="file" id="imagenes" multiple @change="handleFileUpload($event)" class="form-control" required>
-                    </b-form-group>
-                    <b-button type="submit" variant="success">Registrar</b-button>
                 </b-form>
             </main>
         </b-modal>
@@ -78,10 +99,25 @@ export default {
         },
         handleFileUpload(event) {
             const files = event.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                this.producto.imagenes.push(file);
+            // Verifica si hay al menos 2 y como máximo 5 imágenes seleccionadas
+            if (files.length >= 2 && files.length <= 5) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    this.producto.imagenes.push(file);
+                }
+            } else {
+                // Muestra un mensaje de error si la cantidad de imágenes no es válida
+                Swal.fire({
+                    title: "Error",
+                    text: "Debes seleccionar entre 2 y 5 imágenes.",
+                    icon: "error"
+                });
+                // Reinicia la selección de archivos
+                event.target.value = "";
             }
+        },
+        getImageURL(file) {
+            return URL.createObjectURL(file);
         },
         async save() {
             try {
@@ -140,12 +176,24 @@ export default {
             this.producto = {
                 nombre: "",
                 descripcion: "",
-                precio: 0.0,
+                precio: 0,
                 stock: 0,
-                subCategoria: {
-                    id: 0,
-                }
+                subCategoria: 0,
+                imagenes: [],
             }
+        },
+        async getSubcategorias() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://localhost:8091/api-carsi-shop/subcategoria/getAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                this.subcategorias = response.data.data;
+                console.log("Subcategorias: ", this.subcategorias);
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
         },
     },
 }
@@ -199,5 +247,20 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-preview {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.preview-image {
+    max-width: 100px;
+    max-height: 100px;
 }
 </style>

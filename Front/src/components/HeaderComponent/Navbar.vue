@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <b-navbar fixed-top toggleable="lg" type="dark" variant="faded">
+            <b-navbar fixed-top toggleable="lg" type="dark" variant="faded" class="shadow-navbar navbar-background">
                 <b-navbar-brand to="inicio">
                     <b-button variant="faded">
                         <b-icon v-b-tooltip.hover="'Volver a la pagina de inicio'" icon="house-door"></b-icon>
@@ -64,5 +64,12 @@ export default {
 <style>
 .margin {
     margin-bottom: 6px;
+}
+.shadow-navbar {
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Añadir sombra leve */
+}
+
+.navbar-background {
+    background: #f5f5f5;
 }
 </style>

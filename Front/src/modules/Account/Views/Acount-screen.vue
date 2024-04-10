@@ -67,7 +67,7 @@
                                         <b-collapse id="collapsePersonal">
                                             <b-card>
                                                 <b-row class="mb-3">
-                                                    <b-col cols="5" class="pr-2">
+                                                    <b-col  class="pr-2">
                                                         <label for=""><b>Nombre y apellido</b></label>
                                                         <p>{{ user.nombre }}</p>
                                                     </b-col>
@@ -86,12 +86,7 @@
                                                         <label for=""><b>Fecha de Nacimiento</b></label>
                                                         <p>{{ user.fechaNacimiento }}</p>
                                                     </b-col>
-                                                    <b-col>
-                                                        <br>
-                                                        <b-button style="color: black;" variant="faded">
-                                                            <b-icon icon="pencil-square"></b-icon> Actualizar datos
-                                                        </b-button>
-                                                    </b-col>
+  
                                                 </b-row>
                                             </b-card>
                                         </b-collapse>
@@ -319,6 +314,7 @@ export default {
                 });
 
                 this.user = response.data.data;
+                console.log(this.user);
             } catch (error) {
                 Swal.fire({
                     title: "Error",

@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <div>
             <div class="custom-container py-1 h-200">
                 <h4>Mi cuenta <b-icon icon="person"></b-icon></h4>
@@ -11,21 +11,29 @@
                                     <b-row>
                                         <b-col cols="2">
                                             <!-- Aquí se mostrará la imagen de perfil -->
-                                            <img v-if="user.imagenUrl" :src="user.imagenUrl"
+
+                                            <img v-if="user.image" :src="user.image"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
                                             <img v-else
                                                 src="https://static-2.ivoox.com/canales/7/4/3/8/4001478748347_XXL.jpg"
                                                 class="rounded-circle img-thumbnail" alt="Avatar"
                                                 style="width: 150px; height: 150px;">
+
                                         </b-col>
 
                                         <b-col cols="8">
-                                            <br>
-                                            <br>
-                                            <h4 style="color:black">{{ user.nombre }}</h4>
-                                            <h5>{{ user.email }}</h5>
-                                            <p>{{ user.role }}</p>
+
+                                            <transition name="fade"> <!-- Agregando el componente de transición -->
+                                                <div>
+                                                    <br>
+                                                    <br>
+                                                    <h4 style="color:black">{{ user.nombre }}</h4>
+                                                    <h5>{{ user.email }}</h5>
+                                                    <p>{{ user.role }}</p>
+                                                </div>
+                                            </transition>
+
                                         </b-col>
 
                                         <b-col>
@@ -126,18 +134,19 @@
                                                 </div>
                                                 <b-row v-if="user.role == 'VENDEDOR' || user.role === 'ADMIN'">
                                                     <b-col>
-                                                        <b-button  to="MisProductos"
-                                                            variant="faded" ><i
+                                                        <b-button to="MisProductos" variant="faded"><i
                                                                 class="fa fa-shopping-bag" aria-hidden="true"></i>
                                                             Administrar productos</b-button>
                                                     </b-col>
-                                                    <b-col >
-                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-credit-card"
-                                                                aria-hidden="true"></i> Administrar ventas</b-button>
+                                                    <b-col>
+                                                        <b-button to="historialVentas" variant="faded"><i
+                                                                class="fa fa-credit-card" aria-hidden="true"></i>
+                                                            Administrar ventas</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"><i class="fa fa-truck"
-                                                                aria-hidden="true"></i> Administrar envios</b-button>
+                                                        <b-button to="historialVentas" variant="faded"><i
+                                                                class="fa fa-truck" aria-hidden="true"></i> Administrar
+                                                            envios</b-button>
                                                     </b-col>
                                                 </b-row>
                                             </b-card>
@@ -287,10 +296,10 @@ export default {
                         title: '¡Vuelve pronto!',
                         text: 'Has cerrado sesión correctamente.',
                         icon: 'success',
-                        position: 'top-end', 
-                        toast: true, 
-                        showConfirmButton: false, 
-                        timer: 3000 
+                        position: 'top-end',
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 3000
                     });
                     this.$router.push({ name: 'login' });
                 }
@@ -345,5 +354,16 @@ export default {
 .custom-container {
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 1s;
+    /* Ajusta el tiempo de transición a 1 segundo */
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

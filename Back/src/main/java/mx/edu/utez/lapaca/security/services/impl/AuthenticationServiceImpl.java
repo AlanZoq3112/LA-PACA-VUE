@@ -35,7 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
         user.setGenero(signUpRequest.getGenero());
-        user.setImagenUrl(signUpRequest.getImagenUrl());
+        user.setImage(signUpRequest.getImage());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setTelefono(signUpRequest.getTelefono());
@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Usuario user = new Usuario();
         user.setNombre(signUpRequest.getNombre());
         user.setGenero(signUpRequest.getGenero());
-        user.setImagenUrl(signUpRequest.getImagenUrl());
+        user.setImage(signUpRequest.getImage());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setTelefono(signUpRequest.getTelefono());

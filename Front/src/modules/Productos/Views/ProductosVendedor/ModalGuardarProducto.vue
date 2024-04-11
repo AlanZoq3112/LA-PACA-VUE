@@ -1,6 +1,5 @@
 <template>
     <div>
-<<<<<<< HEAD
         <div>
             <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;">
                 <header class="text-center border-bottom">
@@ -11,14 +10,16 @@
                         <b-row>
                             <b-col>
                                 <label for="nombre">Nombre del producto: *</label>
-                                <InputTextMax @check="validNombre" @name="dataChildName" :numMax="maximoName" required/>                                                             
+                                <InputTextMax @check="validNombre" @name="dataChildName" :numMax="maximoName"
+                                    required />
                                 <p>{{ valueName }}</p>
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col>
                                 <label for="descripcion">Descripción: *</label>
-                                <InputTextMax @check="validDescription" @name="dataChildDescription" :numMax="maximoDescription" required/>
+                                <InputTextMax @check="validDescription" @name="dataChildDescription"
+                                    :numMax="maximoDescription" required />
                                 <p>{{ valueDescription }}</p>
                             </b-col>
                         </b-row>
@@ -57,57 +58,63 @@
                     </button>
                 </footer>
             </b-modal>
-=======
-        <div v-if="loading" class="overlay">
-            <div class="loader">
-                <div class="spinner"></div>
+            <div v-if="loading" class="overlay">
+                <div class="loader">
+                    <div class="spinner"></div>
+                </div>
             </div>
->>>>>>> cf9a4d3507809a8f5df4eba445ef8ffd7c337d70
+            <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;">
+                <header class="text-center border-bottom">
+                    <p>Registrar producto</p>
+                </header>
+                <main>
+                    <b-form @submit.prevent="save">
+                        <b-row>
+                            <b-col>
+                                <b-form-group label="Nombre del producto" label-for="nombre">
+                                    <b-form-input v-model="producto.nombre" type="text" id="nombre"
+                                        required></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Subcategoria" label-for="nombre">
+                                    <b-form-input v-model="producto.subCategoria" type="text" id="nombre"
+                                        required></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+
+                        <b-form-group label="Descripción" label-for="descripcion">
+                            <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4"
+                                required></b-form-textarea>
+                        </b-form-group>
+                        <b-row>
+                            <b-col>
+                                <b-form-group label="Precio" label-for="precio">
+                                    <b-form-input v-model="producto.precio" type="number" id="precio"
+                                        required></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Stock" label-for="stock">
+                                    <b-form-input v-model="producto.stock" type="number" id="stock"
+                                        required></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+
+
+
+                        <b-form-group label="Imagenes del producto" label-for="imagenes">
+                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
+                                class="form-control" required>
+                        </b-form-group>
+                        <b-button type="submit" variant="success">Registrar</b-button>
+                    </b-form>
+                </main>
+            </b-modal>
         </div>
-        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;">
-            <header class="text-center border-bottom">
-                <p>Registrar producto</p>
-            </header>
-            <main>
-                <b-form @submit.prevent="save">
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Nombre del producto" label-for="nombre">
-                                <b-form-input v-model="producto.nombre" type="text" id="nombre" required></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Subcategoria" label-for="nombre">
-                                <b-form-input v-model="producto.subCategoria" type="text" id="nombre" required></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
 
-                    <b-form-group label="Descripción" label-for="descripcion">
-                        <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4" required></b-form-textarea>
-                    </b-form-group>
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Precio" label-for="precio">
-                                <b-form-input v-model="producto.precio" type="number" id="precio" required></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Stock" label-for="stock">
-                                <b-form-input v-model="producto.stock" type="number" id="stock" required></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-
-
-
-                    <b-form-group label="Imagenes del producto" label-for="imagenes">
-                        <input type="file" id="imagenes" multiple @change="handleFileUpload($event)" class="form-control" required>
-                    </b-form-group>
-                    <b-button type="submit" variant="success">Registrar</b-button>
-                </b-form>
-            </main>
-        </b-modal>
     </div>
 </template>
 <script>
@@ -135,10 +142,10 @@ export default {
                 subCategoria: 0,
                 imagenes: []
             },
-            maximoName:40,
+            maximoName: 40,
             maximoDescription: 100,
-            valueName:false,
-            valueDescription:false,
+            valueName: false,
+            valueDescription: false,
             subcategorias: [],
             loading: false
         }
@@ -149,7 +156,6 @@ export default {
             this.$bvModal.hide("modal-guardar-productos");
             this.resetForm();
         },
-<<<<<<< HEAD
         dataChildName(data) {
             this.producto.nombre = data;
         },
@@ -161,14 +167,13 @@ export default {
         },
         validDescription(data) {
             this.valueDescription = data;
-=======
+        },
         handleFileUpload(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 this.producto.imagenes.push(file);
             }
->>>>>>> cf9a4d3507809a8f5df4eba445ef8ffd7c337d70
         },
         async save() {
             try {

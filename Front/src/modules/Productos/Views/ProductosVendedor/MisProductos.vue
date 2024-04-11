@@ -20,57 +20,49 @@
                                             </b-button>
                                         </div>
                                     </div>
-
-                                    <div>
-                                        <TransitionGroup name="roll" tag="div" class="d-flex d-fixed">
-                                            <div v-if="productos.length === 0" class="col-lg-12 mb-4">
-                                                <p class="text-center">Aún no tienes productos registrados</p>
-                                            </div>
-                                            <div v-for="(producto, index) in productos" :key="`producto-${index}`"
-                                                class="col-lg-3 mb-4">
-                                                <b-card class="card-custom mb-2" img-top img-height="250px"
-                                                    max-width="150px">
-                                                    <template #header>
-                                                        <b-carousel :controls="false" indicators :interval="0">
-                                                            <b-carousel-slide
-                                                                style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
-                                                                v-for="(imagen, index) in producto.imagenes"
-                                                                :key="`imagen-${index}`"
-                                                                :img-src="imagen.imageUrl"></b-carousel-slide>
-                                                        </b-carousel>
-                                                    </template>
-                                                    <b-card-text>
-                                                        <h5>{{ producto.nombre }}</h5>
-                                                        <p>Description: {{ producto.descripcion }}</p>
-                                                        <p>Categoria: {{ producto.subCategoria.nombre }} de {{
-                                                producto.subCategoria.categoria.nombre }}</p>
-                                                        <p>Stock: {{ producto.stock }}</p>
-                                                        <p>Precio: ${{ producto.precio }}</p>
-                                                    </b-card-text>
-                                                    <template #footer>
-                                                        <b-row>
-                                                            <b-col :class="{
-                                                'text-warning': producto.estado === 1,
-                                                'text-success': producto.estado === 2,
-                                                'text-danger': producto.estado === 3
-                                            }">
-                                                                <span v-if="producto.estado === 1">Pendiente</span>
-                                                                <span v-else-if="producto.estado === 2">Aprobado</span>
-                                                                <span v-else-if="producto.estado === 3">Rechazado</span>
-                                                            </b-col>
-                                                            <b-col>
-                                                                <div class="d-flex justify-content-end">
-                                                                    <b-button v-b-tooltip.hover="'Editar Producto'"
-                                                                        class="boton" to="kid-producto" variant="faded">
-                                                                        <b-icon icon="pencil"></b-icon>
-                                                                    </b-button>
-                                                                </div>
-                                                            </b-col>
-                                                        </b-row>
-                                                    </template>
-                                                </b-card>
-                                            </div>
-                                        </TransitionGroup>
+                                    <div class="row">
+                                        <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                                            <b-card class="card-custom mb-2" img-alt="Image" img-height="450px"
+                                                max-width="200px" img-top>
+                                                <template #header>
+                                                    <b-carousel :controls="false" indicators :interval="0">
+                                                        <b-carousel-slide
+                                                            style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                                            v-for="(imagen, index) in producto.imagenes" :key="index"
+                                                            :img-src="imagen.imageUrl"></b-carousel-slide>
+                                                    </b-carousel>
+                                                </template>
+                                                <b-card-text
+                                                    style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
+                                                    <h5>{{ producto.nombre }}</h5>
+                                                    <p>{{ producto.descripcion }}</p>
+                                                    <p>{{ producto.subCategoria.nombre }} para {{
+                                            producto.subCategoria.categoria.nombre }}</p>
+                                                    <p>{{ producto.stock }} disponibles</p>
+                                                </b-card-text>
+                                                <template #footer>
+                                                    <b-row>
+                                                        <b-col :class="{
+                                            'text-warning': producto.estado === 1,
+                                            'text-success': producto.estado === 2,
+                                            'text-danger': producto.estado === 3
+                                        }">
+                                                            <span v-if="producto.estado === 1">Pendiente</span>
+                                                            <span v-else-if="producto.estado === 2">Aprobado</span>
+                                                            <span v-else-if="producto.estado === 3">Rechazado</span>
+                                                        </b-col>
+                                                        <b-col>
+                                                            <div class="d-flex justify-content-end">
+                                                                <b-button v-b-tooltip.hover="'Editar Producto'"
+                                                                    class="boton" to="kid-producto" variant="faded">
+                                                                    <b-icon icon="pencil"></b-icon>
+                                                                </b-button>
+                                                            </div>
+                                                        </b-col>
+                                                    </b-row>
+                                                </template>
+                                            </b-card>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -121,44 +113,11 @@ export default {
                     }
                 });
                 this.productos = response.data.data;
-                console.log("Productos: ", this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos de los productos", error);
             }
         },
-        async changeProductStatus(productoId, status) {
-            try {
-                const result = await Swal.fire({
-                    title: `¿Estás seguro de ${status ? 'aceptar' : 'rechazar'} esta solicitud?`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#008c6f',
-                    cancelButtonColor: '#e11c24',
-                    confirmButtonText: 'Confirmar',
-                    cancelButtonText: 'Cancelar',
-                });
 
-                if (result.isConfirmed) {
-                    const token = localStorage.getItem('token');
-                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/update/${productoId}`, {
-                        estado: status
-                    }, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-
-                    if (response.status === 200) {
-                        this.getProductos(); // Método para obtener los productos actualizados
-                        Swal.fire('¡Éxito!', `La solicitud ha sido ${status ? 'aceptada' : 'rechazada'} correctamente`, 'success');
-                    } else {
-                        console.log(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud. Estado del servidor:`, response.status);
-                        Swal.fire('Error', `Hubo un problema al intentar ${status ? 'aceptar' : 'rechazar'} la solicitud`, 'error');
-                    }
-                }
-            } catch (error) {
-                console.error(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud:`, error);
-                Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
-            }
-        },
     },
     mounted() {
         this.getProductos();

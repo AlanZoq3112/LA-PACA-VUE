@@ -5,7 +5,7 @@
                 <div class="spinner"></div>
             </div>
         </div>
-        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;">
+        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"  @show="getSubcategorias">
             <header class="text-center border-bottom">
                 <p>Registrar producto</p>
             </header>
@@ -18,9 +18,8 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Subcategoria" label-for="nombre">
-                                <b-form-input v-model="producto.subCategoria" type="text" id="nombre"
-                                    required></b-form-input>
+                            <b-form-group label="Subcategoria" label-for="subCategoria">
+                                <b-form-select v-model="producto.subCategoria" id="subCategoria" :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))" required></b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -133,12 +132,12 @@ export default {
 
                 if (result.isConfirmed) {
                     this.loading = true;
-                    console.log(this.producto);
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
+                    console.log(this.producto);
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/producto/insert", this.producto, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -191,10 +190,14 @@ export default {
                     }
                 });
                 this.subcategorias = response.data.data;
-                console.log("Subcategorias: ", this.subcategorias);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
         },
+
+    },
+
+    mounted() {
+        this.getSubcategorias();
     },
 }
 </script>

@@ -30,8 +30,9 @@
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" 
-                                                @click="enviarCorreo" type="button" :disabled="showRecoveryForm" style="background-color: black;">
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                @click="enviarCorreo" type="button" :disabled="showRecoveryForm"
+                                                style="background-color: black;">
                                                 Enviar correo de recuperación <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -54,19 +55,32 @@
                                         </div>
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example13">Nueva contraseña: </label>
-                                            <input v-model="newPassword.newPassword" type="password" id="form2Example13"
-                                                class="form-control" placeholder="Nueva contraseña" />
+                                            <div class="input-group">
+                                                <input v-model="newPassword.newPassword" :type="newPassword.type"
+                                                    id="form2Example13" class="form-control"
+                                                    placeholder="Nueva contraseña" />
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-eye" @click="togglePassword('newPassword')"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example14">Repite la contraseña:
                                             </label>
-                                            <input v-model="repitNewPassword" type="password" id="form2Example14"
-                                                class="form-control" placeholder="Repite la contraseña" />
+                                            <div class="input-group">
+                                                <input v-model="repitNewPassword.value" :type="repitNewPassword.type"
+                                                    id="form2Example14" class="form-control"
+                                                    placeholder="Repite la contraseña" />
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-eye"
+                                                        @click="toggleRepitPassword('repitNewPassword')"></i>
+                                                </span>
+                                            </div>
                                         </div>
-
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="resetPassword" type="button" style="background-color: black;">
+                                                @click="resetPassword" type="button" :disabled="!validatePasswords()"
+                                                style="background-color: black;">
                                                 Restaurar contraseña <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -93,9 +107,13 @@ export default {
             },
             newPassword: {
                 newPassword: "",
-                secretPass: ""
+                secretPass: "",
+                type: "password"
             },
-            repitNewPassword: "",
+            repitNewPassword: {
+                value: "", // Cambia el nombre de la propiedad de 'repitNewPassword' a 'value'
+                type: "password" // Inicializa el tipo de contraseña repetida como 'password'
+            },
             showRecoveryForm: false,
             loading: false
         }
@@ -149,6 +167,15 @@ export default {
                 }).finally(() => {
                     this.loading = false;
                 });
+        },
+        togglePassword(field) {
+            this[field].type = this[field].type === 'password' ? 'text' : 'password';
+        },
+        toggleRepitPassword(field) {
+            this[field].type = this[field].type === 'password' ? 'text' : 'password';
+        },
+        validatePasswords() {
+            return this.newPassword.newPassword === this.repitNewPassword.value;
         }
 
     }

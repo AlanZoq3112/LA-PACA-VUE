@@ -9,15 +9,13 @@
                 <div class="card-body p-md-5 mx-md-4">
                     <div v-if="direcciones.length > 0">
                         <b-card v-for="direccion in direcciones" :key="direccion.id" class="mb-3">
-                            <h6>{{ direccion.nombre }}</h6>
-                            <p>{{ direccion.direccion }}</p>
-                            <p>{{ direccion.ciudad }}</p>
+                            <h5>Código Postal {{ direccion.codigoPostal }}</h5>
+                            <h6> Calle {{ direccion.calle }} No. {{ direccion.numero }}, Colonia {{ direccion.colonia
+                                }}, {{ direccion.municipio }} {{ direccion.estado }}</h6>
+                            <p>Referencias: {{ direccion.referencia }}</p>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" :value="direccion.id"
                                     v-model="direccionElegida">
-                                <label class="form-check-label">
-                                    Elegir dirección
-                                </label>
                             </div>
                         </b-card>
                     </div>
@@ -25,12 +23,13 @@
                         <p>No hay direcciones disponibles</p>
                     </div>
                     <div class="button-container mt-3 d-flex justify-content-between">
-                        <button class="btn btn-primary fa-lg gradient-custom-2" @click="agregarDireccion"
+                        <button style="background-color: black;color: white;" class="btn fa-lg gradient-custom-2"
                             type="button">
                             Agregar nueva dirección <i class="fas fa-plus"></i>
                         </button>
-                        <button class="btn btn-primary fa-lg gradient-custom-2" @click="continuar"
-                            type="button">Continuar  <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        <button class="btn fa-lg gradient-custom-2" style="background-color: black;color: white;"
+                            @click="continuar" type="button">Continuar <i class="fa fa-arrow-right"
+                                aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -43,9 +42,8 @@
                     <h5>Resumen de compra</h5>
                 </div>
                 <div class="card-body p-md-5 mx-md-4">
-                    <div v-if="producto.length > 0">
-                        <p>Total de Productos: {{ calculateTotal() }}</p>
-                        <p>Total: {{ calculateTotal() + calculateEnvio() }}</p>
+                    <div v-if="productos.length > 0">
+                        <p>Total: ${{ calculateTotal()}}</p>
                     </div>
                     <div v-else>
                         <p>No hay productos en el carrito</p>
@@ -53,71 +51,76 @@
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
     name: "metodoPago",
     data() {
         return {
-            direcciones: [
-                {
-                    id: "1",
-                    nombre: "Casa",
-                    direccion: "Calle Principal 123",
-                    ciudad: "Ciudad de Ejemplo",
-                },
-                {
-                    id: "2",
-                    nombre: "Departamento",
-                    direccion: "Calle Secundaria",
-                    ciudad: "Xdds",
-                },
-                // Agrega más direcciones si es necesario
-            ],
-            producto: [
-                {
-                    id: "1",
-                    Nombre: "Playera",
-                    Descripcion: "Es una playera asi bien mamalona bien aca",
-                    Precio: 500,
-                    Cantidad: "2",
-                    Imagenes: ["https://grupogranpremio.net/wp-content/uploads/2018/05/12.png"],
-                    Categorias: "Hombre",
-                    Subcategoria: "Playera",
-                    envioGratis: false, // Inicialmente asumimos que el envío no es gratis
-                },
-                {
-                    id: "2",
-                    Nombre: "Pantalón",
-                    Descripcion: "Es un pantalón chido",
-                    Precio: 250,
-                    Cantidad: "1",
-                    Imagenes: ["https://getlavado.com//wp-content/uploads/2020/05/pantalon.png"],
-                    Categorias: "Hombre",
-                    Subcategoria: "Pantalón",
-                    envioGratis: false,
-                },
-            ],
-            direccionElegida: null, 
+            direcciones: [],
+            productos: [],
+            direccionElegida: null,
         };
     },
     methods: {
         calculateTotal() {
-            return this.producto.reduce((total, product) => total + (product.Precio * product.Cantidad), 0);
-        },
-        calculateEnvio() {
-            const totalProductos = this.calculateTotal();
-            return totalProductos > 300 ? 0 : 100;
+            return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
         },
         continuar() {
-            console.log(this.direccionElegida);
+            console.log("Id de la direccion seleccionada:", this.direccionElegida); // Imprimir dirección seleccionada
             this.$router.push({ name: 'checkoutMetodoPago' });
         },
-        agregarDireccion() {
-            // Aquí podrías implementar la lógica para agregar una nueva dirección
+
+        async getproductos() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8091/api-carsi-shop/producto/getAll",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                // Filtrar los productos por subcategoría para hombres
+                this.productos = response.data.data.filter(producto => {
+                    return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre" &&
+                        producto.subCategoria.nombre.toLowerCase() === "calzado";
+                });
+
+                console.log("productos carrito: ", this.productos);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
         },
+
+        async getDirecciones() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8091/api-carsi-shop/direccion/getAll",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                // Filtrar los productos por subcategoría para hombres
+                this.direcciones = response.data.data;
+
+                console.log("Direcciones del usuario: ", this.direcciones);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
+        },
+    },
+    mounted() {
+        this.getproductos();
+        this.getDirecciones();
     },
 };
 </script>

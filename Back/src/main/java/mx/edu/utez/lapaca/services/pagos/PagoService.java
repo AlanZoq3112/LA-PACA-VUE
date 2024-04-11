@@ -11,6 +11,8 @@ import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
@@ -54,12 +56,15 @@ public class PagoService {
 
     private final ProductoRepository productoRepository;
 
+    private final DireccionRepository direccionRepository;
 
-    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository) {
+
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository) {
         this.repository = repository;
         this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
+        this.direccionRepository = direccionRepository;
     }
 
 
@@ -141,8 +146,15 @@ public class PagoService {
             carrito.setMonto(montoTotal);
             item.setCarrito(carrito);
         }
+        //direccion me lleva la verga no me sale nd
+        Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
+        if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
+        }
+
 
         carritoRepository.save(carrito);
+
 
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos

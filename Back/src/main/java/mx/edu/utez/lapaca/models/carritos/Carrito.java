@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -38,7 +39,8 @@ public class Carrito {
     @JoinColumn(name = "pago_id")
     private Pago pago;
 
-
-
+    @ManyToOne
+    @JoinColumn(name = "direccion_id")
+    private Direccion direccion;
 
 }

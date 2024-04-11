@@ -1,183 +1,103 @@
 <template>
   <div>
-    <div class="text-center">
-      <!--Carrusel de imagenes-->
-      <div id="carousel-example">
-        <b-carousel :interval="3000" controls indicators>
-          <b-carousel-slide
-            v-for="(slide, index) in slides"
-            :key="index"
-            :img-src="slide.src"
-            :caption="slide.caption"
-          ></b-carousel-slide>
-        </b-carousel>
+      <div class="custom-container py-1">
+          <div class="row">
+              <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                  <b-card class="card-custom mb-2" img-alt="Image" img-height="450px" max-width="200px" img-top>
+                      <template #header>
+                          <b-carousel :controls="false" indicators :interval="0">
+                              <b-carousel-slide
+                                  style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                  v-for="(imagen, index) in producto.imagenes" :key="index"
+                                  :img-src="imagen.imageUrl"></b-carousel-slide>
+                          </b-carousel>
+                      </template>
+                      <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
+                          <h5>{{ producto.nombre }}</h5>
+                          <p>{{ producto.descripcion }}</p>
+                          <p>{{ producto.subCategoria.nombre }} para {{ producto.subCategoria.categoria.nombre }}</p>
+                          <p>{{ producto.stock }} disponibles</p>
+                      </b-card-text>
+                      <template #footer>
+                          <b-row>
+                              <b-col>Precio: ${{ producto.precio }}</b-col>
+                              <b-col>
+                                  <div class="d-flex justify-content-end">
+                                      <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
+                                          to="kid-producto" variant="faded">
+                                          <b-icon icon="cart-plus"></b-icon>
+                                      </b-button>
+                                  </div>
+                              </b-col>
+                          </b-row>
+                      </template>
+                  </b-card>
+              </div>
+          </div>
       </div>
-      <br />
-      <b>Top Ventas</b>
-    </div>
-
-    <br />
-
-    <!--Card de Ropa-->
-
-    <div>
-      <b-card-group deck>
-        <b-card
-          title="Conjunto verano Niña"
-          img-src="src/views/Nenes/Img/model8nino.jpg"
-          img-alt="Image"
-          img-height="450px"
-          max-width="200px"
-          img-top
-        >
-          <b-card-text>Conjunto de verano escolar niña</b-card-text>
-          <template #footer>
-            <b-row>
-              <b-col>Precio: $240</b-col>
-              <b-col>
-                <div class="d-flex justify-content-end">
-                  <b-button
-                    v-b-tooltip.hover="'Agregar al carrito'"
-                    class="boton"
-                    to="kid-producto"
-                    variant="faded"
-                  >
-                    <b-icon icon="cart-plus"></b-icon>
-                  </b-button>
-                </div>
-              </b-col>
-            </b-row>
-          </template>
-        </b-card>
-
-        <b-card
-          title="Conjunto Verano Niña v2"
-          img-src="src/views/Nenes/Img/model11nino.jpg"
-          img-alt="Image"
-          img-height="450px"
-          img-top
-        >
-          <b-card-text> Conjunto de verano escolar niña v2 </b-card-text>
-          <template #footer>
-            <b-row>
-              <b-col> Precio: $284 </b-col>
-              <b-col>
-                <div class="d-flex justify-content-end">
-                  <b-button
-                    v-b-tooltip.hover="'Agregar al carrito'"
-                    class="boton"
-                    to=""
-                    variant="faded"
-                  >
-                    <b-icon icon="cart-plus"></b-icon>
-                  </b-button>
-                </div>
-              </b-col>
-            </b-row>
-          </template>
-        </b-card>
-
-        <b-card
-          title="Conjunto Verano Niño"
-          img-src="src/views/Nenes/Img/model14nino.jpg"
-          img-alt="Image"
-          img-height="450px"
-          img-top
-        >
-          <b-card-text> Conjunto Verano Niño </b-card-text>
-          <template #footer>
-            <b-row>
-              <b-col> Precio: $567 </b-col>
-              <b-col>
-                <div class="d-flex justify-content-end">
-                  <b-button
-                    v-b-tooltip.hover="'Agregar al carrito'"
-                    class="boton"
-                    to=""
-                    variant="faded"
-                  >
-                    <b-icon icon="cart-plus"></b-icon>
-                  </b-button>
-                </div>
-              </b-col>
-            </b-row>
-          </template>
-        </b-card>
-
-        <b-card
-          title="Conjunto Verano niño v2"
-          img-src="src/views/Nenes/Img/model9nino.jpg"
-          img-alt="Image"
-          img-height="450px"
-          img-top
-        >
-          <b-card-text> Conjunto Verano escolar niño v2 </b-card-text>
-          <template #footer>
-            <b-row>
-              <b-col> Precio: $568 </b-col>
-              <b-col>
-                <div class="d-flex justify-content-end">
-                  <b-button
-                    v-b-tooltip.hover="'Agregar al carrito'"
-                    class="boton"
-                    to=""
-                    variant="faded"
-                  >
-                    <b-icon icon="cart-plus"></b-icon>
-                  </b-button>
-                </div>
-              </b-col>
-            </b-row>
-          </template>
-        </b-card>
-
-      </b-card-group>
-    </div>
-
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "nenes-screen",
   data() {
-    return {
-      imageSrc: 'src/views/Nenes/Img/model8nino.jpg',
-      slides: [
-        {
-          src: "src/views/Nenes/Img/bannerniños.jpg",
-          caption: "",
-        },
-        {
-          src: "src/views/Nenes/Img/collage-tiro-completo-escolares-uniformes.jpg",
-          caption: "",
-        },
-        {
-          src: "src/views/Nenes/Img/collage-plano-medio-ninos.jpg",
-          caption: "",
-        },
-      ],
-    };
+      return {
+          productos: [],
+      };
   },
   methods: {
-    changeImage(newSrc) {
-      this.imageSrc = newSrc;
-    },
+      async getProductos() {
+          try {
+              const token = localStorage.getItem("token");
+              const response = await axios.get(
+                  "http://localhost:8091/api-carsi-shop/producto/getAll",
+                  {
+                      headers: {
+                          Authorization: `Bearer ${token}`,
+                      },
+                  }
+              );
+              this.productos = response.data.data.filter(producto => {
+                  return producto.subCategoria.categoria.nombre.toLowerCase() === "niños";
+              });
+          } catch (error) {
+              console.error("Error al obtener los datos del usuario", error);
+          }
+      },
+  },
+  mounted() {
+      this.getProductos();
   },
 };
 </script>
 
-<style>
-.custom-image {
-  width: 300px;
-  height: 400px;
-}
-.submenu {
-  color: blue;
+<style scoped>
+.userList {
+  background-color: #F5F5F5;
+  color: black;
 }
 
-.ss {
-  background-color: rgb(255, 255, 255);
-  margin-bottom: 5px;
+.custom-container {
+  max-width: 1200px;
+  /* Reducido para hacerlo más responsivo */
+  margin: 0 auto;
+}
+
+.card-custom {
+  max-width: 300px;
+  /* Tamaño máximo de la tarjeta */
+  min-height: 450px;
+  /* Altura mínima de la tarjeta */
+  overflow: hidden;
+  /* Ocultar el desbordamiento de las imágenes */
+}
+
+.card-custom .carousel-inner img {
+  width: 100%;
+  /* Ajustar el ancho de las imágenes al 100% del contenedor */
+  height: auto;
+  /* Altura automática para mantener la proporción */
 }
 </style>

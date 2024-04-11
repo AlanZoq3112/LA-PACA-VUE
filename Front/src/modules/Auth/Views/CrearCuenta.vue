@@ -226,7 +226,6 @@ export default {
                         this.$router.push({ name: 'login' });
                     })
                     .catch(error => {
-                        this.loading = false;
                         let errorMessage = "Hubo un problema al crear la cuenta";
                         if (error.response && error.response.data && error.response.data.length > 0) {
                             errorMessage = error.response.data[0];

@@ -3,7 +3,7 @@
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
-                    <b-card class="card-custom mb-2">
+                    <b-card class="card-custom mb-2" img-alt="Image" img-height="450px" max-width="200px" img-top>
                         <template #header>
                             <b-carousel :controls="false" indicators :interval="0">
                                 <b-carousel-slide style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
@@ -13,9 +13,9 @@
                         </template>
                         <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
                             <h5>{{ producto.nombre }}</h5>
-                            <p>Description: {{ producto.descripcion }}</p>
+                            <p>{{ producto.descripcion }}</p>
                             <p>{{ producto.subCategoria.nombre }} para {{ producto.subCategoria.categoria.nombre }}</p>
-                            <p>Stock: {{ producto.stock }}</p>
+                            <p>{{ producto.stock }} disponibles</p>
                         </b-card-text>
                         <template #footer>
                             <b-row>
@@ -39,7 +39,6 @@
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
 export default {
     name: "Inicio",
     data() {
@@ -60,50 +59,8 @@ export default {
                     }
                 );
                 this.productos = response.data.data;
-                console.log(this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
-            }
-        },
-        async deleteUser(userId) {
-            try {
-                const result = await Swal.fire({
-                    title: "¿Estás seguro de eliminar este usuario?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#008c6f",
-                    cancelButtonColor: "#e11c24",
-                    confirmButtonText: "Confirmar",
-                    cancelButtonText: "Cancelar",
-                });
-
-                if (result.isConfirmed) {
-                    const token = localStorage.getItem("token");
-                    await axios.delete(
-                        "http://localhost:8091/api-carsi-shop/usuario/delete",
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                            data: {
-                                id: userId,
-                            },
-                        }
-                    );
-                    this.getProductos();
-                    Swal.fire(
-                        "Eliminado",
-                        "El usuario ha sido eliminado correctamente",
-                        "success"
-                    );
-                }
-            } catch (error) {
-                console.error("Error al eliminar el usuario", error);
-                Swal.fire(
-                    "Error",
-                    "Hubo un problema al intentar eliminar el usuario",
-                    "error"
-                );
             }
         },
     },
@@ -114,10 +71,6 @@ export default {
 </script>
 
 <style scoped>
-.userList {
-    background-color: #F5F5F5;
-    color: black;
-}
 
 .custom-container {
     max-width: 1200px; /* Reducido para hacerlo más responsivo */

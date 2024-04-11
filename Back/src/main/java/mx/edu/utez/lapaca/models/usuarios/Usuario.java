@@ -1,12 +1,15 @@
 package mx.edu.utez.lapaca.models.usuarios;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,10 +37,9 @@ public class Usuario implements UserDetails {
     private String nombre;
 
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
-    private String genero
-      
+    private String genero;
+  
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-
     private String image;
 
     @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
@@ -67,6 +69,9 @@ public class Usuario implements UserDetails {
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     @JsonManagedReference
     private Vendedor vendedor;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Direccion> direcciones;
 
 
 

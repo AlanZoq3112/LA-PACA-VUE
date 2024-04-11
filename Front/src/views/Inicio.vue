@@ -6,13 +6,15 @@
                     <b-card class="card-custom mb-2">
                         <template #header>
                             <b-carousel :controls="false" indicators :interval="0">
-                                <b-carousel-slide v-for="(imagen, index) in producto.imagenes" :key="index" :img-src="imagen.imageUrl"></b-carousel-slide>
+                                <b-carousel-slide style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                
+                                v-for="(imagen, index) in producto.imagenes" :key="index" :img-src="imagen.imageUrl"></b-carousel-slide>
                             </b-carousel>
                         </template>
-                        <b-card-text>
+                        <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
                             <h5>{{ producto.nombre }}</h5>
                             <p>Description: {{ producto.descripcion }}</p>
-                            <p>Categoria: {{ producto.subCategoria.nombre }}</p>
+                            <p>{{ producto.subCategoria.nombre }} para {{ producto.subCategoria.categoria.nombre }}</p>
                             <p>Stock: {{ producto.stock }}</p>
                         </b-card-text>
                         <template #footer>

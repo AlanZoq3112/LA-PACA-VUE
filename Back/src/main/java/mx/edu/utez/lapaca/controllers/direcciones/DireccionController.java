@@ -4,6 +4,7 @@ package mx.edu.utez.lapaca.controllers.direcciones;
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.direcciones.DireccionDto;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.services.direcciones.DireccionService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,15 @@ public class DireccionController {
         Long id = requestBody.get("id");
         return new ResponseEntity<>(
                 this.service.deleteById(id),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/mis-direcciones")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COMPRADOR', 'ROLE_VENDEDOR')")
+    public ResponseEntity<CustomResponse<List<Direccion>>> getAllDirectionsByCurrentUser() {
+        return new ResponseEntity<>(
+                service.getAllByCurrentUser(),
                 HttpStatus.OK
         );
     }

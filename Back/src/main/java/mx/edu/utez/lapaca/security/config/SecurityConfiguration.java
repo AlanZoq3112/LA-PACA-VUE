@@ -49,7 +49,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/vendedor/aprobarSolicitudVendedor").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/vendedor/update").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
 
-                        .requestMatchers("/api-carsi-shop/categoria/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api-carsi-shop/categoria/insert").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api-carsi-shop/subcategoria/getAll").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
+                        .requestMatchers("/api-carsi-shop/subcategoria/getOne").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
+                        .requestMatchers("/api-carsi-shop/subcategoria/update").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api-carsi-shop/subcategoria/delete").hasAuthority(Role.ADMIN.name())
 
                         .requestMatchers("/api-carsi-shop/subcategoria/**").hasAuthority(Role.ADMIN.name())
 
@@ -65,7 +69,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/api-carsi-shop/direccion/insert").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/direccion/getAll").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/direccion/getOne").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
-                        .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/direccion/update").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/direccion/mis-direcciones").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/direccion/update").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.DELETE,"/api-carsi-shop/direccion/delete").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 

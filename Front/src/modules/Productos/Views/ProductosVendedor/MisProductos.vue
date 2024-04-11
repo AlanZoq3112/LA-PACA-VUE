@@ -9,8 +9,8 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-4 tabla">
                                         <div>
-                                            <h4>Mis productos <i class="fa fa-shopping-basket"
-                                                    aria-hidden="true"></i></h4>
+                                            <h4>Mis productos <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                            </h4>
 
                                         </div>
                                         <div class="">
@@ -20,61 +20,57 @@
                                             </b-button>
                                         </div>
                                     </div>
-                                    <div class="text-center tabla">
 
-                                        
-                                        <b-table responsive :fields="fields" :items="productos" head-variant="light"
-                                            bordered class="text-center shadow" id="table" ref="table">
-
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(nombre)="data">
-                                                {{ data.item.nombre }}
-                                            </template>
-                                            <!-- Columna para mostrar  'Description' -->
-                                            <template #cell(descripcion)="data">
-                                                {{ data.item.descripcion }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(precio)="data">
-                                                {{ data.item.precio }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(stock)="data">
-                                                {{ data.item.stock }}
-                                            </template>
-
-
-                                            <template #cell(estado)="data">
-                                                {{ data.item.usuario.estado ? 'Aprobado' : 'Rechazado' }}
-                                            </template>
-
-                                            <template #cell(usuario)="data">
-                                                {{ data.item.usuario.nombre }}
-                                            </template>
-
-
-
-                                            <template #cell(actions)="data">
-                                                <div class="text-center">
-                                                    <!-- Mostrar solo el botón 'Aceptar' si el estado es 'Rechazado' -->
-                                                    <b-button v-if="!data.item.estado" size="sm"
-                                                        @click="changeProductStatus(data.item.id, true)" variant="success"
-                                                        class="btnAccept">
-                                                        <b-icon icon="check" class="mr-1"></b-icon> Aceptar
-                                                    </b-button>
-                                                    <!-- Mostrar solo el botón 'Rechazar' si el estado es 'Aprobado' -->
-                                                    <b-button v-if="data.item.estado" size="sm"
-                                                        @click="changeProductStatus(data.item.id, false)" variant="danger"
-                                                        class="btnReject">
-                                                        <b-icon icon="x" class="mr-1"></b-icon> Rechazar
-                                                    </b-button>
-                                                </div>
-                                            </template>
-
-
-                                        </b-table>
-                                        
-                                        <div v-if="productos.length === 0" class="text-center">No tienes productos registrados.</div>
+                                    <div>
+                                        <TransitionGroup name="roll" tag="div" class="d-flex d-fixed">
+                                            <div v-if="productos.length === 0" class="col-lg-12 mb-4">
+                                                <p class="text-center">Aún no tienes productos registrados</p>
+                                            </div>
+                                            <div v-for="(producto, index) in productos" :key="`producto-${index}`"
+                                                class="col-lg-3 mb-4">
+                                                <b-card class="card-custom mb-2" img-top img-height="250px"
+                                                    max-width="150px">
+                                                    <template #header>
+                                                        <b-carousel :controls="false" indicators :interval="0">
+                                                            <b-carousel-slide
+                                                                style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                                                v-for="(imagen, index) in producto.imagenes"
+                                                                :key="`imagen-${index}`"
+                                                                :img-src="imagen.imageUrl"></b-carousel-slide>
+                                                        </b-carousel>
+                                                    </template>
+                                                    <b-card-text>
+                                                        <h5>{{ producto.nombre }}</h5>
+                                                        <p>Description: {{ producto.descripcion }}</p>
+                                                        <p>Categoria: {{ producto.subCategoria.nombre }} de {{
+                                                producto.subCategoria.categoria.nombre }}</p>
+                                                        <p>Stock: {{ producto.stock }}</p>
+                                                        <p>Precio: ${{ producto.precio }}</p>
+                                                    </b-card-text>
+                                                    <template #footer>
+                                                        <b-row>
+                                                            <b-col :class="{
+                                                'text-warning': producto.estado === 1,
+                                                'text-success': producto.estado === 2,
+                                                'text-danger': producto.estado === 3
+                                            }">
+                                                                <span v-if="producto.estado === 1">Pendiente</span>
+                                                                <span v-else-if="producto.estado === 2">Aprobado</span>
+                                                                <span v-else-if="producto.estado === 3">Rechazado</span>
+                                                            </b-col>
+                                                            <b-col>
+                                                                <div class="d-flex justify-content-end">
+                                                                    <b-button v-b-tooltip.hover="'Editar Producto'"
+                                                                        class="boton" to="kid-producto" variant="faded">
+                                                                        <b-icon icon="pencil"></b-icon>
+                                                                    </b-button>
+                                                                </div>
+                                                            </b-col>
+                                                        </b-row>
+                                                    </template>
+                                                </b-card>
+                                            </div>
+                                        </TransitionGroup>
                                     </div>
                                 </div>
                             </div>
@@ -86,8 +82,6 @@
         <ModalGuardarProducto @producto-saved="getProductos" />
     </div>
 </template>
-
-
 
 <script>
 import axios from 'axios';
@@ -127,7 +121,7 @@ export default {
                     }
                 });
                 this.productos = response.data.data;
-                console.log("Prodcutos: ", this.productos);
+                console.log("Productos: ", this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos de los productos", error);
             }

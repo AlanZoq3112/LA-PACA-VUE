@@ -45,7 +45,7 @@ public class Producto {
     private int stock;
 
     @Column(nullable = false)
-    private boolean estado;
+    private int estado;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

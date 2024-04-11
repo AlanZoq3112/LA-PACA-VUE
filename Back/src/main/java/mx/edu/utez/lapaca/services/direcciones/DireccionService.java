@@ -3,6 +3,7 @@ package mx.edu.utez.lapaca.services.direcciones;
 
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
+import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -196,6 +197,32 @@ public class DireccionService {
         }
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Direccion>> getAllByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Direccion> direcciones = usuario.getDirecciones();
+            return new CustomResponse<>(
+                    direcciones,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
 
 }

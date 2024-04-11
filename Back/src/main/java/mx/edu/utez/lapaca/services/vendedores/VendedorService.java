@@ -193,6 +193,8 @@ public class VendedorService {
         Optional<Vendedor> vendedorOptional = repository.findById(id);
         if (vendedorOptional.isPresent()) {
             Vendedor vendedor = vendedorOptional.get();
+
+
             vendedor.setEstado(estado);
             repository.save(vendedor);
             // se actualiza el rol del usuario asociado si se aprueba como vendedor

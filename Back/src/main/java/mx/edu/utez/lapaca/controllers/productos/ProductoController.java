@@ -137,7 +137,6 @@ public class ProductoController {
     }
 
     @GetMapping("/productos-aprobados")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<List<Producto>>> getAllApprovedProducts() {
         return new ResponseEntity<>(
                 service.getAllApprovedProducts(),

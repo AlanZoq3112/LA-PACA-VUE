@@ -190,7 +190,7 @@ public class ProductoService {
 
             Producto producto = productoOptional.get();
 
-            if (estado != 0 && estado != 1 && estado != 2) {
+            if (estado != 0 && estado != 1 && estado != 2 && estado !=3) {
                 return new CustomResponse<>(
                         null,
                         true,
@@ -202,17 +202,19 @@ public class ProductoService {
             repository.save(producto);
 
             // se actualiza el rol del usuario asociado si se aprueba como vendedor
-            if (estado == 2) {
+            if (estado == 3) {
                 Usuario usuario = producto.getUsuario();
                 usuarioRepository.save(usuario);
             }
-            String mensaje;
-            if (estado == 2) {
+            String mensaje = "";
+            if (estado == 3) {
                 mensaje = "Solicitud aprobada correctamente";
             } else if (estado == 0) {
                 mensaje = "Producto marcado como inactivo correctamente";
-            } else {
+            } else if (estado == 1) {
                 mensaje = "Producto marcado como pendiente correctamente";
+            }  else if (estado == 2) {
+                mensaje = "Producto rechazado correctamente";
             }
             return new CustomResponse<>(
                     producto,

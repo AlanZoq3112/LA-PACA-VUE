@@ -121,12 +121,6 @@ public class ProductoController {
         }
     }
 
-
-
-
-
-
-
     @DeleteMapping("/delete")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")
     public ResponseEntity<CustomResponse<Producto>> delete(@Valid @RequestBody Map<String, Long> requestBody){

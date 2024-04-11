@@ -55,7 +55,7 @@ public class ProductoService {
                 );
             }
             // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
-            producto.setEstado(false);
+            producto.setEstado(1);
             // Guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Insert", "Producto Agregado", "Productos");
@@ -154,7 +154,7 @@ public class ProductoService {
             }
 
             // se guarda la solicitud de producto
-            producto.setEstado(true);
+            producto.setEstado(2);
             // se guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Update", "Producto Actualizado","Productos");
@@ -183,37 +183,51 @@ public class ProductoService {
 
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Producto> aprobarSolicitudProducto(long id, boolean estado) {
+    public CustomResponse<Producto> aprobarSolicitudProducto(long id, int estado) {
         logService.log("Aprobación", "El Administrador aprobo el producto con el ID: " + id,"Productos");
         Optional<Producto> productoOptional = repository.findById(id);
         if (productoOptional.isPresent()) {
+
             Producto producto = productoOptional.get();
+
+            if (estado != 0 && estado != 1 && estado != 2 && estado !=3) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Estado de producto no válido"
+                );
+            }
             producto.setEstado(estado);
             repository.save(producto);
+
             // se actualiza el rol del usuario asociado si se aprueba como vendedor
-            if (estado) {
+            if (estado == 3) {
                 Usuario usuario = producto.getUsuario();
                 usuarioRepository.save(usuario);
-            } else if (!estado) {
-                return new CustomResponse<>(
-                        producto,
-                        true,
-                        HttpStatus.OK.value(),
-                        "Solicitud denegada correctamente"
-                );
+            }
+            String mensaje = "";
+            if (estado == 3) {
+                mensaje = "Solicitud aprobada correctamente";
+            } else if (estado == 0) {
+                mensaje = "Producto marcado como inactivo correctamente";
+            } else if (estado == 1) {
+                mensaje = "Producto marcado como pendiente correctamente";
+            }  else if (estado == 2) {
+                mensaje = "Producto rechazado correctamente";
             }
             return new CustomResponse<>(
                     producto,
                     false,
                     HttpStatus.OK.value(),
-                    "Solicitud aprobada correctamente"
+                    mensaje
             );
         } else {
             return new CustomResponse<>(
                     null,
                     true,
                     HttpStatus.NOT_FOUND.value(),
-                    "No se encontró el vendedor con el ID proporcionado"
+                    "No se encontró el producto con el ID proporcionado"
             );
         }
     }
@@ -225,7 +239,7 @@ public class ProductoService {
             Optional<Producto> optionalProducto = repository.findById(id);
             if (optionalProducto.isPresent()) {
                 Producto producto = optionalProducto.get();
-                producto.setEstado(false); // establecer el estado como inactivo
+                producto.setEstado(0); // establecer el estado como inactivo
                 repository.save(producto);
                 return new CustomResponse<>(
                         null,
@@ -308,7 +322,4 @@ public class ProductoService {
             );
         }
     }
-
-
-
 }

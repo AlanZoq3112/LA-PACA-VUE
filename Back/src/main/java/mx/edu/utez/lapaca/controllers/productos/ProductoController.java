@@ -111,20 +111,15 @@ public class ProductoController {
         }
 
         long id = Long.parseLong(requestBody.get("id").toString());
-        boolean estadoAprobado = (boolean) requestBody.get("estado");
+        int estado = Integer.parseInt(requestBody.get("estado").toString()); // Cambiado a int
 
-        CustomResponse<Producto> response = service.aprobarSolicitudProducto(id, estadoAprobado);
+        CustomResponse<Producto> response = service.aprobarSolicitudProducto(id, estado);
         if (response.getError()) {
             return ResponseEntity.status(response.getStatusCode()).body(response);
         } else {
             return ResponseEntity.ok(response);
         }
     }
-
-
-
-
-
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR')")

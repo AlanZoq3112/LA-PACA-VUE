@@ -38,7 +38,6 @@ public class ProductoController {
         if (imageFiles.size() < 2 || imageFiles.size() > 5) {
             throw new Exception("Debe proporcionar de 2 a 5 imágenes.");
         }
-
         List<String> imageUrls = new ArrayList<>();
         for (MultipartFile imageFile : imageFiles) {
             if (imageFile.getSize() > 2 * 1024 * 1024) {
@@ -50,8 +49,7 @@ public class ProductoController {
             }
             imageUrls.add(imageUrl);
         }
-
-        //Crear una lista de objetos ProductoImagen y configurarlos con las URLs de las imágenes
+        //se crea una lista de objetos ProductoImagen y se configura con las URLs de las imágenes
         List<ProductoImagen> imagenes = new ArrayList<>();
         Producto producto = productoDto.getProducto(); // Obtener el producto del DTO
         for (String imageUrl : imageUrls) {
@@ -60,10 +58,7 @@ public class ProductoController {
             imagen.setProducto(producto); // Establecer la relación con el producto
             imagenes.add(imagen);
         }
-
-        // Establecer la lista de imágenes en el producto
         producto.setImagenes(imagenes);
-
         return new ResponseEntity<>(
                 this.service.insert(producto),
                 HttpStatus.CREATED

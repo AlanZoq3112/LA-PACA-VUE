@@ -1,7 +1,6 @@
 package mx.edu.utez.lapaca.services.categorias;
 
 
-import mx.edu.utez.lapaca.models.bitacora.Log;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
 import mx.edu.utez.lapaca.services.logs.LogService;

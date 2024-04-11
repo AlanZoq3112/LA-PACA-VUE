@@ -21,8 +21,6 @@ public class VendedorController {
 
     private final VendedorService service;
 
-
-
     public VendedorController(VendedorService service) {
         this.service = service;
     }
@@ -76,7 +74,6 @@ public class VendedorController {
                     "El cuerpo de la solicitud debe contener el ID del vendedor y el estado"
             ));
         }
-
         long id = Long.parseLong(requestBody.get("id").toString());
         boolean estadoAprobado = (boolean) requestBody.get("estado");
 

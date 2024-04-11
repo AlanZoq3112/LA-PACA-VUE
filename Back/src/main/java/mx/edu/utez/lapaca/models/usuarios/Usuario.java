@@ -1,8 +1,6 @@
 package mx.edu.utez.lapaca.models.usuarios;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,15 +54,11 @@ public class Usuario implements UserDetails {
     private LocalDate fechaNacimiento;
 
 
-
     @Column(columnDefinition = "VARCHAR(8)")
     private String secretPass;
 
-
-
     @Column(nullable = false)
     private Role role;
-
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     @JsonManagedReference
@@ -72,8 +66,6 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Direccion> direcciones;
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

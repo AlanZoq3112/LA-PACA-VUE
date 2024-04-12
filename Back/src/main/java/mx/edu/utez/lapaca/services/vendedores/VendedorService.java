@@ -1,7 +1,9 @@
 package mx.edu.utez.lapaca.services.vendedores;
 
 
+import mx.edu.utez.lapaca.models.bitacora.Log;
 import mx.edu.utez.lapaca.models.roles.Role;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
@@ -26,8 +28,11 @@ public class VendedorService {
     private final VendedorRepository repository;
     private final UsuarioRepository usuarioRepository;
 
-    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository) {
+    private final LogService logService;
+
+    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
+        this.logService = logService;
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -160,7 +165,7 @@ public class VendedorService {
             // se guarda la solicitud de vendedor
             vendedor.setEstado(true);
             Vendedor savedVendedor = repository.save(vendedor);
-
+            logService.log("Insert", "Se almaceno la solicitud del vendedor", "vendedores");
             return new CustomResponse<>(
                     savedVendedor,
                     false,
@@ -214,6 +219,7 @@ public class VendedorService {
                 );
 
             }
+            logService.log("Insert", "Se aprobo un vendedor", "vendedores");
             return new CustomResponse<>(
                     vendedor,
                     false,

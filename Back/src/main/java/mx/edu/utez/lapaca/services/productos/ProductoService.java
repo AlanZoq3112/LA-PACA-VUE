@@ -38,7 +38,6 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
-        logService.log("Insert", "Producto Agregado", "Productos");
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
@@ -133,8 +132,6 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> update(Producto producto) {
-        logService.log("Update", "Producto Actualizado","Productos");
-
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario

@@ -38,7 +38,6 @@ public class UsuarioService {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
-                logService.log("Insert", "Usuario insertado", "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -90,7 +89,7 @@ public class UsuarioService {
         Optional<Usuario> usuario = repository.findByEmail(email);
         try {
             if (usuario.isPresent()) {
-                logService.log("GetOne", "Usuario obtenido", "usuarios");
+                logService.log("Inicio Sesión", "Inicio sesón: "+email, "usuarios");
                 return new CustomResponse<>(
                         usuario.get(),
                         false,
@@ -127,7 +126,6 @@ public class UsuarioService {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
-                logService.log("Update", "Usuario actualizado", "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -144,6 +142,7 @@ public class UsuarioService {
                 );
             }
             Usuario savedUser = repository.save(usuario);
+            logService.log("Update", "Usuario actualizado", "usuario");
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -175,7 +174,6 @@ public class UsuarioService {
         try {
             Optional<Usuario> usuarioId = repository.findById(id);
             if (!usuarioId.isPresent()) {
-                logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -185,6 +183,7 @@ public class UsuarioService {
             }
             Usuario usuario = usuarioId.get();
             repository.delete(usuario);
+            logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
             return new CustomResponse<>(
                     null,
                     false,

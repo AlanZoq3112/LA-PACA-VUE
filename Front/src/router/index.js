@@ -154,6 +154,21 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/bitacorag-screen',
+      name: 'bitacorag-screen',
+      component: () => import('./../modules/Bitacoras Generales/BitacorasG.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
+
+        if (tokenDecoded.rol === '[ADMIN]') {
+          next();
+        } else {
+          next('/inicio');
+        }
+      }
+    },
+    {
       path: '/inicio',
       name: 'inicio',
       component: () => import('../views/Inicio.vue')

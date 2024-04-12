@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.services.subcategorias;
 
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoriaRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
@@ -18,9 +19,11 @@ public class SubCategoriaService {
 
 
     private final SubCategoriaRepository repository;
+    private final LogService logService;
 
-    public SubCategoriaService(SubCategoriaRepository repository) {
+    public SubCategoriaService(SubCategoriaRepository repository, LogService logService) {
         this.repository = repository;
+        this.logService = logService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -36,6 +39,7 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
+            logService.log("Insert", "SubCategoria registrada","subcategorias");
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
@@ -117,6 +121,7 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
+            logService.log("Update", "SubCategoria actualizada","subcategorias");
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
@@ -155,6 +160,7 @@ public class SubCategoriaService {
             }
             SubCategoria subCategoria = subCategoriaId.get();
             repository.delete(subCategoria);
+            logService.log("Delete", "SubCategoria eliminada: "+id,"subcategorias");
             return new CustomResponse<>(
                     null,
                     false,

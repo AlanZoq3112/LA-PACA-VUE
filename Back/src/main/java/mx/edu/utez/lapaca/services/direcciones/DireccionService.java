@@ -3,7 +3,6 @@ package mx.edu.utez.lapaca.services.direcciones;
 
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;

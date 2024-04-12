@@ -1,7 +1,5 @@
 package mx.edu.utez.lapaca.dto.categorias;
 
-
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -26,8 +24,6 @@ public class CategoriaDto {
     private String nombre;
 
     private List<SubCategoria> subcategorias;
-
-
 
     public Categoria getCategoria() {
         return new Categoria(

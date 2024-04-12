@@ -4,7 +4,6 @@ package mx.edu.utez.lapaca.controllers.direcciones;
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.direcciones.DireccionDto;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.services.direcciones.DireccionService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.models.pedidos;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

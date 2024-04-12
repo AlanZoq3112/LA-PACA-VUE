@@ -90,7 +90,7 @@ public class UsuarioService {
         Optional<Usuario> usuario = repository.findByEmail(email);
         try {
             if (usuario.isPresent()) {
-                logService.log("GetOne", "Usuario obtenido", "usuarios");
+                logService.log("Inicio Sesión", "Inicio sesón: "+email, "usuarios");
                 return new CustomResponse<>(
                         usuario.get(),
                         false,
@@ -127,7 +127,6 @@ public class UsuarioService {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
-                logService.log("Update", "Usuario actualizado", "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -144,6 +143,7 @@ public class UsuarioService {
                 );
             }
             Usuario savedUser = repository.save(usuario);
+            logService.log("Update", "Usuario actualizado", "usuario");
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -175,7 +175,6 @@ public class UsuarioService {
         try {
             Optional<Usuario> usuarioId = repository.findById(id);
             if (!usuarioId.isPresent()) {
-                logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
                 return new CustomResponse<>(
                         null,
                         true,
@@ -185,6 +184,7 @@ public class UsuarioService {
             }
             Usuario usuario = usuarioId.get();
             repository.delete(usuario);
+            logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
             return new CustomResponse<>(
                     null,
                     false,
@@ -214,7 +214,6 @@ public class UsuarioService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> updatePassword(Usuario usuario) {
         if (!this.repository.existsById(usuario.getId())) {
-            logService.log("UpdatePassword", "Contraseña actualizada", "usuario");
             return new CustomResponse<>(
                     null,
                     true,
@@ -225,11 +224,12 @@ public class UsuarioService {
         usuario.setPassword(
                 passwordEncoder.encode(usuario.getPassword())
         );
+        logService.log("UpdatePassword", "Contraseña actualizada", "usuario");
         return new CustomResponse<>(
                 this.repository.saveAndFlush(usuario),
                 false,
                 200,
-                "Usuario Actualizado!"
+                "Contraseña Actualizada!"
         );
     }
 

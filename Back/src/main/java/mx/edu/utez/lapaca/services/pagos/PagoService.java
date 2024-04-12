@@ -146,7 +146,7 @@ public class PagoService {
             carrito.setMonto(montoTotal);
             item.setCarrito(carrito);
         }
-        //direccion me lleva la verga no me sale nd
+        //direccion me lleva la verga no me sale nd ah no ya xd
         Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
         if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");

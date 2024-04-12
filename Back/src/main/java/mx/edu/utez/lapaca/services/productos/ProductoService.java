@@ -38,7 +38,6 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
-        logService.log("Insert", "Producto Agregado", "Productos");
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
@@ -96,10 +95,10 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> getOne(Long id) {
-        logService.log("GetOne", "Consulta del producto con el ID: " + id, "Productos");
         Optional<Producto> producto = repository.findById(id);
         try {
             if (producto.isPresent()) {
+                logService.log("GetOne", "Consulta del producto con el ID: " + id, "Productos");
                 return new CustomResponse<>(
                         producto.get(),
                         false,
@@ -133,8 +132,6 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> update(Producto producto) {
-        logService.log("Update", "Producto Actualizado","Productos");
-
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // obtener el nombre de usuario
@@ -184,7 +181,6 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> aprobarSolicitudProducto(long id, int estado) {
-        logService.log("Aprobación", "El Administrador aprobo el producto con el ID: " + id,"Productos");
         Optional<Producto> productoOptional = repository.findById(id);
         if (productoOptional.isPresent()) {
 
@@ -208,12 +204,16 @@ public class ProductoService {
             }
             String mensaje = "";
             if (estado == 3) {
+                logService.log("Aprobación", "El Administrador aprobo el producto con el ID: " + id,"Productos");
                 mensaje = "Solicitud aprobada correctamente";
             } else if (estado == 0) {
+                logService.log("Aprobación", "El Administrador marcó como inactivo el producto con el ID: " + id,"Productos");
                 mensaje = "Producto marcado como inactivo correctamente";
             } else if (estado == 1) {
+                logService.log("Aprobación", "El Administrador marcó como pendiente el producto con el ID: " + id,"Productos");
                 mensaje = "Producto marcado como pendiente correctamente";
             }  else if (estado == 2) {
+                logService.log("Aprobación", "El Administrador rechazó el producto con el ID: " + id,"Productos");
                 mensaje = "Producto rechazado correctamente";
             }
             return new CustomResponse<>(
@@ -234,13 +234,13 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> delete(Long id) {
-        logService.log("Delete", "Producto elimminado con el ID: " + id,"Productos");
         try {
             Optional<Producto> optionalProducto = repository.findById(id);
             if (optionalProducto.isPresent()) {
                 Producto producto = optionalProducto.get();
                 producto.setEstado(0); // establecer el estado como inactivo
                 repository.save(producto);
+                logService.log("Delete", "Producto eliminado (inactivo) con el ID: " + id,"Productos");
                 return new CustomResponse<>(
                         null,
                         false,
@@ -286,11 +286,13 @@ public class ProductoService {
             Usuario usuario = usuarioOptional.get();
             // Obtener los productos creados por el usuario
             List<Producto> productos = repository.findByUsuario(usuario);
+            logService.log("Get", "El usuario con el correo "
+                    + usuario + "ha solicitado ver sus productos","Productos");
             return new CustomResponse<>(
                     productos,
                     false,
                     200,
-                    "Ok"
+                    "OK"
             );
         } else {
             return new CustomResponse<>(

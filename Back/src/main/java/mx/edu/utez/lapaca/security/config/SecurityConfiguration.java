@@ -76,6 +76,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/realizar-pago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/insertarFormaPago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 
+                        .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
 
 
                         .anyRequest().authenticated())

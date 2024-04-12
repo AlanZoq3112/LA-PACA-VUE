@@ -14,36 +14,63 @@
                     <b-row>
                         <b-col>
                             <b-form-group label="Nombre del producto" label-for="nombre">
-                                <b-form-input v-model="producto.nombre" type="text" id="nombre" required></b-form-input>
+                                <InputTextMax @check="validNombre" @name="dataChildName" :numMax="maximoName"
+                                    required />
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Subcategoria" label-for="nombre">
-                                <b-form-input v-model="producto.subCategoria" type="text" id="nombre" required></b-form-input>
+                                <multi-select id="subCategoria" :class="{
+                                    'is-invalid': v$.producto.subCategoria.$error,
+                                    'is-valid': !v$.producto.subCategoria.$invalid,
+                                }" v-model="v$.producto.subCategoria.$model" placeholder="Selecciona alguna"
+                                    label="nombre" :options="subcategorias" track-by="nombre" :multiple="false"
+                                    selectLabel="Aceptar" deselectLabel="Eliminar" selectedLabel="Seleccionado"
+                                    @close="v$.producto.subCategoria.$touch()">
+                                </multi-select>
+                                <b-form-invalid-feedback v-for="error in v$.producto.subCategoria.$errors"
+                                    :key="error.$uid">
+                                    {{ error.$message }}
+                                </b-form-invalid-feedback>
+                                <p></p>
                             </b-form-group>
                         </b-col>
                     </b-row>
 
                     <b-form-group label="Descripción" label-for="descripcion">
-                        <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4" required></b-form-textarea>
+                        <InputTextMax @check="validDescription" @name="dataChildDescription" :numMax="maximoDescription"
+                            required />
                     </b-form-group>
                     <b-row>
                         <b-col>
                             <b-form-group label="Precio" label-for="precio">
-                                <b-form-input v-model="producto.precio" type="number" id="precio" required></b-form-input>
+                                <b-form-input id="precio" type="number" v-model="v$.producto.precio.$model"
+                                    @blur="v$.producto.precio.$touch()"
+                                    :state="v$.producto.precio.$dirty ? !v$.producto.precio.$error : null" trim
+                                    required />
+                                <b-form-invalid-feedback v-for="error in v$.producto.precio.$errors" :key="error.$uid">
+                                    {{ error.$message }}
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Stock" label-for="stock">
-                                <b-form-input v-model="producto.stock" type="number" id="stock" required></b-form-input>
+                                <b-form-input id="stock" type="number" v-model="v$.producto.stock.$model"
+                                    @blur="v$.producto.stock.$touch()"
+                                    :state="v$.producto.stock.$dirty ? !v$.producto.stock.$error : null" trim
+                                    required />
+                                <b-form-invalid-feedback v-for="error in v$.producto.stock.$errors" :key="error.$uid">
+                                    {{ error.$message }}
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                     </b-row>
-
-
-
-                    <b-form-group label="Imagenes del producto" label-for="imagenes">
-                        <input type="file" id="imagenes" multiple @change="handleFileUpload($event)" class="form-control" required>
+                    <b-form-group>
+                        <!--
+                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
+                            class="form-control" required>
+                        -->
+                        <InputFiles @img="dataChildFile" @check="validFile" />
                     </b-form-group>
                     <b-button type="submit" variant="success">Registrar</b-button>
                 </b-form>
@@ -54,8 +81,36 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useVuelidate } from "@vuelidate/core";
+import {
+    required,
+    alphaNum,
+    helpers,
+    maxLength,
+    minLength,
+    integer,
+    decimal,
+    minValue,
+    maxValue
+} from "@vuelidate/validators";
+const base64Encode = data =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(data);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 export default {
     name: "ModalGuardarProductos",
+    components: {
+        InputTextMax: () => import('../../../../components/input_validations/inputTextMax.vue'),
+        InputFiles: () => import('../../../../components/input_validations/InputFiles.vue'),
+    },
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
+    },
     data() {
         return {
             producto: {
@@ -66,8 +121,14 @@ export default {
                 subCategoria: 0,
                 imagenes: []
             },
+            maximoName: 40,
+            maximoDescription: 100,
+            valueName: false,
+            valueDescription: false,
             subcategorias: [],
-            loading: false
+            loading: false,
+            valueFile: false,
+            id: "",
         }
     },
 
@@ -76,12 +137,40 @@ export default {
             this.$bvModal.hide("modal-guardar-productos");
             this.resetForm();
         },
+        dataChildName(data) {
+            this.producto.nombre = data;
+        },
+        validNombre(data) {
+            this.valueName = data;
+        },
+        validFile(data) {
+            this.valueFile = data;
+        },
+        dataChildFile(data) {
+            for (let i = 0; i < data.length; i++) {
+                if (data) {
+                    base64Encode(data[0]).then((file) => {
+                        this.producto.imagenes.push(file);
+                        console.log(this.producto.imagenes)
+                    }).catch((error) => {
+                        this.producto.imagenes = null;
+                    });
+                }
+            }
+        },
+        dataChildDescription(data) {
+            this.producto.descripcion = data;
+        },
+        validDescription(data) {
+            this.valueDescription = data;
+        },
         handleFileUpload(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 this.producto.imagenes.push(file);
             }
+            console.log(this.producto.imagenes)
         },
         async save() {
             try {
@@ -94,10 +183,11 @@ export default {
                     confirmButtonText: "Confirmar",
                     cancelButtonText: 'Cancelar',
                 });
-
-                if (result.isConfirmed) {
+                const isValid = this.v$.producto.$invalid;
+                if (result.isConfirmed && isValid) {
                     this.loading = true;
-                    console.log(this.producto);
+                    this.id = this.producto.subCategoria.id;
+                    this.producto.subCategoria = this.id;
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
@@ -124,6 +214,8 @@ export default {
                     } else {
                         console.log("Error al guardar el producto. Estado del servidor:", response.status);
                     }
+                }else{
+                    Swal.fire('Error', 'Revise todo los campos', 'error');
                 }
             } catch (error) {
                 console.error("Error al realizar la solicitud de guardado:", error);
@@ -146,6 +238,53 @@ export default {
                     id: 0,
                 }
             }
+        },
+        async getSubcategorias() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://localhost:8091/api-carsi-shop/subcategoria/getAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                this.subcategorias = response.data.data;
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');
+            }
+        },
+
+    },
+    mounted() {
+        this.getSubcategorias();
+    },
+    validations() {
+        return {
+            producto: {
+                subCategoria: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                },
+            },
+        };
+    },
+    validations: {
+        producto: {
+            stock: {
+                required: helpers.withMessage("El campo es requerido.", required),
+                integer: helpers.withMessage("El campo debe ser un número entero.", integer),
+                minValue: helpers.withMessage("El campo no puede ser negativo.", minValue(0)),
+            },
+            precio: {
+                required: helpers.withMessage("El campo es requerido.", required),
+                decimal: helpers.withMessage("El campo debe ser un número decimal.", decimal),
+                minValue: helpers.withMessage("El campo debe ser mayor a 0.", (value) => value > 0),
+                numberOfDecimals: helpers.withMessage("El campo debe tener solo dos decimales.", (value) => {
+                    const decimals = value.toString().split(".")[1]
+                    return decimals ? decimals.length <= 2 : true
+                }),
+            },
+            subCategoria: {
+                required: helpers.withMessage("Campo obligatorio", required),
+            },
         },
     },
 }

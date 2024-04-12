@@ -10,8 +10,7 @@
                         <b-row>
                             <b-col>
                                 <label for="nombre">Nombre de la categoria: *</label>
-                                <b-form-input v-model="categoria.nombre" type="text" class="form-control"
-                                    placeholder="Nombre" required />
+                                <InputTextMax @check="validNombre" @name="dataChild" :numMax="maximo"/>
                             </b-col>
                         </b-row>
                     </form>
@@ -36,17 +35,28 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 export default {
     name: "modal-guardar-categorias",
+    components:{
+        InputTextMax: () => import('../../../../components/input_validations/inputTextMax.vue'),
+    },
     data() {
         return {
             categoria: {
                 nombre: "",
-            }
+            },
+            valueCategoria:"",
+            maximo:15
         }
     },
     methods: {
         onClose() {
             this.$bvModal.hide("modal-guardar-categorias");
             this.resetForm();
+        },
+        dataChild(data) {
+            this.categoria.nombre = data;
+        },
+        validNombre(data) {
+            this.valueCategoria = data;
         },
         async save() {
             try {
@@ -60,7 +70,7 @@ export default {
                     cancelButtonText: 'Cancelar',
                 });
 
-                if (result.isConfirmed) {
+                if (result.isConfirmed && this.valueCategoria) {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
@@ -85,6 +95,8 @@ export default {
                     } else {
                         Swal.fire('Error', 'Hubo un problema al intentar REGISTRAR la categoria, intente mas tarde', 'error');
                     }
+                }else{
+                    Swal.fire('Error', 'Revise todo los campos', 'error');
                 }
             } catch (error) {
                 Swal.fire({

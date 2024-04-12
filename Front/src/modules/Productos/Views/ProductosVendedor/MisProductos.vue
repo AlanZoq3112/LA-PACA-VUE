@@ -127,7 +127,7 @@ export default {
                     }
                 });
                 this.productos = response.data.data;
-                console.log("Prodcutos: ", this.productos);
+                console.log("Productos: ", this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos de los productos", error);
             }

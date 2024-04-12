@@ -18,28 +18,57 @@
                                     <b-row>
                                         <b-col>
                                             <label class="form-label" for="curp">CURP: </label>
-                                            <input v-model="vendedor.curp" type="text" id="curp" class="form-control"
-                                                placeholder="CURP" />
+                                            <b-form-input id="curp" type="text" placeholder="CURP"
+                                                v-model="v$.vendedor.curp.$model" :state="v$.vendedor.curp.$dirty
+                                                    ? !v$.vendedor.curp.$error
+                                                    : null
+                                                    " @blur="v$.vendedor.curp.$touch()" maxlength="18" />
+                                            <b-form-invalid-feedback v-for="error in v$.vendedor.curp.$errors"
+                                                :key="error.$uid">
+                                                {{ error.$message }}
+                                            </b-form-invalid-feedback>
                                         </b-col>
                                         <b-col>
                                             <label class="form-label" for="rfc">RFC: </label>
-                                            <input v-model="vendedor.rfc" type="text" id="rfc" class="form-control"
-                                                placeholder="RFC" />
+                                            <b-form-input id="rfc" type="text" placeholder="RFC"
+                                                v-model="v$.vendedor.rfc.$model" :state="v$.vendedor.rfc.$dirty
+                                                    ? !v$.vendedor.rfc.$error
+                                                    : null
+                                                    " @blur="v$.vendedor.rfc.$touch()" maxlength="13" />
+                                            <b-form-invalid-feedback v-for="error in v$.vendedor.rfc.$errors"
+                                                :key="error.$uid">
+                                                {{ error.$message }}
+                                            </b-form-invalid-feedback>
                                         </b-col>
                                     </b-row>
 
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="telefono">Teléfono: </label>
-                                        <input v-model="vendedor.telefonoVendedor" type="tel" id="telefono"
-                                            class="form-control" placeholder="Teléfono" />
+                                        <b-form-input id="telefono" type="text" placeholder="Teléfono"
+                                            v-model="v$.vendedor.telefonoVendedor.$model" :state="v$.vendedor.telefonoVendedor.$dirty
+                                                ? !v$.vendedor.telefonoVendedor.$error
+                                                : null
+                                                " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10"
+                                            @keypress="onlynumbers" />
+                                        <b-form-invalid-feedback v-for="error in v$.vendedor.telefonoVendedor.$errors"
+                                            :key="error.$uid">
+                                            {{ error.$message }}
+                                        </b-form-invalid-feedback>
                                     </div>
                                     <div class="form-outline mb-4">
-                                        <label class="form-label" for="telefono">Ine: </label>
-                                        <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
-                                            placeholder="INE" />
+                                        <label class="form-label" for="telefono">Ine: </label>                                        
+                                        <b-form-input id="ine" type="text" placeholder="INE"
+                                            v-model="v$.vendedor.ine.$model" :state="v$.vendedor.ine.$dirty
+                                                ? !v$.vendedor.ine.$error
+                                                : null
+                                                " @blur="v$.vendedor.ine.$touch()" maxlength="30"
+                                            />
+                                        <b-form-invalid-feedback v-for="error in v$.vendedor.ine.$errors"
+                                            :key="error.$uid">
+                                            {{ error.$message }}
+                                        </b-form-invalid-feedback>
                                     </div>
-
-
+                                    
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                             @click="enviarSolicitud()" type="button">
@@ -60,6 +89,8 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useVuelidate } from "@vuelidate/core";
+import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 export default {
     name: "enviarSolicitdVendedor",
     data() {
@@ -72,7 +103,15 @@ export default {
             },
         };
     },
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
+    },
     methods: {
+        onlynumbers(evt) {
+            signal(evt);
+        },
         async enviarSolicitud() {
             try {
                 const result = await Swal.fire({
@@ -84,16 +123,17 @@ export default {
                     confirmButtonText: "Confirmar",
                     cancelButtonText: 'Cancelar',
                 });
-
-                if (result.isConfirmed) {
+                const isFormCorrect = await this.v$.$validate();
+                console.log(isFormCorrect);
+                if (result.isConfirmed && isFormCorrect) {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
                     axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
-                            headers: { Authorization: `Bearer ${token}` }
-                        })
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
                         .then(response => {
                             Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
                             this.$router.push({ name: 'profile-screen' });
@@ -105,6 +145,8 @@ export default {
                             }
                             Swal.fire('Error', errorMessage, 'error');
                         });
+                }else{
+                    Swal.fire('Error', "Revise todos los campos", 'error');
                 }
             } catch (error) {
                 Swal.fire({
@@ -114,9 +156,46 @@ export default {
                 });
             }
         },
-
-
-    }
+    },
+    validations() {
+        return {
+            vendedor: {
+                telefonoVendedor: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "Teléfono inválido",
+                        helpers.regex(/(?:\d\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/)
+                    ),
+                },
+                curp: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "CURP inválida",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                    minLength: helpers.withMessage("La CURP debe tener exactamente 18 caracteres", minLength(18)),
+                    maxLength: helpers.withMessage("La CURP debe tener exactamente 18 caracteres", maxLength(18)),
+                },
+                rfc: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "RFC inválido",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                    minLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", minLength(13)),
+                    maxLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", maxLength(13)),
+                },
+                ine: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    maxLength: helpers.withMessage("Maximo 30 caracteres", maxLength(30)),
+                    validFormat: helpers.withMessage(
+                        "INE invalida",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                },
+            },
+        };
+    },
 };
 </script>
 

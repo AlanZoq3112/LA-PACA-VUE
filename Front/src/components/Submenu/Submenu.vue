@@ -20,7 +20,6 @@
                 <b-dropdown-item to="kid-accesorios">Accesorios</b-dropdown-item>
             </b-dropdown>
 
-            <b-button class="ss" to="ofertas-screen" variant="faded">¡OFERTAS!</b-button>
             </b>
 
 

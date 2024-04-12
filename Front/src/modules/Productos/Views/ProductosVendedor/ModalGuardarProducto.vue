@@ -5,7 +5,8 @@
                 <div class="spinner"></div>
             </div>
         </div>
-        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"  @show="getSubcategorias">
+        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"
+            @show="getSubcategorias">
             <header class="text-center border-bottom">
                 <p>Registrar producto</p>
             </header>
@@ -19,7 +20,9 @@
                         </b-col>
                         <b-col>
                             <b-form-group label="Subcategoria" label-for="subCategoria">
-                                <b-form-select v-model="producto.subCategoria" id="subCategoria" :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))" required></b-form-select>
+                                <b-form-select v-model="producto.subCategoria" id="subCategoria"
+                                    :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))"
+                                    required></b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -31,30 +34,33 @@
                     <b-row>
                         <b-col>
                             <b-form-group label="Precio" label-for="precio">
-                                <b-form-input v-model="producto.precio" type="number" id="precio"
-                                    required></b-form-input>
+                                <b-form-input v-model="producto.precio" type="number" id="precio" required min="0"
+                                    max="2000"></b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Stock" label-for="stock">
-                                <b-form-input v-model="producto.stock" type="number" id="stock" required></b-form-input>
+                                <b-form-input v-model="producto.stock" type="number" id="stock" required min="0"
+                                    max="20"></b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Imágenes del producto (PNG, JPG, JPEG)" label-for="imagenes">
+                                <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
+                                    class="form-control" accept="image/jpeg, image/png, image/jpg" required>
+                                <!-- Vista previa de las imágenes seleccionadas -->
+                                <div v-if="producto.imagenes.length > 0" class="preview-container mt-3">
+                                    <div v-for="(imagen, index) in producto.imagenes" :key="index"
+                                        class="image-preview">
+                                        <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
+                                    </div>
+                                </div>
                             </b-form-group>
                         </b-col>
                     </b-row>
 
-                    <b-row>
-                        <b-form-group label="Imágenes del producto" label-for="imagenes">
-                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
-                                class="form-control" required>
-                            <!-- Vista previa de las imágenes seleccionadas -->
-                            <div v-if="producto.imagenes.length > 0" class="preview-container mt-3">
-                                <div v-for="(imagen, index) in producto.imagenes" :key="index" class="image-preview">
-                                    <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
-                                </div>
-                            </div>
-                        </b-form-group>       
-                    </b-row>
-                    
                     <b-row>
                         <b-col></b-col>
                         <b-col>
@@ -131,6 +137,24 @@ export default {
                 });
 
                 if (result.isConfirmed) {
+                    if (this.producto.precio < 0 || this.producto.precio > 2000) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "El precio debe ser mayor o igual que cero y no exceder 2000",
+                            icon: "error"
+                        });
+                        return;
+                    }
+
+                    // Verifica si el stock es mayor que cero y no excede 20
+                    if (this.producto.stock < 0 || this.producto.stock > 20) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "El stock debe ser mayor o igual que cero y no exceder 20",
+                            icon: "error"
+                        });
+                        return;
+                    }
                     this.loading = true;
                     const token = localStorage.getItem('token');
                     if (!token) {
@@ -191,7 +215,8 @@ export default {
                 });
                 this.subcategorias = response.data.data;
             } catch (error) {
-                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');
+            }
         },
 
     },

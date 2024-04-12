@@ -1,7 +1,6 @@
 package mx.edu.utez.lapaca.services.categorias;
 
 
-import mx.edu.utez.lapaca.models.bitacora.Log;
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
 import mx.edu.utez.lapaca.services.logs.LogService;
@@ -114,7 +113,6 @@ public class CategoriaService {
     }
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> update(Categoria categoria) {
-        logService.log("Update", "Categoria Actualizada", "Categorias");
         try {
             if (!this.repository.existsById(categoria.getId())) {
                 return new CustomResponse<>(
@@ -152,7 +150,6 @@ public class CategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> deleteById(Long id) {
-        logService.log("Delete", "Categoria Eliminada con el ID: " + id,  "Categorias");
         try {
             Optional<Categoria> categoriaId = repository.findById(id);
             if (!categoriaId.isPresent()) {

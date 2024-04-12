@@ -1,7 +1,5 @@
 package mx.edu.utez.lapaca.dto.usuarios;
 
-
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

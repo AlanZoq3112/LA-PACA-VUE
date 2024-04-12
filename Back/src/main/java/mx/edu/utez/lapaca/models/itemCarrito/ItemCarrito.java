@@ -1,31 +1,34 @@
-package mx.edu.utez.lapaca.models.productosImagenes;
+package mx.edu.utez.lapaca.models.itemCarrito;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @Entity
-@Table(name = "productos_imagenes")
+@Table(name = "items_carrito")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-public class ProductoImagen {
+public class ItemCarrito {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id")
-    @JsonBackReference
+    @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private int cantidad;
+
+    @ManyToOne
+    @JoinColumn(name = "carrito_id", nullable = false)
+    private Carrito carrito;
 
 }

@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/producto/aprobarSolicitudProducto").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-carsi-shop/producto/update").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/mis-productos").hasAnyAuthority(Role.ADMIN.name(), Role.VENDEDOR.name())
-                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/productos-aprobados").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/producto/productos-aprobados").permitAll()
 
 
                         .requestMatchers(HttpMethod.POST,"/api-carsi-shop/direccion/insert").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
@@ -76,6 +76,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/realizar-pago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/insertarFormaPago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 
+                        .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
 
 
                         .anyRequest().authenticated())

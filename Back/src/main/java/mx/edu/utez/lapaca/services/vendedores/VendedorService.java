@@ -6,6 +6,7 @@ import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.models.vendedores.VendedorRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,12 @@ public class VendedorService {
 
     private final VendedorRepository repository;
     private final UsuarioRepository usuarioRepository;
+    private final LogService logService;
 
-    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository) {
+    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.logService = logService;
     }
 
 
@@ -52,13 +55,10 @@ public class VendedorService {
                             "Ya has realizado una solicitud de vendedor previamente"
                     );
                 }
-
                 vendedor.setUsuario(usuario);
-
                 vendedor.setEstado(false);
-
                 Vendedor savedVendedor = repository.save(vendedor);
-
+                logService.log("Insert", "Se almaceno la solicitud del vendedor", "vendedores");
                 return new CustomResponse<>(
                         savedVendedor,
                         false,
@@ -107,6 +107,7 @@ public class VendedorService {
         Optional<Vendedor> vendedor = repository.findByCurp(curp);
         try {
             if (vendedor.isPresent()) {
+                logService.log("Get", "Se consultó un vendedor con la CURP " + vendedor, "vendedores");
                 return new CustomResponse<>(
                         vendedor.get(),
                         false,
@@ -160,7 +161,7 @@ public class VendedorService {
             // se guarda la solicitud de vendedor
             vendedor.setEstado(true);
             Vendedor savedVendedor = repository.save(vendedor);
-
+            logService.log("Update", "Se actualizó el perfil del vendedor con el ID " + existingUsuarioOptional, "vendedores");
             return new CustomResponse<>(
                     savedVendedor,
                     false,
@@ -214,6 +215,7 @@ public class VendedorService {
                 );
 
             }
+            logService.log("Update", "Se aprobo un vendedor con el ID " + vendedorOptional, "vendedores");
             return new CustomResponse<>(
                     vendedor,
                     false,

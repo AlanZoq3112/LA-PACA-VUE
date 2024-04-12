@@ -16,9 +16,6 @@
                             variant="faded">
                             <b-icon icon="cart3"></b-icon>
                         </b-button>
-                        <b-button v-b-tooltip.hover="'Ventas'" class="boton" to="login" variant="faded">
-                            <i class="fa fa-tags" aria-hidden="true"></i>
-                        </b-button>
                         <b-button v-b-tooltip.hover="'Mi perfil'" class="boton" @click="goToProfile" variant="faded">
                             <b-icon icon="person"></b-icon>
                         </b-button>

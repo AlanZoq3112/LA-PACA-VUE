@@ -23,9 +23,11 @@
                         <p>No hay direcciones disponibles</p>
                     </div>
                     <div class="button-container mt-3 d-flex justify-content-between">
-                        <button style="background-color: black;color: white;" class="btn fa-lg gradient-custom-2"
-                            type="button">
-                            Agregar nueva dirección <i class="fas fa-plus"></i>
+                        <button v-b-modal.modal-guardar-direcciones
+                        style="background-color: black;color: white;" 
+                        class="btn fa-lg gradient-custom-2"
+                        type="button">
+                        Agregar nueva dirección <i class="fas fa-plus"></i>
                         </button>
                         <button class="btn fa-lg gradient-custom-2" style="background-color: black;color: white;"
                             @click="continuar" type="button">Continuar <i class="fa fa-arrow-right"
@@ -51,13 +53,18 @@
                 </div>
             </div>
         </div>
-
+        <ModalSaveDireccion @direccion-saved="getDirecciones"/>
     </div>
 </template>
 
 <script>
+import ModalSaveDireccion from "./ModalSaveDireccion.vue";
 import axios from "axios";
 export default {
+    components:
+    {
+        ModalSaveDireccion,
+    },
     name: "metodoPago",
     data() {
         return {
@@ -102,7 +109,7 @@ export default {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/direccion/getAll",
+                    "http://localhost:8091/api-carsi-shop/direccion/mis-direcciones",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

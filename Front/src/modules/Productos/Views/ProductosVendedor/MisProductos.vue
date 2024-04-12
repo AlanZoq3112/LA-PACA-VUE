@@ -44,12 +44,12 @@
                                                     <b-row>
                                                         <b-col :class="{
                                             'text-warning': producto.estado === 1,
-                                            'text-success': producto.estado === 2,
-                                            'text-danger': producto.estado === 3
+                                            'text-success': producto.estado === 3,
+                                            'text-danger': producto.estado === 2
                                         }">
                                                             <span v-if="producto.estado === 1">Pendiente</span>
-                                                            <span v-else-if="producto.estado === 2">Aprobado</span>
-                                                            <span v-else-if="producto.estado === 3">Rechazado</span>
+                                                            <span v-else-if="producto.estado === 3">Aprobado</span>
+                                                            <span v-else-if="producto.estado === 2">Rechazado</span>
                                                         </b-col>
                                                         <b-col>
                                                             <div class="d-flex justify-content-end">
@@ -77,7 +77,6 @@
 
 <script>
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import ModalGuardarProducto from './ModalGuardarProducto.vue';
 
 export default {

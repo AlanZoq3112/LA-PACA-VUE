@@ -9,70 +9,69 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-4 tabla">
                                         <div>
-                                            <h4>Solicitudes de Productos <i class="fa fa-shopping-basket"
-                                                    aria-hidden="true"></i></h4>
+                                            <h4>Solicitud de productos <i class="fa fa-shopping-basket"
+                                                    aria-hidden="true"></i>
+                                            </h4>
 
-                                        </div>
-                                        <div class="">
-                                            <b-button class="btnAdd">
-                                                <i class="fa fa-shopping-basket" aria-hidden="true"></i> Registrar
-                                                producto
-                                            </b-button>
                                         </div>
                                     </div>
-                                    <div class="text-center tabla">
-                                        <b-table responsive :fields="fields" :items="productos" head-variant="light"
-                                            bordered class="text-center shadow" id="table" ref="table">
-
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(nombre)="data">
-                                                {{ data.item.nombre }}
-                                            </template>
-                                            <!-- Columna para mostrar  'Description' -->
-                                            <template #cell(descripcion)="data">
-                                                {{ data.item.descripcion }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(precio)="data">
-                                                {{ data.item.precio }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(stock)="data">
-                                                {{ data.item.stock }}
-                                            </template>
-
-
-                                            <template #cell(estado)="data">
-                                                {{ data.item.usuario.estado ? 'Aprobado' : 'Rechazado' }}
-                                            </template>
-
-                                            <template #cell(usuario)="data">
-                                                {{ data.item.usuario.nombre }}
-                                            </template>
-
-
-
-                                            <template #cell(actions)="data">
-                                                <div class="text-center">
-                                                    <!-- Mostrar solo el botón 'Aceptar' si el estado es 'Rechazado' -->
-                                                    <b-button v-if="!data.item.estado" size="sm"
-                                                        @click="changeStatus(data.item.id, true)" variant="success"
-                                                        class="btnAccept">
-                                                        <b-icon icon="check" class="mr-1"></b-icon> Aceptar
-                                                    </b-button>
-                                                    <!-- Mostrar solo el botón 'Rechazar' si el estado es 'Aprobado' -->
-                                                    <b-button v-if="data.item.estado" size="sm"
-                                                        @click="changeStatus(data.item.id, false)" variant="danger"
-                                                        class="btnReject">
-                                                        <b-icon icon="x" class="mr-1"></b-icon> Rechazar
-                                                    </b-button>
-                                                </div>
-                                            </template>
-
-
-                                        </b-table>
-                                        <div v-if="productos.length === 0" class="text-center">No hay solicitudes de
-                                            productos.</div>
+                                    <div class="row">
+                                        <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                                            <b-card class="card-custom mb-2" img-alt="Image" img-height="450px"
+                                                max-width="200px" img-top>
+                                                <template #header>
+                                                    <b-carousel :controls="false" indicators :interval="0">
+                                                        <b-carousel-slide
+                                                            style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                                            v-for="(imagen, index) in producto.imagenes" :key="index"
+                                                            :img-src="imagen.imageUrl"></b-carousel-slide>
+                                                    </b-carousel>
+                                                </template>
+                                                <b-card-text
+                                                    style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
+                                                    <h5>{{ producto.nombre }}</h5>
+                                                    <p>{{ producto.descripcion }}</p>
+                                                    <p>{{ producto.subCategoria.nombre }} para {{
+                                            producto.subCategoria.categoria.nombre }}</p>
+                                                    <p>{{ producto.stock }} disponibles</p>
+                                                    <b-col :class="{
+                                            'text-warning': producto.estado === 1,
+                                            'text-success': producto.estado === 3,
+                                            'text-danger': producto.estado === 2
+                                        }">
+                                                        <span v-if="producto.estado === 1">Pendiente</span>
+                                                        <span v-else-if="producto.estado === 3">Aprobado</span>
+                                                        <span v-else-if="producto.estado === 2">Rechazado</span>
+                                                    </b-col>
+                                                </b-card-text>
+                                                <template #footer>
+                                                    <b-row>
+                                                        <b-col>
+                                                            <div class="d-flex justify-content-end">
+                                                                <b-button v-b-tooltip.hover="'Aceptar producto'"
+                                                                    class="boton" variant="faded"
+                                                                    v-if="producto.estado === 1"
+                                                                    @click="acceptProduct(producto.id)">
+                                                                    <b-icon icon="check"></b-icon> Aceptar
+                                                                </b-button>
+                                                                <b-button v-b-tooltip.hover="'Rechazar producto'"
+                                                                    class="boton" variant="faded"
+                                                                    v-if="producto.estado === 1"
+                                                                    @click="rejectProduct(producto.id)">
+                                                                    <b-icon icon="times"></b-icon> Rechazar
+                                                                </b-button>
+                                                                <b-button v-b-tooltip.hover="'Cambiar a pendiente'"
+                                                                    class="boton" variant="faded"
+                                                                    v-else-if="producto.estado === 3 || producto.estado === 2"
+                                                                    @click="changeToPending(producto.id)">
+                                                                    <b-icon icon="undo"></b-icon> Cambiar a pendiente
+                                                                </b-button>
+                                                            </div>
+                                                        </b-col>
+                                                    </b-row>
+                                                </template>
+                                            </b-card>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -95,19 +94,6 @@ export default {
     data() {
         return {
             productos: [],
-            fields: [
-                { key: 'nombre', label: 'Nombre', sortable: true },
-                { key: 'descripcion', label: 'Descripción', sortable: true },
-                { key: 'precio', label: 'Precio', sortable: true },
-                { key: 'stock', label: 'Stock', sortable: true },
-                { key: 'estado', label: 'Status', sortable: true },
-                { key: 'usuario', label: 'Nombre vendedor', sortable: true },
-                {
-                    key: 'actions',
-                    label: 'Acciones',
-                    visible: true,
-                },
-            ],
         };
     },
     methods: {
@@ -124,33 +110,93 @@ export default {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los productos, intente mas tarde', 'error');
             }
         },
-        async changeStatus(productoId, status) {
+        async acceptProduct(productoId) {
             try {
+                const token = localStorage.getItem('token');
                 const result = await Swal.fire({
-                    title: `¿Estás seguro de ${status ? 'aceptar' : 'rechazar'} esta solicitud?`,
+                    title: '¿Estás seguro de aceptar este producto?',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#008c6f',
-                    cancelButtonColor: '#e11c24',
-                    confirmButtonText: 'Confirmar',
-                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#009475',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar'
                 });
 
                 if (result.isConfirmed) {
-                    const token = localStorage.getItem('token');
-                    // Encuentra el producto en la lista de productos basado en el ID
-                    const producto = this.productos.find(p => p.id === productoId);
-
-                    console.log("El producto: ", producto);
-                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/update`, producto, {
+                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/aprobarSolicitudProducto`, {
+                        id: productoId,
+                        estado: 3 // Cambiar de "Pendiente" a "Aprobado"
+                    }, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
 
                     if (response.status === 200) {
                         this.getProductos(); // Método para obtener los productos actualizados
-                        Swal.fire('¡Éxito!', `La solicitud ha sido ${status ? 'aceptada' : 'rechazada'} correctamente`, 'success');
+                        Swal.fire('¡Éxito!', 'El producto ha sido aceptado correctamente', 'success');
                     } else {
-                        Swal.fire('Error', `Hubo un problema al intentar ${status ? 'aceptar' : 'rechazar'} la solicitud`, 'error');
+                        Swal.fire('Error', 'Hubo un problema al intentar aceptar el producto', 'error');
+                    }
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
+            }
+        },
+        async rejectProduct(productoId) {
+            try {
+                const token = localStorage.getItem('token');
+                const result = await Swal.fire({
+                    title: '¿Estás seguro de rechazar este producto?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#009475',
+                    confirmButtonText: 'Rechazar'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/aprobarSolicitudProducto`, {
+                        id: productoId,
+                        estado: 2 // Cambiar de "Pendiente" a "Rechazado"
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    if (response.status === 200) {
+                        this.getProductos(); // Método para obtener los productos actualizados
+                        Swal.fire('¡Éxito!', 'El producto ha sido rechazado correctamente', 'success');
+                    } else {
+                        Swal.fire('Error', 'Hubo un problema al intentar rechazar el producto', 'error');
+                    }
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
+            }
+        },
+        async changeToPending(productoId) {
+            try {
+                const token = localStorage.getItem('token');
+                const result = await Swal.fire({
+                    title: '¿Estás seguro de cambiar este producto a pendiente?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#009475',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Cambiar a pendiente'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await axios.put(`http://localhost:8091/api-carsi-shop/producto/aprobarSolicitudProducto`, {
+                        id: productoId,
+                        estado: 1 // Cambiar de "Aprobado" o "Rechazado" a "Pendiente"
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    if (response.status === 200) {
+                        this.getProductos(); // Método para obtener los productos actualizados
+                        Swal.fire('¡Éxito!', 'El producto ha sido cambiado a pendiente correctamente', 'success');
+                    } else {
+                        Swal.fire('Error', 'Hubo un problema al intentar cambiar el estado del producto', 'error');
                     }
                 }
             } catch (error) {

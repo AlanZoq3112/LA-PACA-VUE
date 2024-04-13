@@ -36,6 +36,7 @@ public class UsuarioService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> insert(Usuario usuario) {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
+        logService.log("Insert", "Usuario insertado", "usuario");
         try {
             if (exists.isPresent()) {
                 logService.log("Insert", "Usuario insertado", "usuario");
@@ -125,6 +126,8 @@ public class UsuarioService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> update(Usuario usuario) {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
+        logService.log("Update", "Usuario actualizado", "usuario");
+
         try {
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -172,6 +175,7 @@ public class UsuarioService {
     //delete
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> deleteById(Long id) {
+        logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
         try {
             Optional<Usuario> usuarioId = repository.findById(id);
             if (!usuarioId.isPresent()) {

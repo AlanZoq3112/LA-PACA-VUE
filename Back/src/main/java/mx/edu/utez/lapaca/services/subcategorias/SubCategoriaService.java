@@ -29,6 +29,7 @@ public class SubCategoriaService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> insert(SubCategoria subCategoria) {
         Optional<SubCategoria> exists = repository.findByNombre(subCategoria.getNombre());
+        logService.log("Insert", "Subcategoria registrada", "subcategorias");
         try {
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -112,6 +113,7 @@ public class SubCategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> update(SubCategoria subCategoria) {
+        logService.log("Update", "Subcategoria actualizada", "subcategorias");
         try {
             if (!this.repository.existsById(subCategoria.getId())) {
                 return new CustomResponse<>(
@@ -149,6 +151,7 @@ public class SubCategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> deleteById(Long id) {
+        logService.log("Delete", "SubCategoria eliminada: "+id,"subcategorias");
         try {
             Optional<SubCategoria> subCategoriaId = repository.findById(id);
             if (!subCategoriaId.isPresent()) {

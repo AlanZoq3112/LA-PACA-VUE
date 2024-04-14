@@ -47,10 +47,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { helpers, maxLength, minLength } from "@vuelidate/validators";
 
 export default Vue.extend({
-    name: "InputText",
-    components: {
-        Information: () => import('@/components/Information.vue'),
-    },
+    name: "InputText",    
     setup() {
         return { v$: useVuelidate() };
     },

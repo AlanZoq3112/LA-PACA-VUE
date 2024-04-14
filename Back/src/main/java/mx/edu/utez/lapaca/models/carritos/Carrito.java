@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
-import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "carritos")
@@ -22,8 +26,8 @@ public class Carrito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int cantidad;
+    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
+    private List<ItemCarrito> items = new ArrayList<>();
 
     private Double monto;
 
@@ -32,15 +36,11 @@ public class Carrito {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
-
-    // relación con Pago
-    @ManyToOne
     @JoinColumn(name = "pago_id")
     private Pago pago;
 
-
-
+    @ManyToOne
+    @JoinColumn(name = "direccion_id")
+    private Direccion direccion;
 
 }

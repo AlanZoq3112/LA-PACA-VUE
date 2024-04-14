@@ -1,13 +1,12 @@
 package mx.edu.utez.lapaca.dto.usuarios;
 
-
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.dto.usuarios.constraints.IsAdult;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
@@ -15,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,10 +53,11 @@ public class UsuarioDto {
 
     private String secretPass;
 
-
     private Role role;
 
     private Vendedor vendedor;
+
+    private List<Direccion> direcciones;
 
     public Usuario getUsuario() {
 
@@ -71,7 +72,8 @@ public class UsuarioDto {
                 getFechaNacimiento(),
                 getSecretPass(),
                 getRole(),
-                getVendedor()
+                getVendedor(),
+                getDirecciones()
         );
     }
 }

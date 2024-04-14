@@ -54,10 +54,10 @@
                                         <div>
                                             <InputPassword @check="validpass" @contra="dataChildpass" />
                                         </div>
-
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="resetPassword" type="button" style="background-color: black;">
+                                                @click="resetPassword" type="button" :disabled="!validatePasswords()"
+                                                style="background-color: black;">
                                                 Restaurar contraseña <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -90,9 +90,13 @@ export default {
             },
             newPassword: {
                 newPassword: "",
-                secretPass: ""
+                secretPass: "",
+                type: "password"
             },
-            repitNewPassword: "",
+            repitNewPassword: {
+                value: "", // Cambia el nombre de la propiedad de 'repitNewPassword' a 'value'
+                type: "password" // Inicializa el tipo de contraseña repetida como 'password'
+            },
             showRecoveryForm: false,
             loading: false,
             valueEmail: false,

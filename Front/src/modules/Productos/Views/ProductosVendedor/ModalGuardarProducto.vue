@@ -5,7 +5,8 @@
                 <div class="spinner"></div>
             </div>
         </div>
-        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;">
+        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"
+            @show="getSubcategorias">
             <header class="text-center border-bottom">
                 <p>Registrar producto</p>
             </header>
@@ -32,7 +33,11 @@
                                     :key="error.$uid">
                                     {{ error.$message }}
                                 </b-form-invalid-feedback>
-                                <p></p>
+                            </b-form-group>
+                            <b-form-group label="Subcategoria" label-for="subCategoria">
+                                <b-form-select v-model="producto.subCategoria" id="subCategoria"
+                                    :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))"
+                                    required></b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -66,10 +71,6 @@
                         </b-col>
                     </b-row>
                     <b-form-group>
-                        <!--
-                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
-                            class="form-control" required>
-                        -->
                         <InputFiles @img="dataChildFile" @check="validFile" />
                     </b-form-group>
                     <b-button type="submit" variant="success">Registrar</b-button>
@@ -166,11 +167,26 @@ export default {
         },
         handleFileUpload(event) {
             const files = event.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                this.producto.imagenes.push(file);
+            // Verifica si hay al menos 2 y como máximo 5 imágenes seleccionadas
+            if (files.length >= 2 && files.length <= 5) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    this.producto.imagenes.push(file);
+                }
+            } else {
+                // Muestra un mensaje de error si la cantidad de imágenes no es válida
+                Swal.fire({
+                    title: "Error",
+                    text: "Debes seleccionar entre 2 y 5 imágenes.",
+                    icon: "error"
+                });
+                // Reinicia la selección de archivos
+                event.target.value = "";
             }
             console.log(this.producto.imagenes)
+        },
+        getImageURL(file) {
+            return URL.createObjectURL(file);
         },
         async save() {
             try {
@@ -193,6 +209,7 @@ export default {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
+                    console.log(this.producto);
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/producto/insert", this.producto, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -232,11 +249,10 @@ export default {
             this.producto = {
                 nombre: "",
                 descripcion: "",
-                precio: 0.0,
+                precio: 0,
                 stock: 0,
-                subCategoria: {
-                    id: 0,
-                }
+                subCategoria: 0,
+                imagenes: [],
             }
         },
         async getSubcategorias() {
@@ -338,5 +354,20 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-preview {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.preview-image {
+    max-width: 100px;
+    max-height: 100px;
 }
 </style>

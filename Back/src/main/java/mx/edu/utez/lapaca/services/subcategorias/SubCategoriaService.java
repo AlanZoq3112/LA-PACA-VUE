@@ -2,6 +2,7 @@ package mx.edu.utez.lapaca.services.subcategorias;
 
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoriaRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,16 @@ public class SubCategoriaService {
 
     private final SubCategoriaRepository repository;
 
-    public SubCategoriaService(SubCategoriaRepository repository) {
+    private final LogService logService;
+    public SubCategoriaService(SubCategoriaRepository repository, LogService logService) {
         this.repository = repository;
+        this.logService = logService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> insert(SubCategoria subCategoria) {
         Optional<SubCategoria> exists = repository.findByNombre(subCategoria.getNombre());
+        logService.log("Insert", "Subcategoria registrada", "subcategorias");
         try {
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -36,6 +40,7 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
+            logService.log("Insert", "SubCategoria registrada","subcategorias");
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
@@ -74,6 +79,7 @@ public class SubCategoriaService {
         Optional<SubCategoria> subCategoria = repository.findById(id);
         try {
             if (subCategoria.isPresent()) {
+                logService.log("Get", "SubCategoria con el ID " + id + " encontrada","subcategorias");
                 return new CustomResponse<>(
                         subCategoria.get(),
                         false,
@@ -107,6 +113,7 @@ public class SubCategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> update(SubCategoria subCategoria) {
+        logService.log("Update", "Subcategoria actualizada", "subcategorias");
         try {
             if (!this.repository.existsById(subCategoria.getId())) {
                 return new CustomResponse<>(
@@ -117,11 +124,12 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
+            logService.log("Update", "SubCategoria actualizada","subcategorias");
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
                     200,
-                    "Subategoria actualizada"
+                    "Subcategoria actualizada"
             );
 
         } catch (DataAccessException e) {
@@ -143,6 +151,7 @@ public class SubCategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<SubCategoria> deleteById(Long id) {
+        logService.log("Delete", "SubCategoria eliminada: "+id,"subcategorias");
         try {
             Optional<SubCategoria> subCategoriaId = repository.findById(id);
             if (!subCategoriaId.isPresent()) {
@@ -155,11 +164,12 @@ public class SubCategoriaService {
             }
             SubCategoria subCategoria = subCategoriaId.get();
             repository.delete(subCategoria);
+            logService.log("Delete", "SubCategoria eliminada: "+id,"subcategorias");
             return new CustomResponse<>(
                     null,
                     false,
                     200,
-                    "La subcategoria con el id " + id + " ha sido eliminado correctamente"
+                    "La subcategoria con el id " + id + " ha sido eliminada correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(

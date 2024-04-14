@@ -11,7 +11,6 @@ import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class Producto {
     private int stock;
 
     @Column(nullable = false)
-    private boolean estado;
+    private int estado;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

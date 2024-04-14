@@ -4,10 +4,20 @@ package mx.edu.utez.lapaca.services.pagos;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.param.ChargeCreateParams;
 import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.dto.productos.validators.InsuficienteStockException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
+import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
+import mx.edu.utez.lapaca.models.direcciones.Direccion;
+import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
+import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
+import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -40,12 +50,21 @@ public class PagoService {
 
     private final PagoRepository repository;
 
+    private final CarritoRepository carritoRepository;
+
     private final UsuarioRepository usuarioRepository;
 
+    private final ProductoRepository productoRepository;
 
-    public PagoService(PagoRepository repository, UsuarioRepository usuarioRepository) {
+    private final DireccionRepository direccionRepository;
+
+
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository) {
         this.repository = repository;
+        this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.productoRepository = productoRepository;
+        this.direccionRepository = direccionRepository;
     }
 
 
@@ -95,33 +114,67 @@ public class PagoService {
         }
     }
 
-
-
-
     //stripe
+    @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName(); // Obtener el nombre de usuario
 
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (!usuarioOptional.isPresent()) {
+            throw new RuntimeException ("No se encontró el usuario con el correo electrónico especificado.");
+        }
+        Usuario usuario = usuarioOptional.get();
+        carrito.setUsuario(usuario);
 
-        carrito.setUsuario(usuario.get());
+        double montoTotal = 0;
+        for (ItemCarrito item : carrito.getItems()) {
+            Optional<Producto> productoOptional = productoRepository.findById(item.getProducto().getId());
+            if (!productoOptional.isPresent()) {
+                throw new ProductoNotFoundException("No se encontró el producto con el ID especificado.");
+            }
+            Producto producto = productoOptional.get();
+            if (producto.getEstado() != 3) {
+                throw new ProductoInactivoException("El producto '" + producto.getNombre() + "' no se encuentra activo y no puede ser comprado.");
+            }
+            if (item.getCantidad() > producto.getStock()) {
+                throw new InsuficienteStockException("No hay suficiente stock disponible para el producto '" + producto.getNombre() + "'.");
+            }
+            double subtotal = item.getCantidad() * producto.getPrecio();
+            montoTotal += subtotal;
+            producto.setStock(producto.getStock() - item.getCantidad());
+            carrito.setMonto(montoTotal);
+            item.setCarrito(carrito);
+        }
+        //direccion me lleva la verga no me sale nd ah no ya xd
+        Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
+        if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
+        }
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("amount", (int) (carrito.getMonto() * 100)); // la cantidad se expresa en centavos
-        params.put("currency", "mxn");
-        params.put("description", "Pago por producto: " + carrito.getProducto().getNombre());
-        params.put("source", "tok_visa"); // token generado por Stripe.js o Stripe Elements
+
+        carritoRepository.save(carrito);
+
+
+        Map<String, Object> chargeParams = new HashMap<>();
+        chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos
+        chargeParams.put("currency", "mxn");
+        chargeParams.put("description", "Pago por productos en el carrito");
+        chargeParams.put("source", "tok_visa"); // Token generado por Stripe.js o Stripe Elements
+
         try {
+            ChargeCreateParams params = ChargeCreateParams.builder()
+                    .setAmount((long) (montoTotal * 100))
+                    .setCurrency("mxn")
+                    .setDescription("Pago por productos en el carrito")
+                    .setSource("tok_visa")
+                    .build();
             Charge charge = Charge.create(params);
             return charge.getId();
         } catch (StripeException e) {
             throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
         }
     }
-
-
-
 
 
 

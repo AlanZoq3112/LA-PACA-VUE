@@ -72,4 +72,13 @@ public class DireccionController {
         );
     }
 
+    @GetMapping("/mis-direcciones")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COMPRADOR', 'ROLE_VENDEDOR')")
+    public ResponseEntity<CustomResponse<List<Direccion>>> getAllDirectionsByCurrentUser() {
+        return new ResponseEntity<>(
+                service.getAllByCurrentUser(),
+                HttpStatus.OK
+        );
+    }
+
 }

@@ -44,7 +44,7 @@ public class ProductoDto {
     private int stock;
 
     @NotNull(message = "El estado no puede ser nulo")
-    private boolean estado;
+    private int estado;
 
     private Usuario usuario;
 
@@ -77,7 +77,7 @@ public class ProductoDto {
                 getDescripcion(),
                 getPrecio(),
                 getStock(),
-                isEstado(),
+                getEstado(),
                 getUsuario(),
                 getSubCategoria(),
                 getOfertas()

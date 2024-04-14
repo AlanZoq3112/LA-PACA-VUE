@@ -78,6 +78,11 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/api-carsi-shop/log/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
+
+                        .requestMatchers("/api-carsi-shop/loglogin/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/loglogin/getAllLogslogin").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/loglogin/getAllLogslogin").permitAll()
+
                         .anyRequest().authenticated())
 
 

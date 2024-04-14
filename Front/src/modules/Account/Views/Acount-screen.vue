@@ -239,7 +239,7 @@
                                                                 icon="book"></b-icon> Bitacora general</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="faded" to=""><b-icon
+                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
                                                                 icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     </b-col>
                                                 </b-row>

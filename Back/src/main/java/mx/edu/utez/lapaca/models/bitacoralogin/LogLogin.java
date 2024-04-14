@@ -1,12 +1,13 @@
-package mx.edu.utez.lapaca.models.bitacora;
+package mx.edu.utez.lapaca.models.bitacoralogin;
 
 import jakarta.persistence.*;
+import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "log")
-public class Log {
+@Table(name = "loglogin")
+public class LogLogin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +20,9 @@ public class Log {
     private String tabla;
     @Column(nullable = false)
     private LocalDateTime fechaHora;
+    @Column (nullable = false)
+    private String usuario;
+
 
     public Long getId() {
         return id;
@@ -60,5 +64,12 @@ public class Log {
         this.fechaHora = fechaHora;
     }
 
+    public String getUsuario() {
+        return usuario;
+    }
 
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
 }
+

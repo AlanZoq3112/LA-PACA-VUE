@@ -168,6 +168,20 @@ if (tokenDecoded.rol === '[ADMIN]') {
       }
     },
     {
+      path: '/bitacoral-screen',
+         name: 'bitacoral-screen',
+         component: () => import('./../modules/Bitacoras Login/BitacorasL.vue'),
+         beforeEnter: (to, from, next) => {
+           const token = localStorage.getItem('token');
+           const tokenDecoded = jwtDecode(token);
+   if (tokenDecoded.rol === '[ADMIN]') {
+             next();
+           } else {
+             next('/inicio');
+           }
+         }
+       },
+    {
       path: '/inicio',
       name: 'inicio',
       component: () => import('../views/Inicio.vue')

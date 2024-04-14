@@ -88,6 +88,16 @@ public class PagoController {
     }
 
 
+    @GetMapping("/mis-metodos-pago")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
+    public ResponseEntity<CustomResponse<List<Pago>>> getAllMeotodosPagosByCurrentUser() {
+        return new ResponseEntity<>(
+                service.getAllMetodoPagoByCurrentUser(),
+                HttpStatus.OK
+        );
+    }
+
+
     @GetMapping("/mis-pedidos")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
     public ResponseEntity<CustomResponse<List<Carrito>>> getAllProductosByCurrentUser() {

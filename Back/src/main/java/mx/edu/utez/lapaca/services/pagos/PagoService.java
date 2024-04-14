@@ -24,6 +24,7 @@ import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.security.dto.email.EmailDto;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,9 +60,10 @@ public class PagoService {
     private final DireccionRepository direccionRepository;
     private final PagoRepository pagoRepository;
     private final OfertaRepository ofertaRepository;
+    private final LogService logService;
 
 
-    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository) {
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository, LogService logService) {
         this.repository = repository;
         this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
@@ -69,6 +71,7 @@ public class PagoService {
         this.direccionRepository = direccionRepository;
         this.pagoRepository = pagoRepository;
         this.ofertaRepository = ofertaRepository;
+        this.logService = logService;
     }
 
 
@@ -206,7 +209,35 @@ public class PagoService {
     }
 
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Carrito>> getAllByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
+            logService.log("Get", "El usuario con el correo "
+                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            return new CustomResponse<>(
+                    carritos,
+                    false,
+                    200,
+                    "OK"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
 
 
 

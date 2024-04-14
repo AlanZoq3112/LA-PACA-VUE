@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.pedidos.Pedido;
+
 
 
 @Entity
@@ -24,9 +24,6 @@ public class Devolucion {
     @Column(nullable = false)
     private Boolean status;
 
-    @ManyToOne
-    @JoinColumn(name = "pedido_id")
-    private Pedido pedido;
 
 
 }

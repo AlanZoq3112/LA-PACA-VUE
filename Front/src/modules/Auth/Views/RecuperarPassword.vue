@@ -22,10 +22,8 @@
                                     </div>
 
                                     <form>
-                                        <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example11">Correo electrónico: </label>
-                                            <input v-model="sendEmail.email" type="email" id="form2Example11"
-                                                class="form-control" placeholder="Correo electronico de tu cuenta"
+                                        <div class="form-outline mb-4">                                                                                    
+                                            <InputEmail id="form2Example11" @email="dataChild" @check="validEmail"
                                                 :disabled="showRecoveryForm" />
                                         </div>
 
@@ -50,37 +48,15 @@
                                         </div>
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example12">Código de seguridad: </label>
-                                            <input v-model="newPassword.secretPass" type="text" id="form2Example12"
-                                                class="form-control" placeholder="Código de seguridad" />
+                                            <InputCodigo @check="validNombre" @name="dataChildCodigo"
+                                                :numMax="maximo" />
                                         </div>
-                                        <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example13">Nueva contraseña: </label>
-                                            <div class="input-group">
-                                                <input v-model="newPassword.newPassword" :type="newPassword.type"
-                                                    id="form2Example13" class="form-control"
-                                                    placeholder="Nueva contraseña" />
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-eye" @click="togglePassword('newPassword')"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example14">Repite la contraseña:
-                                            </label>
-                                            <div class="input-group">
-                                                <input v-model="repitNewPassword.value" :type="repitNewPassword.type"
-                                                    id="form2Example14" class="form-control"
-                                                    placeholder="Repite la contraseña" />
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-eye"
-                                                        @click="toggleRepitPassword('repitNewPassword')"></i>
-                                                </span>
-                                            </div>
+                                        <div>
+                                            <InputPassword @check="validpass" @contra="dataChildpass" />
                                         </div>
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="resetPassword" type="button" :disabled="!validatePasswords()"
-                                                style="background-color: black;">
+                                                @click="resetPassword" type="button" style="background-color: black;">
                                                 Restaurar contraseña <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                         </div>
@@ -98,8 +74,14 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import InputPassword from '../../../components/input_validations/InputPassword.vue';
 export default {
     name: "RecuperarPassword",
+    components: {
+        InputEmail: () => import('../../../components/input_validations/InputEmail.vue'),
+        InputCodigo: () => import('../../../components/input_validations/InputCodigo.vue'),
+        InputPassword: () => import('../../../components/input_validations/InputPassword.vue'),
+    },
     data() {
         return {
             sendEmail: {
@@ -115,17 +97,39 @@ export default {
                 type: "password" // Inicializa el tipo de contraseña repetida como 'password'
             },
             showRecoveryForm: false,
-            loading: false
+            loading: false,
+            valueEmail: false,
+            valueCodigo: false,
+            valueContra: false,
+            maximo: 15,
         }
     },
 
     methods: {
+        dataChildpass(data) {
+            this.newPassword.newPassword = data;
+        },
+        validpass(data) {
+            this.valueContra = data;
+        },
+        dataChildCodigo(data) {
+            this.newPassword.secretPass = data;
+        },
+        validNombre(data) {
+            this.valueCodigo = data;
+        },
+        validEmail(data) {
+            this.valueEmail = data;
+        },
+        dataChild(data) {
+            this.sendEmail.email = data;
+        },
         enviarCorreo() {
-            this.loading = true;
-            console.log(this.sendEmail.email);
-            axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
-                email: this.sendEmail.email
-            })
+            if (this.valueEmail) {
+                this.loading = true;
+                axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
+                    email: this.sendEmail.email
+                })
                 .then(response => {
                     if (response.status === 200) {
                         Swal.fire('Enviada', 'Solicitud de cambio de contraseña enviada correctamente', 'success');
@@ -145,28 +149,36 @@ export default {
                 }).finally(() => {
                     this.loading = false;
                 });
+            }else {
+                Swal.fire('Error', "Correo invalido", 'error');
+            }              
         },
         resetPassword() {
-            this.newPassword.email = this.sendEmail.email;
-            this.loading = true;
-            axios.put('http://localhost:8091/api-carsi-shop/recovery/updatePassword', this.newPassword)
-                .then(response => {
-                    if (response.status === 201) {
-                        Swal.fire('Actualizada', 'Tu contraseña fue restaurada correctamente', 'success');
-                        this.$router.push({ name: 'login' });
-                    } else {
-                        Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
-                    }
-                })
-                .catch(error => {
-                    let errorMessage = "Hubo un problema al restablecer la contraseña";
-                    if (error.response && error.response.data && error.response.data.length > 0) {
-                        errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
-                    }
-                    Swal.fire('Error', errorMessage, 'error');
-                }).finally(() => {
-                    this.loading = false;
-                });
+            if (this.validpass && this.valueCodigo) {
+                this.newPassword.email = this.sendEmail.email;
+                this.loading = true;
+                console.log(this.newPassword)
+                axios.put('http://localhost:8091/api-carsi-shop/recovery/updatePassword', this.newPassword)
+                    .then(response => {
+                        if (response.status === 201) {
+                            Swal.fire('Actualizada', 'Tu contraseña fue restaurada correctamente', 'success');
+                            this.$router.push({ name: 'login' });
+                        } else {
+                            Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        let errorMessage = "Hubo un problema al restablecer la contraseña";
+                        if (error.response && error.response.data && error.response.data.length > 0) {
+                            errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
+                        }
+                        Swal.fire('Error', errorMessage, 'error');
+                    }).finally(() => {
+                        this.loading = false;
+                    });
+            }else{
+                Swal.fire('Error', "Revisa todos los campos", 'error');
+            }
         },
         togglePassword(field) {
             this[field].type = this[field].type === 'password' ? 'text' : 'password';

@@ -106,6 +106,12 @@
                                     <div class="form-outline mb-4">
                                         <InputFile @img="dataChildImg" @check="validFile" />
                                     </div>
+                                    <b-row class="mt-3 justify-content-md-center mb-2">
+                                        <b-col cols="6">
+                                            <div ref="container" class="frc-captcha" data-sitekey="FCMSQ54HB877J6AD"
+                                            data-lang="es"></div>  
+                                        </b-col>
+                                    </b-row>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button 
                                             class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
@@ -135,6 +141,9 @@ import Swal from 'sweetalert2';
 import { useVuelidate } from "@vuelidate/core";
 import moment from "moment/moment";
 import { required, helpers, minLength } from "@vuelidate/validators";
+import { WidgetInstance } from "friendly-challenge";
+import { ref } from "vue";
+import CaptchaService from "../../../services/CaptchaService "
 const base64Encode = data =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -181,10 +190,26 @@ export default {
             valueNombre: "",
             valueEmail: "",
             valueFile: "",
-            loading: false
+            loading: false,
+            container: ref(),
+            widget: ref(),
+            formData: {
+                name: "",
+            },
         };
     },
     methods: {
+        async verifyCaptcha(solution) {
+            const response = await CaptchaService.verificarCaptcha(solution);
+            console.log(response);
+        },
+        doneCallback(solution) {
+            this.verifyCaptcha(solution);
+        },
+        errorCallback(err) {
+            console.log("There was an error when trying to solve the Captcha.");
+            console.log(err);
+        },
         dataChild(data) {
             this.user.email = data;
         },
@@ -276,7 +301,20 @@ export default {
             },
         };
     },
-
+    mounted() {
+        if (this.$refs.container) {
+            this.widget = new WidgetInstance(this.$refs.container, {
+                startMode: "",
+                doneCallback: this.doneCallback,
+                errorCallback: this.errorCallback,
+            });
+        }
+    },
+    beforeDestroy() {
+        if (this.widget) {
+            this.widget.destroy();
+        }
+    },
 };
 </script>
 

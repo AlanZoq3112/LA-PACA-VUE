@@ -10,14 +10,24 @@
                         <b-row>
                             <b-col>
                                 <label for="nombre">Nombre de la subcategoria: *</label>
-                                <b-form-input v-model="subcategoria.nombre" type="text" class="form-control"
-                                    placeholder="Nombre" required />
+                                <InputTextMax @check="validNombre" @name="dataChildSub" :numMax="maximo" />
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col>
                                 <label for="categoria">Categoría:</label>
-                                <b-form-select v-model="subcategoria.categoria" :options="categorias" required />
+                                <multi-select id="categoria" :class="{
+                                    'is-invalid': v$.subcategoria.categoria.$error,
+                                    'is-valid': !v$.subcategoria.categoria.$invalid,
+                                }" v-model="v$.subcategoria.categoria.$model" placeholder="Selecciona una categoria"
+                                    label="text" :options="categorias" track-by="value" :multiple="false"
+                                    selectLabel="Presiona para seleccionar" deselectLabel="Presiona para eliminar"
+                                    selectedLabel="Seleccionado" @close="v$.subcategoria.categoria.$touch()">
+                                </multi-select>
+                                <b-form-invalid-feedback v-for="error in v$.subcategoria.categoria.$errors"
+                                    :key="error.$uid">
+                                    {{ error.$message }}
+                                </b-form-invalid-feedback>
                             </b-col>
                         </b-row>
                     </form>
@@ -40,8 +50,18 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useVuelidate } from "@vuelidate/core";
+import { required, helpers, minLength } from "@vuelidate/validators";
 export default {
     name: "ModalGuardarSubcategorias",
+    components: {
+        InputTextMax: () => import('../../../../components/input_validations/InputTextMax.vue'),
+    },
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
+    },
     data() {
         return {
             subcategoria: {
@@ -49,10 +69,20 @@ export default {
                 categoria: null,
             },
             categorias: [],
+            categoria: null,
+            categorias: [],
+            maximo: 25,
+            valueSubcategoria: false,
         }
     },
 
     methods: {
+        dataChildSub(data) {
+            this.subcategoria.nombre = data;
+        },
+        validNombre(data) {
+            this.valueSubcategoria = data;
+        },
         onClose() {
             this.$bvModal.hide("modal-guardar-subcategorias");
             this.resetForm();
@@ -84,7 +114,8 @@ export default {
                     cancelButtonText: 'Cancelar',
                 });
 
-                if (result.isConfirmed) {
+                const isValid = this.v$.subcategoria.$invalid;
+                if (result.isConfirmed && this.valueSubcategoria && !isValid) {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
@@ -117,6 +148,8 @@ export default {
                     } else {
                         Swal.fire('Error', 'Hubo un problema al intentar GUARDAR la subcategoria, intente mas tarde', 'error');
                     }
+                }else{
+                    Swal.fire('Error', 'Revise los campos', 'error');
                 }
             } catch (error) {
                 Swal.fire({
@@ -135,7 +168,16 @@ export default {
     },
     mounted() {
         this.getCategorias();
-    }
+    },
+    validations() {
+        return {
+            subcategoria: {
+                categoria: {
+                    required: helpers.withMessage("Campo obligatorio", required)
+                }
+            }
+        }
+    },
 }
 </script>
 

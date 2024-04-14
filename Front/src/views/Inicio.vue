@@ -49,14 +49,9 @@ export default {
     methods: {
         async getProductos() {
             try {
-                const token = localStorage.getItem("token");
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+
                 );
                 this.productos = response.data.data;
             } catch (error) {

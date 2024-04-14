@@ -4,32 +4,36 @@
             <div class="card rounded-3 text-black">
                 <div class="text-center">
                     <br>
-                    <h5>Métodos de pago</h5>
+                    <h5>Método de pago <b-icon icon="geo-alt"></b-icon></h5>
                 </div>
                 <div class="card-body p-md-5 mx-md-4">
-                    <b-card v-for="producto in productos" :key="producto.id">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <h6>{{ producto.nombre }}</h6>
-                                <p>{{ producto.descripcion }}</p>
-                                <p>Precio: {{ producto.precio }}</p>
-                                <p>Cantidad: {{ producto.stock }}</p>
+                    <div v-if="direcciones.length > 0">
+                        <b-card v-for="direccion in direcciones" :key="direccion.id" class="mb-3">
+                            <h5>Código Postal {{ direccion.codigoPostal }}</h5>
+                            <h6> Calle {{ direccion.calle }} No. {{ direccion.numero }}, Colonia {{ direccion.colonia
+                                }}, {{ direccion.municipio }} {{ direccion.estado }}</h6>
+                            <p>Referencias: {{ direccion.referencia }}</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" :value="direccion.id"
+                                    v-model="direccionElegida">
                             </div>
-                            <div class="col-md-5">
-                                <b-carousel :controls="false" indicators :interval="0" class="custom-carousel">
-                                    <b-carousel-slide
-                                        style="min-height: 200px; min-width: 100%; max-height: 300px; max-width: 100%;"
-                                        v-for="(imagen, index) in producto.imagenes" :key="index"
-                                        :img-src="imagen.imageUrl"></b-carousel-slide>
-                                </b-carousel>
-                            </div>
-                        </div>
-                        <template #footer>
-                            <div class="icono">
-                                <b-button variant="faded" style="color: red;"><b-icon icon="trash"></b-icon></b-button>
-                            </div>
-                        </template>
-                    </b-card>
+                        </b-card>
+                    </div>
+                    <div v-else>
+                        <p>No hay metodos de pago disponibles</p>
+                    </div>
+                    <div class="button-container mt-3 d-flex justify-content-between">
+                        <button v-b-modal.modal-guardar-metodopago
+                        style="background-color: black;color: white;" 
+                        class="btn fa-lg gradient-custom-2"
+                        type="button">
+                        Agregar método de pago <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn fa-lg gradient-custom-2" style="background-color: black;color: white;"
+                            @click="continuar" type="button">Continuar <i class="fa fa-arrow-right"
+                                aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,38 +50,36 @@
                     <div v-else>
                         <p>No hay productos en el carrito</p>
                     </div>
-
-                    <div class="text-center mt-3">
-                        <button style="background-color: black; color: white;"
-                            class="btn  btn-block fa-lg gradient-custom-2 mb-3" @click="continuar" type="button">
-                            Continuar compra </button>
-                    </div>
                 </div>
             </div>
         </div>
+        <ModalSaveMetodoPago @direccion-saved="getDirecciones"/>
     </div>
 </template>
 
 <script>
+import ModalSaveMetodoPago from "./ModalSaveMetodoPago.vue";
 import axios from "axios";
-
 export default {
+    components:
+    {
+        ModalSaveMetodoPago,
+    },
     name: "CheckoutMetodoPago",
     data() {
         return {
+            direcciones: [],
             productos: [],
+            direccionElegida: null,
         };
-    },
-    mounted() {
-        this.getproductos();
     },
     methods: {
         calculateTotal() {
             return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
         },
         continuar() {
-            console.log(this.user);
-            this.$router.push({ name: 'checkoutDireccion' });
+            console.log("Id de la direccion seleccionada:", this.direccionElegida); // Imprimir dirección seleccionada
+            this.$router.push({ name: 'checkoutMetodoPago' });
         },
 
         async getproductos() {
@@ -96,11 +98,36 @@ export default {
                     return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre" &&
                         producto.subCategoria.nombre.toLowerCase() === "calzado";
                 });
+
                 console.log("productos carrito: ", this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
         },
+
+        async getDirecciones() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8091/api-carsi-shop/direccion/mis-direcciones",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                // Filtrar los productos por subcategoría para hombres
+                this.direcciones = response.data.data;
+
+                console.log("Direcciones del usuario: ", this.direcciones);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
+        },
+    },
+    mounted() {
+        this.getproductos();
+        this.getDirecciones();
     },
 };
 </script>
@@ -121,11 +148,5 @@ export default {
 .custom-container2 {
     flex: 1;
     max-width: calc(33.33% - 10px);
-}
-
-/* Estilos para el carrusel personalizado */
-.custom-carousel .carousel-inner {
-    background-color: black;
-    /* Color de fondo de los slides */
 }
 </style>

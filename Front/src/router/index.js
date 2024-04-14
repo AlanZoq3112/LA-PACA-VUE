@@ -80,6 +80,19 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/pagar',
+      name: 'pagar',
+      component: () => import('../modules/Venta/Views/Pagar.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
       path: '/profile-screen',
       name: 'profile-screen',
       component: () => import('./../modules/Account/Views/Acount-screen.vue'),

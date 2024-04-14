@@ -108,8 +108,11 @@
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button 
-                                            class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="createAccount" type="button" style="background-color: black;">
+                                            class="btn btn-primary 
+                                            btn-block fa-lg gradient-custom-2 mb-3"
+                                            @click="createAccount" type="button" 
+                                            :disabled="disableCreateButton"
+                                            style="background-color: black;">
                                             Crear Cuenta
                                         </button>
                                     </div>
@@ -219,7 +222,7 @@ export default {
                 const generoFinal = this.user.genero.name;
                 this.user.genero = generoFinal;
 
-                console.log(this.user);
+                this.loading = true;
                 axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
                     .then(response => {
                         Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
@@ -275,6 +278,16 @@ export default {
                 },
             },
         };
+    },
+    computed: {
+        disableCreateButton() {
+            return (
+                !this.valueNombre ||
+                !this.valueEmail ||
+                !this.valueFile ||
+                this.v$.user.$invalid
+            );
+        }
     },
 
 };

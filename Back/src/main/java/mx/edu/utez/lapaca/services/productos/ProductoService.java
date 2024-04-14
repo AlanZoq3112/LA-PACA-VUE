@@ -287,7 +287,7 @@ public class ProductoService {
             // Obtener los productos creados por el usuario
             List<Producto> productos = repository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver sus productos","Productos");
+                    + usuario + "ha solicitado ver sus productos","productos");
             return new CustomResponse<>(
                     productos,
                     false,

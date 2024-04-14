@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.comentarios.Comentario;
-import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @AllArgsConstructor
@@ -29,8 +28,7 @@ public class ComentarioDto {
     @NotNull(message = "id de productos no puede ser nula")
     private Producto producto;
 
-    @NotNull(message = "id de pedidos no puede ser nula")
-    private Pedido pedidos;
+
 
 
     public Comentario getComentario() {
@@ -38,8 +36,7 @@ public class ComentarioDto {
                 getId(),
                 getComentarioTexto(),
                 getPuntaje(),
-                getProducto(),
-                getPedidos()
+                getProducto()
         );
     }
 

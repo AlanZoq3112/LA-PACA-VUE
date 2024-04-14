@@ -34,6 +34,8 @@ public class CarritoDto {
 
     private EstadoPedido estado;
 
+    private String Idpago;
+
 
     public Carrito getCarrito () {
         return new Carrito(
@@ -43,7 +45,8 @@ public class CarritoDto {
                 getUsuario(),
                 getPago(),
                 getDireccion(),
-                getEstado()
+                getEstado(),
+                getIdpago()
         );
     }
 }

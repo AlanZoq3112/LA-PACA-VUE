@@ -51,4 +51,6 @@ public class Carrito {
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
 
+    private String Idpago;
+
 }

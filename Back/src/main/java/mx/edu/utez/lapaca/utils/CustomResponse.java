@@ -30,4 +30,8 @@ public class CustomResponse <T> {
         this.statusCode = statusCode;
         this.message = message;
     }
+
+    public boolean isError() {
+        return error;
+    }
 }

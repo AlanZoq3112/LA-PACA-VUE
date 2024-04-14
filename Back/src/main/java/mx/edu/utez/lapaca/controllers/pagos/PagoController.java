@@ -52,6 +52,31 @@ public class PagoController {
         );
     }
 
+    @GetMapping("/getAllMetodosPago")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<CustomResponse<List<Pago>>> getAllMetodosPago() {
+        return new ResponseEntity<>(
+                this.service.getAllMetodosPago(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/mis-metodos-pago")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
+    public ResponseEntity<CustomResponse<List<Pago>>> getAllMeotodosPagosByCurrentUser() {
+        return new ResponseEntity<>(
+                service.getAllMetodoPagoByCurrentUser(),
+                HttpStatus.OK
+        );
+    }
+
+
+
+
+
+
+
+
     @PostMapping("/realizar-pago")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
     public String realizarPago(@Valid @RequestBody Carrito carrito) {
@@ -65,8 +90,8 @@ public class PagoController {
             emailDto.setEmail(carrito.getUsuario().getEmail());
             emailDto.setFullName(carrito.getUsuario().getNombre());
             emailDto.setSubject("Confirmación de compra en CarsiShop");
-            emailDto.setBody("Se ha realizado el pago exitosamente para el pedido con ID " + carrito.getId() +
-                    ".<br>ID de pago: " + idPago +
+            emailDto.setBody("Se ha realizado el pago exitosamente" +
+                    "<br>ID de pago: " + idPago +
                     "<br>Monto total: $" + carrito.getMonto() +
                     "<br>Estado del pedido: " + carrito.getEstado());
             // envíar el fokin correo electrónico
@@ -86,17 +111,6 @@ public class PagoController {
                 HttpStatus.OK
         );
     }
-
-
-    @GetMapping("/mis-metodos-pago")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
-    public ResponseEntity<CustomResponse<List<Pago>>> getAllMeotodosPagosByCurrentUser() {
-        return new ResponseEntity<>(
-                service.getAllMetodoPagoByCurrentUser(),
-                HttpStatus.OK
-        );
-    }
-
 
     @GetMapping("/mis-pedidos")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")

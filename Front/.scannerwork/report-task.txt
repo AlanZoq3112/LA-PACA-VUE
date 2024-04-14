@@ -1,0 +1,6 @@
+projectKey=carsi-shop
+serverUrl=http://localhost:9000
+serverVersion=10.4.1.88267
+dashboardUrl=http://localhost:9000/dashboard?id=carsi-shop
+ceTaskId=d6cb7dd2-7ccc-44c7-bee1-8776acac9dac
+ceTaskUrl=http://localhost:9000/api/ce/task?id=d6cb7dd2-7ccc-44c7-bee1-8776acac9dac

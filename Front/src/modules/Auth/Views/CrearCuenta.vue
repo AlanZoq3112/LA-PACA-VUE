@@ -227,7 +227,7 @@ export default {
                     })
                     .catch(error => {
                         let errorMessage = "Hubo un problema al crear la cuenta";
-                        if (error.response && error.response.data && error.response.data.length > 0) {
+                        if (error.response?.data && error.response.data.length > 0) {
                             errorMessage = error.response.data[0];
                         }
                         Swal.fire('Error', errorMessage, 'error');

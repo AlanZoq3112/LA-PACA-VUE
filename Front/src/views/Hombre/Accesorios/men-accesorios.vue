@@ -9,7 +9,3 @@
         name: "men-accesorios"
     }
 </script>
-
-<style>
-
-</style>

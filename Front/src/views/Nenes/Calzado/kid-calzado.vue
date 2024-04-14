@@ -9,7 +9,3 @@
         name:"kid-calzado"
     }
 </script>
-
-<style scoped>
-
-</style>

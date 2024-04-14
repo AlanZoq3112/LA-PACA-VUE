@@ -9,7 +9,3 @@
         name:"ropa-men"
     }
 </script>
-
-<style scoped>
-
-</style>

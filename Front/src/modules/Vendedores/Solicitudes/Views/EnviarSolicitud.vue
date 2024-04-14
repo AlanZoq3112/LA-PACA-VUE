@@ -100,7 +100,7 @@ export default {
                         })
                         .catch(error => {
                             let errorMessage = "Hubo un problema al enviar la solicitud de vendedor";
-                            if (error.response && error.response.data && error.response.data.length > 0) {
+                            if (error.response.data && error.response.data.length > 0) {
                                 errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                             }
                             Swal.fire('Error', errorMessage, 'error');

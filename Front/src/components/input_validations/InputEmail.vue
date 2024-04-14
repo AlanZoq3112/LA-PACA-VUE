@@ -18,7 +18,7 @@
 <script>
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, alphaNum, helpers, maxLength, minLength, email } from "@vuelidate/validators";
+import { required,helpers, email } from "@vuelidate/validators";
 
 export default Vue.extend({
     props: {
@@ -78,5 +78,4 @@ export default Vue.extend({
     },
 });
 </script>
-
-<style scoped></style>
+    

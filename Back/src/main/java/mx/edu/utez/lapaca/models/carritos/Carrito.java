@@ -28,7 +28,7 @@ public class Carrito {
     private Long id;
 
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("carrito") //WTFFFFFFFFF
+    @JsonIgnoreProperties("carrito")
     private List<ItemCarrito> items = new ArrayList<>();
 
     private Double monto;
@@ -47,5 +47,8 @@ public class Carrito {
     @JoinColumn(name = "direccion_id")
 
     private Direccion direccion;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado;
 
 }

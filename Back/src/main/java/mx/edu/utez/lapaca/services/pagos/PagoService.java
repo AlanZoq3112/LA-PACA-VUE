@@ -11,6 +11,7 @@ import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
+import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
@@ -169,7 +170,8 @@ public class PagoService {
         if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
         }
-
+        // Antes de guardar el carrito, establece el estado como "PENDIENTE"
+        carrito.setEstado(EstadoPedido.EN_PROCESO);
         carritoRepository.save(carrito);
 
         Map<String, Object> chargeParams = new HashMap<>();

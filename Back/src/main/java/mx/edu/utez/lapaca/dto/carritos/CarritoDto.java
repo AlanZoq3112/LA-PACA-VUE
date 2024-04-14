@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
+import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -31,6 +32,8 @@ public class CarritoDto {
 
     private Direccion direccion;
 
+    private EstadoPedido estado;
+
 
     public Carrito getCarrito () {
         return new Carrito(
@@ -39,7 +42,8 @@ public class CarritoDto {
                 getMonto(),
                 getUsuario(),
                 getPago(),
-                getDireccion()
+                getDireccion(),
+                getEstado()
         );
     }
 }

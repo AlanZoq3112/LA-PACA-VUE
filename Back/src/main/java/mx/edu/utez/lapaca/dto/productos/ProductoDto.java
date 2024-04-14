@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.dto.productos;
 
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,7 +51,7 @@ public class ProductoDto {
     private SubCategoria subCategoria;
 
 
-    private List<Oferta> ofertas;
+    private List<Oferta> ofertas = new ArrayList<>();
 
 
 

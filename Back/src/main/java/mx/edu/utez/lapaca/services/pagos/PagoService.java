@@ -14,6 +14,8 @@ import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.ofertas.Oferta;
+import mx.edu.utez.lapaca.models.ofertas.OfertaRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.productos.Producto;
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,24 +50,23 @@ public class PagoService {
     public void init() {
         Stripe.apiKey = secretKey;
     }
-
     private final PagoRepository repository;
-
     private final CarritoRepository carritoRepository;
-
     private final UsuarioRepository usuarioRepository;
-
     private final ProductoRepository productoRepository;
-
     private final DireccionRepository direccionRepository;
+    private final PagoRepository pagoRepository;
+    private final OfertaRepository ofertaRepository;
 
 
-    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository) {
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository) {
         this.repository = repository;
         this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
         this.direccionRepository = direccionRepository;
+        this.pagoRepository = pagoRepository;
+        this.ofertaRepository = ofertaRepository;
     }
 
 
@@ -141,6 +143,17 @@ public class PagoService {
                 throw new InsuficienteStockException("No hay suficiente stock disponible para el producto '" + producto.getNombre() + "'.");
             }
             double subtotal = item.getCantidad() * producto.getPrecio();
+
+            // Aplicar descuento de ofertas activas si existen
+            List<Oferta> ofertasActivas = ofertaRepository.findActiveOffersByProductId(producto.getId());
+            if (!ofertasActivas.isEmpty()) {
+                double descuentoTotal = 0;
+                for (Oferta oferta : ofertasActivas) {
+                    descuentoTotal += (producto.getPrecio() * item.getCantidad() * (oferta.getPorcentajeDescuento() / 100));
+                }
+                subtotal -= descuentoTotal;
+            }
+
             montoTotal += subtotal;
             producto.setStock(producto.getStock() - item.getCantidad());
             carrito.setMonto(montoTotal);
@@ -152,9 +165,12 @@ public class PagoService {
             throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
         }
 
+        Optional<Pago> pagoOptional = pagoRepository.findById(carrito.getPago().getId());
+        if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
+        }
 
         carritoRepository.save(carrito);
-
 
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos
@@ -175,6 +191,19 @@ public class PagoService {
             throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
         }
     }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Carrito>> getAll() {
+        return new CustomResponse<>(
+                this.carritoRepository.findAll(),
+                false,
+                200,
+                "Ok"
+        );
+    }
+
+
+
 
 
 

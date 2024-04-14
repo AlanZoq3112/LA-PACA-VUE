@@ -29,6 +29,7 @@ public class PagoController {
     private final CarritoRepository carritoRepository;
     private final DireccionRepository direccionRepository;
 
+
     public PagoController(PagoService service, CarritoRepository carritoRepository, DireccionRepository direccionRepository) {
         this.service = service;
         this.carritoRepository = carritoRepository;
@@ -58,6 +59,15 @@ public class PagoController {
         } catch (StripePaymentException e) {
             return "Error al procesar el pago: " + e.getMessage();
         }
+    }
+
+    @GetMapping("/getAllPedidos")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
+    public ResponseEntity<CustomResponse<List<Carrito>>> getAll(){
+        return new ResponseEntity<>(
+                this.service.getAll(),
+                HttpStatus.OK
+        );
     }
 
 }

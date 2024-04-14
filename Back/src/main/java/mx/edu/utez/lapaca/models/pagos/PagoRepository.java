@@ -13,4 +13,5 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
     Optional<Pago> findByNumero (String numero);
 
 
+    List<Pago> findByUsuario(Usuario usuario);
 }

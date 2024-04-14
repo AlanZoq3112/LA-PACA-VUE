@@ -75,7 +75,7 @@ public class PagoService {
     }
 
 
-    //insertar forma de pago
+    //METODO PAGO
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
@@ -120,6 +120,60 @@ public class PagoService {
             );
         }
     }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Pago>> getAllMetodosPago() {
+        return new CustomResponse<>(
+                this.pagoRepository.findAll(),
+                false,
+                200,
+                "Ok"
+        );
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Pago>> getAllMetodoPagoByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Pago> pagos = pagoRepository.findByUsuario(usuario);
+            logService.log("Get", "El usuario con el correo "
+                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            return new CustomResponse<>(
+                    pagos,
+                    false,
+                    200,
+                    "OK"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //stripe
     @Transactional(rollbackFor = {StripePaymentException.class})
@@ -175,7 +229,7 @@ public class PagoService {
             throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
         }
         // Antes de guardar el carrito, establece el estado como "PENDIENTE"
-        carrito.setEstado(EstadoPedido.EN_PROCESO);
+        carrito.setEstado(EstadoPedido.EN_CAMINO);
         carritoRepository.save(carrito);
 
         Map<String, Object> chargeParams = new HashMap<>();

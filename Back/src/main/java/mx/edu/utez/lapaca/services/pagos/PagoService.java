@@ -98,6 +98,8 @@ public class PagoService {
                 );
             }
             Pago savedPago = repository.save(pago);
+            logService.log("Post", "Se ha registrado un método de pago","pagos");
+
             return new CustomResponse<>(
                     savedPago,
                     false,
@@ -143,8 +145,7 @@ public class PagoService {
             Usuario usuario = usuarioOptional.get();
             // Obtener los productos creados por el usuario
             List<Pago> pagos = pagoRepository.findByUsuario(usuario);
-            logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            logService.log("Get", "Usuario ha solicitado ver sus métodos de pago","pagos");
             return new CustomResponse<>(
                     pagos,
                     false,
@@ -157,6 +158,50 @@ public class PagoService {
                     true,
                     404,
                     "Usuario no encontrado"
+            );
+        }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<Pago> deleteById(Long id) {
+        try {
+            Optional<Pago> pagoId = pagoRepository.findById(id);
+            if (!pagoId.isPresent()) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        400,
+                        "El pago con el id " + id + " no existe"
+                );
+            }
+            Pago pago = pagoId.get();
+
+            // Desvincula el método de pago de todos los carritos que lo referencian
+            carritoRepository.updatePagoToNullByPagoId(id);
+
+            pagoRepository.delete(pago);
+            logService.log("Delete", "Método de pago con el id: " + pagoId + " sido " +
+                    "eliminado","pagos");
+
+            return new CustomResponse<>(
+                    null,
+                    false,
+                    200,
+                    "El método de pago con el id " + id + " ha sido eliminado correctamente"
+            );
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al eliminar el método de pago"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... datos para eliminar un método de pago incorrectos" + e.getMessage()
             );
         }
     }
@@ -274,9 +319,11 @@ public class PagoService {
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             // Obtener los productos creados por el usuario
+            String userEmail = usuario.getEmail(); // Obtener el correo electrónico del usuario
+
             List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+                    + userEmail + "ha solicitado ver su historial de pagos","carritos");
             return new CustomResponse<>(
                     carritos,
                     false,

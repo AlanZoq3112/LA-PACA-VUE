@@ -17,8 +17,7 @@
                                             </b-button>
                                         </div>
                                     </div>
-                                    <b-table responsive :fields="fields" :items="categorias" head-variant="light"
-                                        bordered class="text-center shadow" id="table" ref="table">
+                                    <b-table responsive :fields="fields" :items="paginatedCategorias" head-variant="light" bordered class="text-center shadow" id="table" ref="table">
                                         <!-- Columna para mostrar el 'Nombre' -->
                                         <template #cell(nombre)="data">
                                             {{ data.item.nombre }}
@@ -36,7 +35,10 @@
                                             </div>
                                         </template>
                                     </b-table>
-                                    <div v-if="categorias.length === 0" class="text-center">No hay categorías disponibles.</div>
+                                    <b-pagination v-model="currentPageCategorias" :total-rows="categorias.length" :per-page="perPage" align="center" class="my-4" />
+
+                                    <div v-if="categorias.length === 0" class="text-center">No hay categorías
+                                        disponibles.</div>
                                 </div>
 
                                 <br>
@@ -52,10 +54,9 @@
                                         </div>
                                     </div>
                                     <div class="text-center tabla">
-                                        <b-table responsive :fields="fields2" :items="subcategorias"
-                                            head-variant="light" bordered class="text-center shadow" id="table"
-                                            ref="table">
-                                            
+                                        <b-table responsive :fields="fields2" :items="paginatedSubcategorias" head-variant="light" bordered class="text-center shadow" id="table" ref="table">
+
+
                                             <template #cell(nombre)="data">
                                                 {{ data.item.nombre }}
                                             </template>
@@ -75,7 +76,10 @@
                                                 </div>
                                             </template>
                                         </b-table>
-                                        <div v-if="subcategorias.length === 0" class="text-center">No hay subcategorías disponibles.</div>
+                                        <b-pagination v-model="currentPageSubcategorias" :total-rows="subcategorias.length" :per-page="perPage" align="center" class="my-4" />
+
+                                        <div v-if="subcategorias.length === 0" class="text-center">No hay subcategorías
+                                            disponibles.</div>
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +90,8 @@
         </div>
         <ModalGuardarCategorias @categoria-saved="getCategorias" />
         <ModalGuardarSubcategorias @subcategoria-saved="getSubcategorias" />
-        <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria" @categoria-saved="getCategorias" />
+        <ModalEditarCategoria ref="modal-editar-categorias" :categoria="selectCategoria"
+            @categoria-saved="getCategorias" />
     </div>
 </template>
 
@@ -110,7 +115,9 @@ export default {
             selectCategoria: null,
             categorias: [],
             subcategorias: [],
-
+            currentPageCategorias: 1,
+            currentPageSubcategorias: 1,
+            perPage: 5,
             fields: [
                 { key: 'nombre', label: 'Nombre', sortable: true },
                 { key: 'actions', label: 'Acciones', visible: true },
@@ -132,6 +139,7 @@ export default {
                     }
                 });
                 this.categorias = response.data.data;
+                console.log(this.categorias);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener las categorias, intente mas tarde', 'error');
             }
@@ -175,7 +183,8 @@ export default {
                 });
                 this.subcategorias = response.data.data;
             } catch (error) {
-                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');
+            }
         },
         async deleteSubcategoria(subcategoriaId) {
             try {
@@ -213,6 +222,20 @@ export default {
     mounted() {
         this.getCategorias();
         this.getSubcategorias();
+    },
+    computed: {
+        paginatedCategorias() {
+            const start = (this.currentPageCategorias - 1) * this.perPage;
+            const end = start + this.perPage;
+            console.log('Categorias paginadas:', this.categorias.slice(start, end)); // Agregar este console.log
+            return this.categorias.slice(start, end);
+        },
+        paginatedSubcategorias() {
+            const start = (this.currentPageSubcategorias - 1) * this.perPage;
+            const end = start + this.perPage;
+            console.log('Subcategorias paginadas:', this.subcategorias.slice(start, end)); // Agregar este console.log
+            return this.subcategorias.slice(start, end);
+        }
     },
 }
 </script>

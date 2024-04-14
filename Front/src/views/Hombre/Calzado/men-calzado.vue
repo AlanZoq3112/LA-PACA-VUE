@@ -62,7 +62,8 @@ export default {
                 // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {
                     return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre" &&
-                        producto.subCategoria.nombre.toLowerCase() === "calzado";
+                        producto.subCategoria.nombre.toLowerCase() === "calzado" && producto.estado === 3 &&
+                        producto.stock > 0
                 });
                 console.log(this.productos);
             } catch (error) {

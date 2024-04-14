@@ -21,7 +21,9 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                                        <div v-for="producto in paginatedProductos" :key="producto.id"
+                                            class="col-lg-3 mb-4">
+                                            <!-- Tu tarjeta de producto aquí -->
                                             <b-card class="card-custom mb-2" img-alt="Image" img-height="450px"
                                                 max-width="200px" img-top>
                                                 <template #header>
@@ -64,6 +66,9 @@
                                             </b-card>
                                         </div>
                                     </div>
+                                    <!-- Agrega la paginación aquí -->
+                                    <b-pagination v-model="currentPage" :total-rows="productos.length"
+                                        :per-page="perPage" align="center" class="my-4" />
                                 </div>
                             </div>
                         </div>
@@ -87,6 +92,8 @@ export default {
     data() {
         return {
             productos: [],
+            currentPage: 1,
+            perPage: 8,
             fields: [
                 { key: 'nombre', label: 'Nombre', sortable: true },
                 { key: 'descripcion', label: 'Descripción', sortable: true },
@@ -101,6 +108,13 @@ export default {
                 },
             ],
         };
+    },
+    computed: {
+        paginatedProductos() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.productos.slice(start, end);
+        },
     },
     methods: {
         async getProductos() {

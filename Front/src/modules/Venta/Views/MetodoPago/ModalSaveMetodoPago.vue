@@ -120,7 +120,7 @@ export default {
                         .then(response => {
                             this.resetForm();
                             Swal.fire('Registrada', 'Método de pago registrado correctamente', 'success');
-                            this.$emit('metodopago-saved');
+                            this.$emit('metodo-saved');
                             this.$bvModal.hide("modal-guardar-metodopago");
                         })
                         .catch(error => {

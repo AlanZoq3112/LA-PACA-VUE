@@ -83,15 +83,13 @@
                                 <h5>Método de pago <b-icon icon="credit-card"></b-icon></h5>
                             </div>
                             <div class="card-body p-md-5 mx-md-4">
-                                <div v-if="direcciones.length > 0">
-                                    <b-card v-for="direccion in direcciones" :key="direccion.id" class="mb-3">
-                                        <h5>Código Postal {{ direccion.codigoPostal }}</h5>
-                                        <h6> Calle {{ direccion.calle }} No. {{ direccion.numero }}, Colonia {{
-            direccion.colonia
-        }}, {{ direccion.municipio }} {{ direccion.estado }}</h6>
-                                        <p>Referencias: {{ direccion.referencia }}</p>
+                                <div v-if="metodosPago.length > 0">
+                                    <b-card v-for="metodo in metodosPago" :key="metodo.id" class="mb-3">
+                                        <h5>Titular {{ metodo.titular }} </h5>
+                                        <p>{{ maskedNumero(metodo.numero) }} {{ metodo.tipo }}</p>
+                                        <p>Fecha: {{ metodo.fechaVencimiento }}   CVV: {{ maskedCvv(metodo.cvv) }}</p>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" :value="direccion.id"
+                                            <input class="form-check-input" type="radio" :value="metodo.id"
                                                 v-model="metodoPagoElegido">
                                         </div>
                                     </b-card>
@@ -136,7 +134,7 @@
             </div>
         </div>
         <ModalSaveDireccion @direccion-saved="getDirecciones" />
-        <ModalSaveMetodoPago @direccion-saved="getDirecciones" />
+        <ModalSaveMetodoPago @metodo-saved="getMetodosDePago" />
     </div>
 </template>
 
@@ -156,15 +154,16 @@ export default {
         return {
             direcciones: [],
             productos: [],
+            metodosPago: [],
             direccionElegida: null,
-            metodoPagoElegido: 1,
+            metodoPagoElegido: null,
             venta: {
                 items: [],
                 direccion: {
-                    id: 1
+                    id: null
                 },
                 pago: {
-                    id: 2
+                    id: null
                 }
             },
             loading: false
@@ -172,6 +171,32 @@ export default {
         };
     },
     methods: {
+        maskedNumero(numero) {
+            // Si el número no está presente o es demasiado corto, devolverlo sin cambios
+            if (!numero || numero.length < 4) return numero;
+
+            // Tomar los últimos 4 dígitos del número
+            const lastFourDigits = numero.slice(-4);
+
+            // Crear una cadena de asteriscos del mismo tamaño que el número menos los últimos 4 dígitos
+            const maskedPart = '*'.repeat(numero.length - 4);
+
+            // Combinar la parte enmascarada y los últimos 4 dígitos
+            return maskedPart + lastFourDigits;
+        },
+        maskedCvv(cvv) {
+            // Si el CVV no está presente o es demasiado corto, devolverlo sin cambios
+            if (!cvv || cvv.length < 3) return cvv;
+
+            // Tomar el primer dígito del CVV
+            const firstDigit = cvv.slice(0, 1);
+
+            // Crear una cadena de asteriscos del tamaño de los otros 2 dígitos del CVV
+            const maskedPart = '*'.repeat(cvv.length - 1);
+
+            // Combinar el primer dígito y la parte enmascarada
+            return firstDigit + maskedPart;
+        },
         calculateTotal() {
             return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
         },
@@ -219,6 +244,24 @@ export default {
                 console.error("Error al obtener los datos del usuario", error);
             }
         },
+        async getMetodosDePago() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8091/api-carsi-shop/pago/mis-metodos-pago",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                // Filtrar los productos por subcategoría para hombres
+                this.metodosPago = response.data.data;
+                console.log(this.metodosPago);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario", error);
+            }
+        },
 
         async pagar() {
             try {
@@ -252,10 +295,10 @@ export default {
                     axios.post('http://localhost:8091/api-carsi-shop/pago/realizar-pago', this.venta, {
                         headers: { Authorization: `Bearer ${token}` }
                     }).then(response => {
-                            Swal.fire('Realizada', 'Se realizó la compra correctamente', 'success');
-                            this.$router.push({ name: 'profile-screen' });
+                        Swal.fire('Realizada', 'Se realizó la compra correctamente', 'success');
+                        this.$router.push({ name: 'profile-screen' });
 
-                        })
+                    })
                         .catch(error => {
                             console.error("Error durante la solicitud:", error);
                             let errorMessage = "Hubo un problema al realizar la compra";
@@ -279,6 +322,7 @@ export default {
     mounted() {
         this.getproductos();
         this.getDirecciones();
+        this.getMetodosDePago();
     },
 };
 </script>

@@ -6,9 +6,10 @@
                     <b-card class="card-custom mb-2" img-alt="Image" img-height="450px" max-width="200px" img-top>
                         <template #header>
                             <b-carousel :controls="false" indicators :interval="0">
-                                <b-carousel-slide style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
-                                
-                                v-for="(imagen, index) in producto.imagenes" :key="index" :img-src="imagen.imageUrl"></b-carousel-slide>
+                                <b-carousel-slide
+                                    style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                    v-for="(imagen, index) in producto.imagenes" :key="index"
+                                    :img-src="imagen.imageUrl"></b-carousel-slide>
                             </b-carousel>
                         </template>
                         <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
@@ -40,7 +41,7 @@
 <script>
 import axios from "axios";
 export default {
-    name: "Inicio",
+    name: "inicio",
     data() {
         return {
             productos: [],
@@ -49,11 +50,19 @@ export default {
     methods: {
         async getProductos() {
             try {
+                const token = localStorage.getItem("token");
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
-
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
-                this.productos = response.data.data;
+                // Filtrar los productos por subcategoría para hombres
+                this.productos = response.data.data.filter(producto => {
+                    return producto.estado === 3 && producto.stock > 0;;
+                });
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
@@ -66,20 +75,30 @@ export default {
 </script>
 
 <style scoped>
+.userList {
+    background-color: #F5F5F5;
+    color: black;
+}
 
 .custom-container {
-    max-width: 1200px; /* Reducido para hacerlo más responsivo */
+    max-width: 1200px;
+    /* Reducido para hacerlo más responsivo */
     margin: 0 auto;
 }
 
 .card-custom {
-    max-width: 300px; /* Tamaño máximo de la tarjeta */
-    min-height: 450px; /* Altura mínima de la tarjeta */
-    overflow: hidden; /* Ocultar el desbordamiento de las imágenes */
+    max-width: 300px;
+    /* Tamaño máximo de la tarjeta */
+    min-height: 450px;
+    /* Altura mínima de la tarjeta */
+    overflow: hidden;
+    /* Ocultar el desbordamiento de las imágenes */
 }
 
 .card-custom .carousel-inner img {
-    width: 100%; /* Ajustar el ancho de las imágenes al 100% del contenedor */
-    height: auto; /* Altura automática para mantener la proporción */
+    width: 100%;
+    /* Ajustar el ancho de las imágenes al 100% del contenedor */
+    height: auto;
+    /* Altura automática para mantener la proporción */
 }
 </style>

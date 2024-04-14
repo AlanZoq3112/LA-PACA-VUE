@@ -52,16 +52,17 @@ export default {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/producto/getAll",
+                    "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     }
                 );
-                // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {
-                    return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre";
+                    return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre" &&
+                        producto.estado === 3 &&
+                        producto.stock > 0;
                 });
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);

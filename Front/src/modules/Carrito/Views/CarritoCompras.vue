@@ -77,7 +77,7 @@ export default {
         },
         continuar() {
             console.log(this.user);
-            this.$router.push({ name: 'checkoutDireccion' });
+            this.$router.push({ name: 'pagar' });
         },
 
         async getproductos() {

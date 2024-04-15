@@ -36,15 +36,17 @@ public class Carrito {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonIgnore
+    @JsonIgnoreProperties("carritos")
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "pago_id")
+    @JsonIgnoreProperties("carritos")
     private Pago pago;
 
     @ManyToOne
     @JoinColumn(name = "direccion_id")
+    @JsonIgnoreProperties("carritos")
     private Direccion direccion;
 
     @Enumerated(EnumType.STRING)

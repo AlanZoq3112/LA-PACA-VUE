@@ -23,7 +23,6 @@ import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
-import mx.edu.utez.lapaca.security.dto.email.EmailDto;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
@@ -207,19 +206,6 @@ public class PagoService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     //stripe
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
@@ -265,6 +251,7 @@ public class PagoService {
         }
         //direccion me lleva la verga no me sale nd ah no ya xd
         Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
+        System.out.println(direccionOptional);
         if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
         }
@@ -339,10 +326,6 @@ public class PagoService {
             );
         }
     }
-
-
-
-
 
 
 }

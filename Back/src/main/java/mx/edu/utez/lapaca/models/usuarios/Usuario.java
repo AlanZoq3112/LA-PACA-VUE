@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
@@ -37,7 +38,7 @@ public class Usuario implements UserDetails {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String genero;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
 
     @Column(columnDefinition = "VARCHAR(35)", nullable = false, unique = true)
@@ -66,6 +67,9 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Direccion> direcciones;
+
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -97,6 +101,9 @@ public class Usuario implements UserDetails {
         return true;
     }
 
+
     public void getFechaNacimiento(Date fechaNacimiento) {
     }
+
+
 }

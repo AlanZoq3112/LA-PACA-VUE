@@ -3,14 +3,21 @@ package mx.edu.utez.lapaca.controllers.vendedor;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.vendedores.VendedorDto;
+import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
+import mx.edu.utez.lapaca.models.vendedorImagen.VendedorImagen;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.vendedores.VendedorService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,16 +27,43 @@ import java.util.Map;
 public class VendedorController {
 
     private final VendedorService service;
+    private final FirebaseService firebaseService;
 
-    public VendedorController(VendedorService service) {
+    public VendedorController(VendedorService service, FirebaseService firebaseService) {
         this.service = service;
+        this.firebaseService = firebaseService;
     }
 
-    @PostMapping("/insert")
+    @PostMapping(value="/insert",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COMPRADOR')")
-    public ResponseEntity<CustomResponse<Vendedor>> insert(@Valid @RequestBody VendedorDto vendedorDto){
+    public ResponseEntity<CustomResponse<Vendedor>> insert(@Valid @ModelAttribute VendedorDto vendedorDto) throws Exception {
+        List<MultipartFile> imageFiles = vendedorDto.getImagenes();
+        if (!(imageFiles.size() == 2)) {
+            throw new Exception("Debe proporcionar su INE por los dos lados");
+        }
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile imageFile : imageFiles) {
+            if (imageFile.getSize() > 2 * 1024 * 1024) {
+                throw new Exception("El tamaño de una imagen excede el límite de 2MB.");
+            }
+            String imageUrl = firebaseService.uploadFileVendedor(imageFile);
+            if (imageUrl == null) {
+                throw new Exception("Error al subir una imagen a Firebase.");
+            }
+            imageUrls.add(imageUrl);
+        }
+        //se crea una lista de objetos ProductoImagen y se configura con las URLs de las imágenes
+        List<VendedorImagen> imagenes = new ArrayList<>();
+        Vendedor vendedor = vendedorDto.getVendedor(); // Obtener el producto del DTO
+        for (String imageUrl : imageUrls) {
+            VendedorImagen imagen = new VendedorImagen();
+            imagen.setImageUrl(imageUrl);
+            imagen.setVendedor(vendedor); // Establecer la relación con el producto
+            imagenes.add(imagen);
+        }
+        vendedor.setImagenes(imagenes);
         return new ResponseEntity<>(
-                this.service.insert(vendedorDto.getVendedor()),
+                this.service.insert(vendedor),
                 HttpStatus.CREATED
         );
     }

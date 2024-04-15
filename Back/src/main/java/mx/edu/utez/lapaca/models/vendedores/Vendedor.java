@@ -2,12 +2,18 @@ package mx.edu.utez.lapaca.models.vendedores;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import mx.edu.utez.lapaca.models.vendedorImagen.VendedorImagen;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "vendedores")
@@ -27,8 +33,9 @@ public class Vendedor {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String telefonoVendedor;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String ine;
+    @OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<VendedorImagen> imagenes = new ArrayList<>();
 
     @Column(columnDefinition = "VARCHAR(13)", nullable = false)
     private String rfc;

@@ -6,6 +6,7 @@ import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.models.vendedores.VendedorRepository;
+import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
@@ -27,11 +28,13 @@ public class VendedorService {
     private final VendedorRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final LogService logService;
+    private final FirebaseService firebaseService;
 
-    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
+    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService, FirebaseService firebaseService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.logService = logService;
+        this.firebaseService = firebaseService;
     }
 
 

@@ -57,7 +57,6 @@ public class Producto {
 
     @ManyToMany(mappedBy = "productos")
     //@JsonManagedReference
-
     private List<Oferta> ofertas = new ArrayList<>();
 
 

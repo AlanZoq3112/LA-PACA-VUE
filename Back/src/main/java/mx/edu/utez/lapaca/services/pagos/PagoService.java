@@ -6,10 +6,14 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.param.ChargeCreateParams;
 import jakarta.annotation.PostConstruct;
-import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
+import mx.edu.utez.lapaca.dto.carritos.exceptions.CarritoNotFoundException;
+import mx.edu.utez.lapaca.dto.direcciones.exceptions.DireccionNoPerteneceAlUsuarioException;
+import mx.edu.utez.lapaca.dto.pagos.exceptions.PagoNoPerteneceAlUsuarioException;
+import mx.edu.utez.lapaca.dto.pagos.exceptions.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.dto.productos.validators.InsuficienteStockException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
+import mx.edu.utez.lapaca.dto.usuarios.exceptions.UsuarioNoEncontradoException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
@@ -206,14 +210,12 @@ public class PagoService {
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (!usuarioOptional.isPresent()) {
-            throw new RuntimeException ("No se encontró el usuario con el correo electrónico especificado.");
+            throw new UsuarioNoEncontradoException("No se encontró el usuario con el correo electrónico especificado.");
         }
         Usuario usuario = usuarioOptional.get();
         carrito.setUsuario(usuario);
-
         double montoTotal = 0;
         for (ItemCarrito item : carrito.getItems()) {
             Optional<Producto> productoOptional = productoRepository.findById(item.getProducto().getId());
@@ -228,7 +230,6 @@ public class PagoService {
                 throw new InsuficienteStockException("No hay suficiente stock disponible para el producto '" + producto.getNombre() + "'.");
             }
             double subtotal = item.getCantidad() * producto.getPrecio();
-
             List<Oferta> ofertasActivas = ofertaRepository.findActiveOffersByProductId(producto.getId());
             if (!ofertasActivas.isEmpty()) {
                 double descuentoTotal = 0;
@@ -237,21 +238,19 @@ public class PagoService {
                 }
                 subtotal -= descuentoTotal;
             }
-
             montoTotal += subtotal;
             producto.setStock(producto.getStock() - item.getCantidad());
             carrito.setMonto(montoTotal);
             item.setCarrito(carrito);
         }
         Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
-        System.out.println(direccionOptional);
         if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
-            throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
+            throw new DireccionNoPerteneceAlUsuarioException("La dirección seleccionada no pertenece al usuario autenticado.");
         }
 
         Optional<Pago> pagoOptional = pagoRepository.findById(carrito.getPago().getId());
         if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
-            throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
+            throw new PagoNoPerteneceAlUsuarioException("El pago seleccionado no pertenece al usuario autenticado.");
         }
         carrito.setEstado(EstadoPedido.EN_CAMINO);
         carritoRepository.save(carrito);
@@ -300,7 +299,7 @@ public class PagoService {
                     "<br>Estado del pedido: Entregado");
             emailService.sendMail(emailDto);
         } else {
-            throw new RuntimeException("No se encontró el carrito con el ID especificado.");
+            throw new CarritoNotFoundException("No se encontró el carrito con el ID especificado.");
         }
 
     }
@@ -337,7 +336,7 @@ public class PagoService {
 
             emailService.sendMail(emailDto);
         } else {
-            throw new RuntimeException("No se encontró el carrito con el ID especificado.");
+            throw new CarritoNotFoundException("No se encontró el carrito con el ID especificado.");
         }
     }
     @Transactional(rollbackFor = {SQLException.class})

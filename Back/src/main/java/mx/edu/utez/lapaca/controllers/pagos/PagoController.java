@@ -3,7 +3,7 @@ package mx.edu.utez.lapaca.controllers.pagos;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.pagos.PagoDto;
-import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
+import mx.edu.utez.lapaca.dto.pagos.exceptions.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api-carsi-shop/pago")

@@ -2,6 +2,7 @@ package mx.edu.utez.lapaca.services.productos;
 
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoAlreadyExistsException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoInsertException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoServiceException;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -55,7 +56,7 @@ public class ProductoService {
             }
             producto.setEstado(1);
             Producto savedProducto = repository.save(producto);
-            logService.log("Insert", "Producto Agregado", "Productos");
+            logService.log("Insert", "Producto Agregado", PRODUCTOS_CONSTANT);
             return new CustomResponse<>(
                     savedProducto,
                     false,
@@ -77,7 +78,7 @@ public class ProductoService {
                     "Error... datos para insertar un producto ilegal" + e.getMessage()
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ProductoServiceException("Error al insertar el producto", e);
         }
     }
 

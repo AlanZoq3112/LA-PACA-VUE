@@ -36,7 +36,7 @@ public class TwilioController {
         }
         try {
             TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("Body", "Haz iniciado sesión en CarsiShop"));
             params.add(new BasicNameValuePair("To", "+527771319651"));
             params.add(new BasicNameValuePair("From", TWILIO_NUMBER));

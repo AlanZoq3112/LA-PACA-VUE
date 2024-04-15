@@ -124,7 +124,7 @@ export default {
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/subcategoria/insert", {
                         nombre: this.subcategoria.nombre,
                         categoria: {
-                            id: this.subcategoria.categoria
+                            id: this.subcategoria.categoria.value
                         }
                     }, {
                         headers: {

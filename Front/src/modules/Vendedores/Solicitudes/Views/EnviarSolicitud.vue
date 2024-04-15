@@ -57,8 +57,11 @@
                                     </div>
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="telefono">Ine: </label>
-                                        <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
+                                        <!--
+                                            <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
                                             placeholder="INE" />
+                                        -->
+                                        <InputFilesMax2 @img="dataChildFile" @check="validFile" />
                                     </div>
 
 
@@ -68,6 +71,8 @@
                                             Enviar Solicitud <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                         </button>
                                     </div>
+                                    <p>{{ vendedor }}</p>
+
                                 </form>
                             </div>
                         </div>
@@ -86,22 +91,32 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 export default {
     name: "enviarSolicitdVendedor",
-    data() {
-        return {
-            vendedor: {
-                telefonoVendedor: "",
-                curp: "",
-                rfc: "",
-                ine: "",
-            },
-        };
+    components: {        
+        InputFilesMax2: () => import('../../../../components/input_validations/InputFilesMax2.vue'),
     },
     setup() {
         return {
             v$: useVuelidate(),
         };
     },
+    data() {
+        return {
+            vendedor: {
+                telefonoVendedor: "",
+                curp: "",
+                rfc: "",
+                ine: [],
+            },
+            valueFile: false,
+        };
+    },
     methods: {
+        dataChildFile(data) {
+            this.vendedor.ine = data;
+        },
+        validFile(data) {
+            this.valueFile = data;
+        },
         onlynumbers(evt) {
             signal(evt);
         },

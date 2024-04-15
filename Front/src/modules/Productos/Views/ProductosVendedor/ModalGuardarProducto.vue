@@ -104,13 +104,6 @@ import {
     minValue,
     maxValue
 } from "@vuelidate/validators";
-const base64Encode = data =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(data);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
 export default {
     name: "ModalGuardarProductos",
     components: {
@@ -155,14 +148,7 @@ export default {
         },
         dataChildFile(data) {
             for (let i = 0; i < data.length; i++) {
-                if (data) {
-                    base64Encode(data[0]).then((file) => {
-                        this.producto.imagenes.push(file);
-                        console.log(this.producto.imagenes)
-                    }).catch((error) => {
-                        this.producto.imagenes = null;
-                    });
-                }
+                this.producto.imagenes.push(data[i]);                                
             }
         },
         dataChildDescription(data) {

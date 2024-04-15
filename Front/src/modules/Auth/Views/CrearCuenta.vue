@@ -54,13 +54,23 @@
                                         <b-col>
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="contrasena">Contraseña: </label>
-                                                <b-form-input id="contrasena" type="password" placeholder="Contraseña"
-                                                    v-model="v$.user.password.$model" :state="v$.user.password.$dirty
-            ? !v$.user.password.$error
-            : null
-            " @blur="v$.user.password.$touch()" />
-                                                <b-form-invalid-feedback v-for="error in v$.user.password.$errors"
-                                                    :key="error.$uid">
+                                                <div class="input-group">
+                                                    <b-form-input
+                                                        id="contrasena"
+                                                        :type="showPassword ? 'text' : 'password'"
+                                                        placeholder="Contraseña"
+                                                        v-model="v$.user.password.$model"
+                                                        :state="v$.user.password.$dirty ? !v$.user.password.$error : null"
+                                                        @blur="v$.user.password.$touch()"
+                                                    />
+                                                    <!-- Icono para mostrar/ocultar la contraseña -->
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text" @click="togglePasswordVisibility">
+                                                            <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <b-form-invalid-feedback v-for="error in v$.user.password.$errors" :key="error.$uid">
                                                     {{ error.$message }}
                                                 </b-form-invalid-feedback>
                                             </div>
@@ -108,13 +118,13 @@
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button 
-                                            class="btn btn-primary 
-                                            btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="createAccount" type="button" 
-                                            :disabled="disableCreateButton"
-                                            style="background-color: black;">
-                                            Crear Cuenta
-                                        </button>
+                                        class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                        @click="createAccount"
+                                        type="button"
+                                        :disabled="disableCreateButton"
+                                        style="background-color: black;">
+                                        Crear Cuenta
+                                    </button>
                                     </div>
 
                                     <div class="d-flex align-items-center justify-content-center pb-4">
@@ -179,6 +189,7 @@ export default {
                 telefono: "",
                 fechaNacimiento: ""
             },
+            showPassword: false,
             generoOption: "",
             confirmPassword: "",
             valueNombre: "",
@@ -216,7 +227,6 @@ export default {
             signal(evt);
         },
         createAccount() {
-            this.loading = true;
             const isValid = this.v$.user.$invalid;
             if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
                 const generoFinal = this.user.genero.name;
@@ -243,6 +253,9 @@ export default {
                 Swal.fire('Error', errorMessage, 'error');
             }
         },
+        togglePasswordVisibility() {
+            this.showPassword = !this.showPassword;
+        }
     },
     validations() {
         return {
@@ -280,6 +293,14 @@ export default {
         };
     },
     computed: {
+        disableCreateButton() {
+            return (
+                !this.valueNombre ||
+                !this.valueEmail ||
+                !this.valueFile ||
+                this.v$.user.$invalid
+            );
+        },
         disableCreateButton() {
             return (
                 !this.valueNombre ||

@@ -45,16 +45,29 @@
                                                 <template #footer>
                                                     <b-row>
                                                         <b-col :class="{
+                                            'text-warning': producto.estado === 0,
                                             'text-warning': producto.estado === 1,
                                             'text-success': producto.estado === 3,
                                             'text-danger': producto.estado === 2
                                         }">
+                                                            <span v-if="producto.estado === 0">Inactivo</span>
                                                             <span v-if="producto.estado === 1">Pendiente</span>
                                                             <span v-else-if="producto.estado === 3">Aprobado</span>
                                                             <span v-else-if="producto.estado === 2">Rechazado</span>
                                                         </b-col>
                                                         <b-col>
                                                             <div class="d-flex justify-content-end">
+                                                                <b-button v-b-tooltip.hover="'Activar Producto'"
+                                                                    @click="activarProducto(producto.id)"
+                                                                    v-if="producto.estado === 0" class="boton"
+                                                                    variant="faded">
+                                                                    <b-icon icon="check"></b-icon>
+                                                                </b-button>
+                                                                <b-button v-b-tooltip.hover="'Deshabilitar Producto'"
+                                                                    @click="deshabilitarProducto(producto.id)"
+                                                                    class="boton" variant="faded">
+                                                                    <b-icon icon="trash"></b-icon>
+                                                                </b-button>
                                                                 <b-button v-b-tooltip.hover="'Editar Producto'"
                                                                     class="boton" to="kid-producto" variant="faded">
                                                                     <b-icon icon="pencil"></b-icon>
@@ -82,6 +95,8 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
+
 import ModalGuardarProducto from './ModalGuardarProducto.vue';
 
 export default {
@@ -111,10 +126,19 @@ export default {
     },
     computed: {
         paginatedProductos() {
-            const start = (this.currentPage - 1) * this.perPage;
-            const end = start + this.perPage;
-            return this.productos.slice(start, end);
-        },
+        // Filtrar productos activos y luego inactivos
+        const productosActivos = this.productos.filter(producto => producto.estado !== 0);
+        const productosInactivos = this.productos.filter(producto => producto.estado === 0);
+
+        // Concatenar productos activos e inactivos y luego aplicar la paginación
+        const productosFiltrados = [...productosActivos, ...productosInactivos];
+
+        const start = (this.currentPage - 1) * this.perPage;
+        const end = start + this.perPage;
+
+        return productosFiltrados.slice(start, end);
+    },
+
     },
     methods: {
         async getProductos() {
@@ -129,6 +153,61 @@ export default {
             } catch (error) {
                 console.error("Error al obtener los datos de los productos", error);
             }
+        },
+        async deshabilitarProducto(productoId) {
+            try {
+                const token = localStorage.getItem('token');
+                const result = await Swal.fire({
+                    title: '¿Estás seguro de deshabilitar este producto?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#009475',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await axios.delete(`http://localhost:8091/api-carsi-shop/producto/delete`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                        data: { id: productoId } // Envía el ID como datos en el cuerpo de la solicitud
+                    });
+
+                    if (response.status === 200) {
+                        this.getProductos(); // Método para obtener los productos actualizados
+                        Swal.fire('¡Éxito!', 'El producto se deshabilitó correctamente', 'success');
+                    } else {
+                        Swal.fire('Error', 'Hubo un problema al intentar deshabilitar el producto', 'error');
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
+            }
+        },
+
+        activarProducto(idProducto) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Quieres activar este producto?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#008c6f',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, activar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Encuentra el índice del producto en la lista
+                    const index = this.productos.findIndex(producto => producto.id === idProducto);
+                    // Cambia el estado del producto a 1 (activo)
+                    this.productos[index].estado = 1;
+                    Swal.fire(
+                        'Activado',
+                        'El producto ha sido activado correctamente.',
+                        'success'
+                    );
+                }
+            });
         },
 
     },

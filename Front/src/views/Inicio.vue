@@ -54,9 +54,7 @@ export default {
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
                     {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+
                     }
                 );
                 // Filtrar los productos por subcategoría para hombres

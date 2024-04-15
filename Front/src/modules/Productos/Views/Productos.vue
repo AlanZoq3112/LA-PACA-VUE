@@ -130,8 +130,7 @@ export default {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                this.productos = response.data.data;
-            } catch (error) {
+                this.productos = response.data.data.filter(producto => [1, 2, 3].includes(producto.estado));            } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los productos, intente mas tarde', 'error');
             }
         },

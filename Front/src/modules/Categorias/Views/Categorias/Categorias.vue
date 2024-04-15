@@ -24,10 +24,6 @@
                                         </template>
                                         <template #cell(actions)="data">
                                             <div class="text-center">
-                                                <b-button size="sm" @click="edit(data.item)" variant="faded"
-                                                    class="btnEdit">
-                                                    <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                                                </b-button>
                                                 <b-button size="sm" @click="deleteCategoria(data.item.id)"
                                                     variant="faded" class="btnDelete">
                                                     <b-icon icon="trash" style="color:red"></b-icon>
@@ -65,10 +61,6 @@
                                             </template>
                                             <template #cell(actions)="data">
                                                 <div class="text-center">
-                                                    <b-button size="sm" @click="edit(data.item)" variant="faded"
-                                                        class="btnEdit">
-                                                        <b-icon icon="pencil-square" style="color:blue"></b-icon>
-                                                    </b-button>
                                                     <b-button size="sm" @click="deleteSubcategoria(data.item.id)"
                                                         variant="faded" class="btnDelete">
                                                         <b-icon icon="trash" style="color:red"></b-icon>
@@ -169,8 +161,11 @@ export default {
                     Swal.fire('Eliminada', 'La categoria ha sido eliminada correctamente', 'success');
                 }
             } catch (error) {
-
-                Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria, intente mas tarde', 'error');
+                let errorMessage = "Hubo un problema al intentar eliminar la categoria, intente más tarde";
+                if (error.response?.data && error.response.data.length > 0) {
+                    errorMessage = error.response.data[0];
+                }
+                Swal.fire('Error', errorMessage, 'error');
             }
         },
         async getSubcategorias() {
@@ -211,7 +206,11 @@ export default {
                     Swal.fire('Eliminada', 'La subcategoria ha sido eliminada correctamente', 'success');
                 }
             } catch (error) {
-                Swal.fire('Error', 'Hubo un problema al intentar eliminar la categoria', 'error');
+                let errorMessage = "Hubo un problema al intentar eliminar la cetgoria, intente más tarde";
+                if (error.response?.data && error.response.data.length > 0) {
+                    errorMessage = error.response.data[0];
+                }
+                Swal.fire('Error', errorMessage, 'error');
             }
         },
         edit(categoria) {

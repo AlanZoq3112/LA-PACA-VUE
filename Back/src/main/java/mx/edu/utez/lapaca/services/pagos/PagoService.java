@@ -305,6 +305,54 @@ public class PagoService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void marcarComoDevuelto(Long carritoId, String username) {
+        Optional<Carrito> carritoOptional = carritoRepository.findById(carritoId);
+        if (carritoOptional.isPresent()) {
+            Carrito carrito = carritoOptional.get();
+
+            // Verifica que el usuario sea el dueño del carrito o tenga permisos para modificarlo
+            if (!carrito.getUsuario().getEmail().equals(username)) {
+                throw new UnauthorizedAccessException("El usuario no está autorizado para modificar este carrito.");
+            }
+
+            // Verifica que el pedido ya esté entregado antes de marcarlo como devuelto
+            if (carrito.getEstado() != EstadoPedido.ENTREGADO) {
+                throw new IllegalStateException("El pedido no está entregado y no puede ser marcado como devuelto.");
+            }
+
+            // Cambia el estado del carrito a "DEVUELTO"
+            carrito.setEstado(EstadoPedido.DEVUELTO);
+            carritoRepository.save(carrito);
+
+            // Restablece el stock de los productos en base a la cantidad pedida
+            for (ItemCarrito item : carrito.getItems()) {
+                Producto producto = item.getProducto();
+                int cantidadPedida = item.getCantidad();
+                producto.setStock(producto.getStock() + cantidadPedida);
+                productoRepository.save(producto);
+            }
+
+            // Registra el evento en el log
+            logService.log("Update", "El pedido con id: " + carrito.getIdPago() + " ha sido devuelto", CARRITOS_CONSTANT);
+
+            // Enviar correo de confirmación al usuario
+            EmailDto emailDto = new EmailDto();
+            emailDto.setEmail(carrito.getUsuario().getEmail());
+            emailDto.setFullName(carrito.getUsuario().getNombre());
+            emailDto.setSubject("Confirmación de devolución en CarsiShop");
+            emailDto.setBody("Su pedido ha sido devuelto satisfactoriamente." +
+                    "<br>ID del pedido: " + carrito.getIdPago() +
+                    "<br>Estado del pedido: Devuelto");
+
+            emailService.sendMail(emailDto);
+        } else {
+            throw new RuntimeException("No se encontró el carrito con el ID especificado.");
+        }
+    }
+
+
+
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Carrito>> getAll() {

@@ -87,10 +87,18 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/pago/mis-pedidos").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 
 
-                        .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
-
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/oferta/insert").hasAuthority(Role.ADMIN.name())
 
+
+
+
+
+                        .requestMatchers("/api-carsi-shop/log/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
+
+                        .requestMatchers("/api-carsi-shop/loglogin/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api-carsi-shop/loglogin/getAllLogslogin").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/loglogin/getAllLogslogin").permitAll()
                         .anyRequest().authenticated())
 
 

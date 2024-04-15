@@ -1,5 +1,6 @@
 package mx.edu.utez.lapaca.models.categorias;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Categoria {
     private String nombre;
 
     @OneToMany(mappedBy = "categoria")
+    @JsonIgnore
     private List<SubCategoria> subcategorias;
 
 }

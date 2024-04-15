@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.models.carritos;
 
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,17 +36,15 @@ public class Carrito {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonIgnoreProperties("carritos")
+    //@JsonIgnore
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "pago_id")
-    @JsonIgnoreProperties("carritos")
     private Pago pago;
 
     @ManyToOne
     @JoinColumn(name = "direccion_id")
-    @JsonIgnoreProperties("carritos")
     private Direccion direccion;
 
     @Enumerated(EnumType.STRING)

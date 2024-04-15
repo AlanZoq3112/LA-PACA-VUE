@@ -22,7 +22,6 @@ import java.util.List;
 @Setter
 @Getter
 
-
 public class Producto {
 
     @Id

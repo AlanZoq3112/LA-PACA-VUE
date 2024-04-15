@@ -301,14 +301,6 @@ export default {
                 this.v$.user.$invalid
             );
         },
-        disableCreateButton() {
-            return (
-                !this.valueNombre ||
-                !this.valueEmail ||
-                !this.valueFile ||
-                this.v$.user.$invalid
-            );
-        }
     },
 
 };

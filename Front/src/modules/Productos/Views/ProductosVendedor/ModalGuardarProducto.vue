@@ -11,7 +11,7 @@
                 <p>Registrar producto</p>
             </header>
             <main>
-                <b-form @submit.prevent="save">
+                <b-form @submit.prevent="guardarProducto">
                     <b-row>
                         <b-col>
                             <b-form-group label="Nombre del producto" label-for="nombre">
@@ -124,7 +124,7 @@ export default {
         getImageURL(file) {
             return URL.createObjectURL(file);
         },
-        async save() {
+        async guardarProducto() {
             try {
                 const result = await Swal.fire({
                     title: "¿Estás seguro de registrar el producto?",
@@ -137,24 +137,6 @@ export default {
                 });
 
                 if (result.isConfirmed) {
-                    if (this.producto.precio < 0 || this.producto.precio > 2000) {
-                        Swal.fire({
-                            title: "Error",
-                            text: "El precio debe ser mayor o igual que cero y no exceder 2000",
-                            icon: "error"
-                        });
-                        return;
-                    }
-
-                    // Verifica si el stock es mayor que cero y no excede 20
-                    if (this.producto.stock < 0 || this.producto.stock > 20) {
-                        Swal.fire({
-                            title: "Error",
-                            text: "El stock debe ser mayor o igual que cero y no exceder 20",
-                            icon: "error"
-                        });
-                        return;
-                    }
                     this.loading = true;
                     const token = localStorage.getItem('token');
                     if (!token) {

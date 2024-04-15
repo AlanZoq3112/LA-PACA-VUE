@@ -12,6 +12,9 @@
                                 <label for="nombre">Nombre de la subcategoria: *</label>
                                 <b-form-input v-model="subcategoria.nombre" type="text" class="form-control"
                                     placeholder="Nombre" required />
+                                <b-form-invalid-feedback v-if="!nombreValido">Nombre inválido. Debe contener solo
+                                    letras, sin espacios al inicio o al final, y tener máximo 20
+                                    caracteres.</b-form-invalid-feedback>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -21,16 +24,11 @@
                             </b-col>
                         </b-row>
                     </form>
-
                 </main>
-
                 <footer class="text-center mt-5">
-                    <button class="btn m-1 cancel" id="saveSubcategoria" @click="onClose">
-                        Cancelar
-                    </button>
-                    <button class="btn m-1 success" id="saveteam" type="submit" @click="save">
-                        Registrar
-                    </button>
+                    <button class="btn m-1 cancel" id="saveSubcategoria" @click="onClose">Cancelar</button>
+                    <button class="btn m-1 success" id="saveteam" type="submit" @click="save"
+                        :disabled="!nombreValido">Registrar</button>
                 </footer>
             </b-modal>
         </div>
@@ -49,6 +47,7 @@ export default {
                 categoria: null,
             },
             categorias: [],
+            nombreValido: true
         }
     },
 
@@ -69,7 +68,7 @@ export default {
                     return { text: categoria.nombre, value: categoria.id };
                 });
             } catch (error) {
-                Swal.fire('Error', 'Hubo un problema al intentar OBTENER lsa categorias, intente mas tarde', 'error');
+                Swal.fire('Error', 'Hubo un problema al intentar OBTENER las categorias, intente mas tarde', 'error');
             }
         },
         async save() {
@@ -131,6 +130,20 @@ export default {
                 nombre: "",
                 categoria: null,
             }
+        },
+        validateNombre() {
+            // Validar el nombre aquí según los criterios requeridos
+            const nombreRegExp = /^[a-zA-Z]+$/; // Expresión regular para permitir solo letras
+            const trimmedNombre = this.subcategoria.nombre.trim(); // Eliminar espacios en blanco al inicio y al final
+            const isValidLength = trimmedNombre.length <= 20; // Verificar longitud máxima
+            const isValidFormat = nombreRegExp.test(trimmedNombre); // Verificar formato
+
+            this.nombreValido = isValidLength && isValidFormat;
+        }
+    },
+    watch: {
+        'subcategoria.nombre': function (newValue) {
+            this.validateNombre();
         }
     },
     mounted() {

@@ -233,17 +233,15 @@
                                                             icon="bookmarks"></b-icon> Categorias y
                                                         subcategorias</b-button>
                                                     </b-col>
-                                                    <b-button variant="faded" to=""><b-icon
-                                                        icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
-                                                    
-                                                    <b-col>
-                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
-                                                                icon="book"></b-icon> Bitacora general</b-button>
-                                                    </b-col>
+
                                                     <b-col>
                                                         <b-button variant="faded" to="bitacoral-screen"><b-icon
                                                                 icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     </b-col>
+
+                                                    <b-co>
+                                                        
+                                                    </b-co>
                                                 </b-row>
                                                 <br>
                                             </b-card>

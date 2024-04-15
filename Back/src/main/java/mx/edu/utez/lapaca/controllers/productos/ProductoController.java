@@ -138,6 +138,12 @@ public class ProductoController {
 
 
 
-
+    @GetMapping("/productos-aprobados")
+    public ResponseEntity<CustomResponse<List<Producto>>> getAllApprovedProducts() {
+        return new ResponseEntity<>(
+                service.getAllApprovedProducts(),
+                HttpStatus.OK
+        );
+    }
 
 }

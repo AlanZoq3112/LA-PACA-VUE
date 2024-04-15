@@ -13,7 +13,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByUsuario(Usuario usuario);
 
-
+    List<Producto> findByEstadoTrue();
 
     @Query("SELECT DISTINCT p FROM Producto p LEFT JOIN FETCH p.ofertas")
     List<Producto> findAllWithOfertas();

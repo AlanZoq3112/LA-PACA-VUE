@@ -295,6 +295,24 @@ public class ProductoService {
         }
     }
 
-
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Producto>> getAllApprovedProducts() {
+        try {
+            List<Producto> productos = repository.findByEstadoTrue();
+            return new CustomResponse<>(
+                    productos,
+                    false,
+                    200,
+                    "Ok"
+            );
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al obtener los productos aprobados"
+            );
+        }
+    }
 
 }

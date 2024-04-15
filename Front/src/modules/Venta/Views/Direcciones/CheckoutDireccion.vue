@@ -78,7 +78,6 @@ export default {
             return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
         },
         continuar() {
-            console.log("Id de la direccion seleccionada:", this.direccionElegida); // Imprimir dirección seleccionada
             this.$router.push({ name: 'checkoutMetodoPago' });
         },
 
@@ -99,7 +98,6 @@ export default {
                         producto.subCategoria.nombre.toLowerCase() === "calzado";
                 });
 
-                console.log("productos carrito: ", this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }

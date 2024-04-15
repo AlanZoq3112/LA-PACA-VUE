@@ -57,20 +57,11 @@
                                                         </b-col>
                                                         <b-col>
                                                             <div class="d-flex justify-content-end">
-                                                                <b-button v-b-tooltip.hover="'Activar Producto'"
-                                                                    @click="activarProducto(producto.id)"
-                                                                    v-if="producto.estado === 0" class="boton"
-                                                                    variant="faded">
-                                                                    <b-icon icon="check"></b-icon>
-                                                                </b-button>
+
                                                                 <b-button v-b-tooltip.hover="'Deshabilitar Producto'"
                                                                     @click="deshabilitarProducto(producto.id)"
                                                                     class="boton" variant="faded">
                                                                     <b-icon icon="trash"></b-icon>
-                                                                </b-button>
-                                                                <b-button v-b-tooltip.hover="'Editar Producto'"
-                                                                    class="boton" to="kid-producto" variant="faded">
-                                                                    <b-icon icon="pencil"></b-icon>
                                                                 </b-button>
                                                             </div>
                                                         </b-col>
@@ -151,7 +142,7 @@ export default {
                 });
                 this.productos = response.data.data;
             } catch (error) {
-                console.error("Error al obtener los datos de los productos", error);
+                Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
             }
         },
         async deshabilitarProducto(productoId) {
@@ -180,7 +171,6 @@ export default {
                     }
                 }
             } catch (error) {
-                console.log(error);
                 Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
             }
         },

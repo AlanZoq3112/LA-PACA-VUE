@@ -61,7 +61,6 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 this.vendedores = response.data.data;
-                console.log(this.vendedores);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los vendedores, intente mas tarde', 'error');
             }
@@ -91,11 +90,10 @@ export default {
                         this.getVendedores();
                         Swal.fire('¡Éxito!', `La solicitud ha sido ${status ? 'aceptada' : 'rechazada'} correctamente`, 'success');
                     } else {
-                        console.log(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud. Estado del servidor:`, response.status);
+                        Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
                     }
                 }
             } catch (error) {
-                console.error(`Error al ${status ? 'aceptar' : 'rechazar'} la solicitud:`, error);
                 Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
             }
         },

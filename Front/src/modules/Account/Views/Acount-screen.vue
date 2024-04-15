@@ -58,6 +58,51 @@
                         <div class="card rounded-3 text-black">
                             <div class="col-lg-12">
                                 <div class="card-body p-md-5 mx-md-4">
+                                    <div v-if="user.role == 'ADMIN'">
+                                        <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
+                                            Administrar
+                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
+                                        </b-button>
+                                        <b-collapse id="collapsBitacoras">
+                                            <b-card>
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="usuarios"><b-icon
+                                                                icon="people"></b-icon> Lista de usuarios</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
+                                                                icon="book"></b-icon> Bitacora general</b-button>
+                                                    </b-col>    
+                                                    <b-col>
+                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
+                                                            icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                                <br>
+                                                <b-row>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="vendedores"><b-icon
+                                                                icon="clock"></b-icon> Solicitudes de
+                                                            vendedores</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="productos"><b-icon
+                                                                icon="hourglass-split"></b-icon> Solicitudes de
+                                                            productos</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="fades" to="categorias-screen"><b-icon
+                                                            icon="bookmarks"></b-icon> Categorias y
+                                                        subcategorias</b-button>
+                                                    </b-col>
+                                                </b-row>
+                                                <br>
+                                                <br>
+                                            </b-card>
+                                        </b-collapse>
+                                    </div>
+                                    <br>
                                     <!-- Info personal -->
                                     <div>
                                         <b-button v-b-toggle.collapsePersonal class="m-1" variant="faded">
@@ -186,51 +231,7 @@
                                         </b-collapse>
                                     </div>
                                     <!-- Administrador -->
-                                    <br>
-                                    <div v-if="user.role == 'ADMIN'">
-                                        <b-button v-b-toggle.collapsBitacoras class="m-1" variant="faded">
-                                            Administrar
-                                            <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
-                                        </b-button>
-                                        <b-collapse id="collapsBitacoras">
-                                            <b-card>
-                                                <b-row>
-                                                    <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
-                                                                icon="people"></b-icon> Lista de usuarios</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
-                                                                icon="book"></b-icon> Bitacora general</b-button>
-                                                    </b-col>    
-                                                    <b-col>
-                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
-                                                            icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
-                                                    </b-col>
-                                                </b-row>
-                                                <br>
-                                                <b-row>
-                                                    <b-col>
-                                                        <b-button variant="fades" to="vendedores"><b-icon
-                                                                icon="clock"></b-icon> Solicitudes de
-                                                            vendedores</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button variant="fades" to="productos"><b-icon
-                                                                icon="hourglass-split"></b-icon> Solicitudes de
-                                                            productos</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button variant="fades" to="categorias-screen"><b-icon
-                                                            icon="bookmarks"></b-icon> Categorias y
-                                                        subcategorias</b-button>
-                                                    </b-col>
-                                                </b-row>
-                                                <br>
-                                                <br>
-                                            </b-card>
-                                        </b-collapse>
-                                    </div>
+ 
 
                                     <br>
                                 </div>

@@ -122,7 +122,6 @@ export default {
     methods: {
         enviarCorreo() {
             this.loading = true;
-            console.log(this.sendEmail.email);
             axios.post('http://localhost:8091/api-carsi-shop/recovery/', {
                 email: this.sendEmail.email
             })
@@ -131,7 +130,6 @@ export default {
                         Swal.fire('Enviada', 'Solicitud de cambio de contraseña enviada correctamente', 'success');
                         // Cambia el valor de showRecoveryForm para mostrar el formulario de restauración
                         this.showRecoveryForm = true;
-                        console.log(response.data);
                     } else {
                         Swal.fire('Error', 'Hubo un problema al procesar la solicitud', 'error');
                     }

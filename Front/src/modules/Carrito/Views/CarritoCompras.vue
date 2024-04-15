@@ -76,7 +76,6 @@ export default {
             return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
         },
         continuar() {
-            console.log(this.user);
             this.$router.push({ name: 'pagar' });
         },
 

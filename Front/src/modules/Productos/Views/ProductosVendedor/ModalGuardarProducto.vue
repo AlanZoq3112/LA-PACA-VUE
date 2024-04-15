@@ -5,7 +5,8 @@
                 <div class="spinner"></div>
             </div>
         </div>
-        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"  @show="getSubcategorias">
+        <b-modal hide-footer hide-header centered id="modal-guardar-productos" style="max-width: 80vw;"
+            @show="getSubcategorias">
             <header class="text-center border-bottom">
                 <p>Registrar producto</p>
             </header>
@@ -19,7 +20,9 @@
                         </b-col>
                         <b-col>
                             <b-form-group label="Subcategoria" label-for="subCategoria">
-                                <b-form-select v-model="producto.subCategoria" id="subCategoria" :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))" required></b-form-select>
+                                <b-form-select v-model="producto.subCategoria" id="subCategoria"
+                                    :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))"
+                                    required></b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -52,9 +55,9 @@
                                     <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
                                 </div>
                             </div>
-                        </b-form-group>       
+                        </b-form-group>
                     </b-row>
-                    
+
                     <b-row>
                         <b-col></b-col>
                         <b-col>
@@ -137,7 +140,6 @@ export default {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
-                    console.log(this.producto);
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/producto/insert", this.producto, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -157,7 +159,11 @@ export default {
                         // Cerrar modal
                         this.$bvModal.hide("modal-guardar-productos");
                     } else {
-                        console.log("Error al guardar el producto. Estado del servidor:", response.status);
+                        Swal.fire({
+                            title: "Error",
+                            text: "Hubo un problema al intentar guardar el producto",
+                            icon: "error"
+                        });
                     }
                 }
             } catch (error) {
@@ -191,7 +197,8 @@ export default {
                 });
                 this.subcategorias = response.data.data;
             } catch (error) {
-                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');            }
+                Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');
+            }
         },
 
     },

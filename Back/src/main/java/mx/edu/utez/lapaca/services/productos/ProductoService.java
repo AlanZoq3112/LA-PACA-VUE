@@ -295,10 +295,9 @@ public class ProductoService {
         }
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Producto>> getAllApprovedProducts() {
         try {
-            List<Producto> productos = repository.findByEstadoTrue();
+            List<Producto> productos = repository.findByEstado(3);
             return new CustomResponse<>(
                     productos,
                     false,
@@ -314,5 +313,6 @@ public class ProductoService {
             );
         }
     }
+
 
 }

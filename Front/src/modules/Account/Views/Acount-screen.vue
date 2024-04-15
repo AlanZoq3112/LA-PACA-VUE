@@ -306,7 +306,6 @@ export default {
                 });
 
                 this.user = response.data.data;
-                console.log(this.user);
             } catch (error) {
                 Swal.fire({
                     title: "Error",

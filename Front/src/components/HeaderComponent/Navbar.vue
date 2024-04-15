@@ -48,7 +48,7 @@ export default {
 
             // Si hay un token de sesión, redirigir al usuario a la página de perfil
             if (token) {
-                this.$router.push({ name: 'carritoCompras' });
+                this.$router.push({ name: 'pagar' });
             } else {
                 // Si no hay un token de sesión, redirigir al usuario a la página de inicio de sesión
                 this.$router.push({ name: 'login' });

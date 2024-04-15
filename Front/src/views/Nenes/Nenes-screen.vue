@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div class="banner-container">
+            <img src="./../../assets/baners/BannerNiño.png" class="img-fluid" alt="...">
+        </div>
+
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
@@ -62,7 +66,7 @@ export default {
                 this.productos = response.data.data.filter(producto => {
                     return producto.subCategoria.categoria.nombre.toLowerCase() === "niños" &&
                         producto.estado === 3 &&
-                        producto.stock > 0;;
+                        producto.stock > 0;
                 });
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);

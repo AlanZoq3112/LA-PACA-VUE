@@ -1,60 +1,42 @@
 <template>
     <div>
-        <div>
-            <div class="custom-container py-1 h-200">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-xl-12">
-                        <div class="card rounded-3 text-black">
-                            <div class="col-lg-12">
-                                <div class="card-body p-md-5 mx-md-4">
-                                    <div class="d-flex justify-content-between align-items-center mb-4 tabla">
-                                        <div>
-                                            <h4>Solicitud de vendedores <b-icon icon="clock"></b-icon></h4>
-                                        </div>
+        <div class="custom-container py-1">
+            <div class="row">
+                <div v-for="vendedor in vendedores" :key="vendedor.id" class="col-lg-3 mb-4">
+                    <b-card class="card-custom mb-2" img-alt="Image" img-height="450px" max-width="200px" img-top>
+                        <template #header>
+                            <b-carousel :controls="false" indicators :interval="0">
+                                <b-carousel-slide
+                                    style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                    v-for="(imagen, index) in vendedor.imagenes" :key="index"
+                                    :img-src="imagen.imageUrl"></b-carousel-slide>
+                            </b-carousel>
+                        </template>
+                        <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
+                            <h5>{{ vendedor.curp }}</h5>
+                            <p>{{ vendedor.telefonoVendedor }}</p>
+                            <p>{{ vendedor.rfc }}</p>
+                            <p>{{ vendedor.estado ? 'Aprobado' : 'Rechazado' }}</p>
+                        </b-card-text>
+                        <template #footer>
+                            <b-row>
+                                <b-col>
+                                    <div class="d-flex justify-content-end">
+                                        <b-button v-if="!vendedor.estado" @click="changeStatus(vendedor.id, true)"
+                                            variant="success">
+                                            Aceptar
+                                        </b-button>
+                                        <b-button v-if="vendedor.estado" @click="changeStatus(vendedor.id, false)"
+                                            variant="danger">
+                                            Rechazar
+                                        </b-button>
                                     </div>
-                                    <div class="text-center tabla">
-                                        <b-table responsive :fields="fields" :items="vendedores" head-variant="light"
-                                            bordered class="text-center shadow" id="table" ref="table">
-                                            <!-- Columna para mostrar el 'Nombre' -->
-                                            <template #cell(usuario)="data">
-                                                {{ data.item.usuario.nombre }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'CURP' -->
-                                            <template #cell(curp)="data">
-                                                {{ data.item.curp }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Telefono' -->
-                                            <template #cell(telefonoVendedor)="data">
-                                                {{ data.item.telefonoVendedor }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'RFC' -->
-                                            <template #cell(rfc)="data">
-                                                {{ data.item.rfc }}
-                                            </template>
-                                            <!-- Columna para mostrar el 'Estado' -->
-                                            <template #cell(estado)="data">
-                                                {{ data.item.estado ? 'Aprobado' : 'Rechazado' }}
-                                            </template>
-                                            <template #cell(actions)="data">
-                                                <div class="text-center">
-                                                    <!-- Mostrar solo el botón 'Aceptar' si el estado es 'Rechazado' -->
-                                                    <b-button v-if="!data.item.estado" size="sm" @click="changeStatus(data.item.id, true)" variant="success" class="btnAccept">
-                                                        <b-icon icon="check" class="mr-1"></b-icon> Aceptar
-                                                    </b-button>
-                                                    <!-- Mostrar solo el botón 'Rechazar' si el estado es 'Aprobado' -->
-                                                    <b-button v-if="data.item.estado" size="sm" @click="changeStatus(data.item.id, false)" variant="danger" class="btnReject">
-                                                        <b-icon icon="x" class="mr-1"></b-icon> Rechazar
-                                                    </b-button>
-                                                </div>
-                                            </template>
-                                        </b-table>
-                                        <div v-if="vendedores.length === 0" class="text-center">No hay solicitudes de vendedores.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </b-col>
+                            </b-row>
+                        </template>
+                    </b-card>
                 </div>
+                <div v-if="vendedores.length === 0" class="text-center">No hay solicitudes de vendedores.</div>
             </div>
         </div>
     </div>
@@ -69,13 +51,6 @@ export default {
     data() {
         return {
             vendedores: [],
-            fields: [
-                { key: 'curp', label: 'CURP', sortable: true },
-                { key: 'telefonoVendedor', label: 'Telefono', sortable: true },
-                { key: 'rfc', label: 'RFC', sortable: true },
-                { key: 'estado', label: 'Status', sortable: true },
-                { key: 'actions', label: 'Acciones', visible: true },
-            ],
         };
     },
     methods: {
@@ -86,6 +61,7 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 this.vendedores = response.data.data;
+                console.log(this.vendedores);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los vendedores, intente mas tarde', 'error');
             }
@@ -123,9 +99,6 @@ export default {
                 Swal.fire('Error', 'Hubo un problema al intentar realizar la acción', 'error');
             }
         },
-        edit() {
-            console.log("Editar");
-        }
     },
     mounted() {
         this.getVendedores();
@@ -134,40 +107,24 @@ export default {
 </script>
 
 <style scoped>
-.tabla {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-}
-
-th,
-td {
-    border: 1px solid #f5f5f5;
-    padding: 8px;
-    text-align: left;
-}
-
-.btnAdd {
-    background-color: #089779;
-}
-
-.carta {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 0px;
-}
-
-.userList {
-    background-color: #F5F5F5;
-    color: black;
-}
-
 .custom-container {
-    max-width: 1500px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+.card-custom {
+    max-width: 300px;
+    /* Tamaño máximo de la tarjeta */
+    min-height: 450px;
+    /* Altura mínima de la tarjeta */
+    overflow: hidden;
+    /* Ocultar el desbordamiento de las imágenes */
+}
+
+.card-custom .carousel-inner img {
+    width: 100%;
+    /* Ajustar el ancho de las imágenes al 100% del contenedor */
+    height: auto;
+    /* Altura automática para mantener la proporción */
 }
 </style>

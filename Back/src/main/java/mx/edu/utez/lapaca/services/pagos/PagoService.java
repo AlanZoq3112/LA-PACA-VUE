@@ -59,6 +59,7 @@ public class PagoService {
     private final CarritoRepository carritoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProductoRepository productoRepository;
+    private final DireccionRepository direccionRepository;
     private final PagoRepository pagoRepository;
     private final OfertaRepository ofertaRepository;
     private final LogService logService;

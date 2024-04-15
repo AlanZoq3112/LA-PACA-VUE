@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="banner-container">
+            <img src="./../../assets/baners/BannerMujer.png" class="img-fluid" alt="Banner Mujer">
+        </div>
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
@@ -50,14 +53,9 @@ export default {
     methods: {
         async getProductos() {
             try {
-                const token = localStorage.getItem("token");
+
                 const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/producto/getAll",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                    "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
                 );
                 // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {
@@ -65,7 +63,6 @@ export default {
                         producto.estado === 3 &&
                         producto.stock > 0;
                 });
-                console.log(this.productos);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
@@ -103,5 +100,18 @@ export default {
     /* Ajustar el ancho de las imágenes al 100% del contenedor */
     height: auto;
     /* Altura automática para mantener la proporción */
+}
+
+.banner-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    /* Ajusta el margen inferior según sea necesario */
+}
+
+.banner-container img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 </style>

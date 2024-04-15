@@ -80,9 +80,13 @@ public class SecurityConfiguration {
 
 
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/pago/realizar-pago").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/pago/marcar-como-entregado").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+                        .requestMatchers(HttpMethod.POST,"/api-carsi-shop/pago//marcar-como-devuelto").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
+
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/pago/getAllPedidos").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/api-carsi-shop/pago/mis-pedidos").hasAnyAuthority(Role.ADMIN.name(), Role.COMPRADOR.name(), Role.VENDEDOR.name())
 
+                        .requestMatchers( "/api-carsi-shop/twilio/**" ).permitAll()
 
                         .requestMatchers(HttpMethod.POST,"api-carsi-shop/oferta/insert").hasAuthority(Role.ADMIN.name())
 

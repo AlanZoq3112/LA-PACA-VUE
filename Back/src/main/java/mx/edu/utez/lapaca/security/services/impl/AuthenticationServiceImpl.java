@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.security.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.lapaca.controllers.twilio.TwilioController;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
@@ -64,40 +65,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse signin(SinginRequest singinRequest){
 
         try {
-
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singinRequest.getEmail(),
-
                     singinRequest.getPassword()));
-
         } catch (AuthenticationException e) {
-
-            // Return an error message to the user
-
             throw new IllegalArgumentException("Invalid email or password");
-
         }
-
-
         var user = userRepository.findByEmail(singinRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-
-
-        // Call the logLoginService method here
-
         String usuario = user.getEmail();
         logLoginService.guardarLogLogin("login", "Inicio de sesión", "bitacoraLogin", usuario);
-
-
         var jwt = jwtService.generateToken(user);
-
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
-
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-
         jwtAuthenticationResponse.setToken(jwt);
-
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
-
+        if (user.getRole() == Role.ADMIN){
+            TwilioController.sendSMS();
+        }
         return jwtAuthenticationResponse;
 
     }

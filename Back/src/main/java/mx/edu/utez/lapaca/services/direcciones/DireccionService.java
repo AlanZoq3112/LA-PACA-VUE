@@ -27,6 +27,7 @@ public class DireccionService {
     private final UsuarioRepository usuarioRepository;
     private final LogService logService;
     private static final String DIRECCIONES_CONSTANT = "Direcciones";
+    private static final String DIRECCION_NO_EXISTE_MENSAJE = "Dirección con el id ";
 
     public DireccionService(DireccionRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
@@ -88,14 +89,14 @@ public class DireccionService {
                         direccion.get(),
                         false,
                         200,
-                        "Dirección con el id " + direccion.get().getId() + " encontrada"
+                        DIRECCION_NO_EXISTE_MENSAJE + direccion.get().getId() + " encontrada"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "La dirección con el id " + id + " no existe"
+                        DIRECCION_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -167,7 +168,7 @@ public class DireccionService {
                         null,
                         true,
                         400,
-                        "La dirección con el id " + id + " no existe"
+                        DIRECCION_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
             Direccion direccion = direccionId.get();
@@ -179,7 +180,7 @@ public class DireccionService {
                     null,
                     false,
                     200,
-                    "La dirección con el id " + id + " ha sido eliminado correctamente"
+                    DIRECCION_NO_EXISTE_MENSAJE + id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(

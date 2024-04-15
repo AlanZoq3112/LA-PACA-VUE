@@ -21,6 +21,8 @@ public class CategoriaService {
     private final CategoriaRepository repository;
     private final LogService logService;
     private static final String CATEGORIAS_CONSTANT = "Categorias";
+    private static final String CATEGORIA_NO_EXISTE_MENSAJE = "La categoria con el id ";
+
 
 
     public CategoriaService(CategoriaRepository repository, LogService logService) {
@@ -86,14 +88,14 @@ public class CategoriaService {
                         categoria.get(),
                         false,
                         200,
-                        "Categoria con el id " + categoria.get().getId() + " encontrada"
+                        CATEGORIA_NO_EXISTE_MENSAJE + categoria.get().getId() + " encontrada"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "La categoria con el id " + id + " no existe"
+                        CATEGORIA_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -158,7 +160,7 @@ public class CategoriaService {
                         null,
                         true,
                         400,
-                        "La categoria con el id " + id + " no existe"
+                        CATEGORIA_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
             Categoria categoria = categoriaId.get();
@@ -168,7 +170,7 @@ public class CategoriaService {
                     null,
                     false,
                     200,
-                    "La categoria con el id " + id + " ha sido eliminado correctamente"
+                    CATEGORIA_NO_EXISTE_MENSAJE + id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(

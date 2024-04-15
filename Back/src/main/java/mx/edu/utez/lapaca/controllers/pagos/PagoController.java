@@ -3,7 +3,7 @@ package mx.edu.utez.lapaca.controllers.pagos;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.pagos.PagoDto;
-import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
+import mx.edu.utez.lapaca.dto.pagos.exceptions.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api-carsi-shop/pago")
@@ -118,6 +117,27 @@ public class PagoController {
                     .body("Error al marcar el pedido como entregado: " + e.getMessage());
         }
     }
+
+    @PostMapping("/marcar-como-devuelto")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
+    public ResponseEntity<String> marcarComoDevuelto(@Valid @RequestBody Carrito carrito, Authentication authentication) {
+        String username = authentication.getName();
+        try {
+            service.marcarComoDevuelto(carrito.getId(), username);
+            return ResponseEntity.ok("El pedido ha sido marcado como devuelto correctamente.");
+        } catch (UnauthorizedAccessException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("No tienes permiso para modificar este carrito.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El pedido no está entregado y no puede ser marcado como devuelto.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al marcar el pedido como devuelto: " + e.getMessage());
+        }
+    }
+
+
 
     @GetMapping("/getAllPedidos")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

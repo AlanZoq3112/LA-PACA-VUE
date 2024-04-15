@@ -54,7 +54,7 @@ public class FirebaseService {
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
             storage.create(blobInfo, multipartFile.getBytes());
             String downloadUrl = FIREBASE_STORAGE_BASE_URL;
-            return String.format(downloadUrl, URLEncoder.encode(DIRECTORY_PATH + fileName, java.nio.charset.StandardCharsets.UTF_8));
+            return String.format(downloadUrl, URLEncoder.encode(DIRECTORY_PATH_USER + fileName, java.nio.charset.StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new IOException(ERROR_SUBIR_ARCHIVO_FIREBASE_STORAGE, e);
         }
@@ -72,7 +72,7 @@ public class FirebaseService {
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
             storage.create(blobInfo, multipartFile.getBytes());
             String downloadUrl = FIREBASE_STORAGE_BASE_URL;
-            return String.format(downloadUrl, URLEncoder.encode(DIRECTORY_PATH + fileName, java.nio.charset.StandardCharsets.UTF_8));
+            return String.format(downloadUrl, URLEncoder.encode(DIRECTORY_PATH_VENDEDOR + fileName, java.nio.charset.StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new IOException(ERROR_SUBIR_ARCHIVO_FIREBASE_STORAGE, e);
         }

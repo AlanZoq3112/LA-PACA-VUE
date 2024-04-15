@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequestMapping("/api-carsi-shop/usuario")
 @CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
@@ -30,10 +31,12 @@ public class UsuarioController {
 
     private final FirebaseService firebaseService;
 
+
     public UsuarioController(UsuarioService service, PasswordEncoder passwordEncoder, FirebaseService firebaseService) {
         this.service = service;
         this.passwordEncoder = passwordEncoder;
         this.firebaseService = firebaseService;
+
     }
 
     @PostMapping(value = "/insert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

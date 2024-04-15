@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.pedidos.Pedido;
 import mx.edu.utez.lapaca.models.productos.Producto;
 
 @Entity
@@ -32,10 +31,6 @@ public class Comentario {
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
-
-    @OneToOne
-    @JoinColumn(name = "pedido_id")
-    private Pedido pedidos;
 
 
 

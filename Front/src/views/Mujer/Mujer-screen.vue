@@ -40,7 +40,6 @@
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
 export default {
     name: "mujer-screen",
     data() {
@@ -62,7 +61,9 @@ export default {
                 );
                 // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {
-                    return producto.subCategoria.categoria.nombre.toLowerCase() === "mujer";
+                    return producto.subCategoria.categoria.nombre.toLowerCase() === "mujer" &&
+                        producto.estado === 3 &&
+                        producto.stock > 0;
                 });
                 console.log(this.productos);
             } catch (error) {

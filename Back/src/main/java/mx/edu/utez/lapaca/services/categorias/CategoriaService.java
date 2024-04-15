@@ -114,7 +114,6 @@ public class CategoriaService {
     }
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> update(Categoria categoria) {
-        logService.log("Insert", "Categoria registrada", "Categorias");
         try {
             if (!this.repository.existsById(categoria.getId())) {
                 return new CustomResponse<>(
@@ -152,7 +151,6 @@ public class CategoriaService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Categoria> deleteById(Long id) {
-        logService.log("Delete", "Categoria a sido eliminada con el id: "+id, "Categorias");
         try {
             Optional<Categoria> categoriaId = repository.findById(id);
             if (!categoriaId.isPresent()) {

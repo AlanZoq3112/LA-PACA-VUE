@@ -1,7 +1,7 @@
 package mx.edu.utez.lapaca.models.productos;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+
 public class Producto {
 
     @Id
@@ -54,9 +55,10 @@ public class Producto {
     @JoinColumn(name = "subcategoria_id")
     private SubCategoria subCategoria;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "producto_id")
-    private List<Oferta> ofertas;
+    @ManyToMany(mappedBy = "productos")
+    //@JsonManagedReference
+
+    private List<Oferta> ofertas = new ArrayList<>();
 
 
 }

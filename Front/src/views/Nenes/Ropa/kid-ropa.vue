@@ -9,7 +9,3 @@
         name:"kid-ropa"
     }
 </script>
-
-<style scoped>
-
-</style>

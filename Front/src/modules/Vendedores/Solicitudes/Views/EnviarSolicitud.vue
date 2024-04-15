@@ -1,5 +1,10 @@
 <template>
     <div>
+        <div v-if="loading" class="overlay">
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-12">
@@ -18,31 +23,53 @@
                                     <b-row>
                                         <b-col>
                                             <label class="form-label" for="curp">CURP: </label>
-                                            <input v-model="vendedor.curp" type="text" id="curp" class="form-control"
-                                                placeholder="CURP" />
+                                            <b-form-input id="curp" type="text" placeholder="CURP"
+                                                v-model="v$.vendedor.curp.$model" :state="v$.vendedor.curp.$dirty
+                                                    ? !v$.vendedor.curp.$error
+                                                    : null
+                                                    " @blur="v$.vendedor.curp.$touch()" maxlength="18" />
+                                            <b-form-invalid-feedback v-for="error in v$.vendedor.curp.$errors"
+                                                :key="error.$uid">
+                                                {{ error.$message }}
+                                            </b-form-invalid-feedback>
                                         </b-col>
                                         <b-col>
                                             <label class="form-label" for="rfc">RFC: </label>
-                                            <input v-model="vendedor.rfc" type="text" id="rfc" class="form-control"
-                                                placeholder="RFC" />
+                                            <b-form-input id="rfc" type="text" placeholder="RFC"
+                                                v-model="v$.vendedor.rfc.$model" :state="v$.vendedor.rfc.$dirty
+                                                    ? !v$.vendedor.rfc.$error
+                                                    : null
+                                                    " @blur="v$.vendedor.rfc.$touch()" maxlength="13" />
+                                            <b-form-invalid-feedback v-for="error in v$.vendedor.rfc.$errors"
+                                                :key="error.$uid">
+                                                {{ error.$message }}
+                                            </b-form-invalid-feedback>
                                         </b-col>
                                     </b-row>
 
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="telefono">Teléfono: </label>
-                                        <input v-model="vendedor.telefonoVendedor" type="tel" id="telefono"
-                                            class="form-control" placeholder="Teléfono" />
+                                        <b-form-input id="telefono" type="text" placeholder="Teléfono"
+                                            v-model="v$.vendedor.telefonoVendedor.$model" :state="v$.vendedor.telefonoVendedor.$dirty
+                                                    ? !v$.vendedor.telefonoVendedor.$error
+                                                    : null
+                                                    " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10"
+                                            @keypress="onlynumbers" />
+                                        <b-form-invalid-feedback v-for="error in v$.vendedor.telefonoVendedor.$errors"
+                                            :key="error.$uid">
+                                            {{ error.$message }}
+                                        </b-form-invalid-feedback>
                                     </div>
                                     <div class="form-outline mb-4">
-                                        <label class="form-label" for="telefono">Ine: </label>
+                                        <label class="form-label" for="telefono">INE(Coloca la clave unica que esta en la parte de atras de tu credencial): </label>
                                         <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
                                             placeholder="INE" />
                                     </div>
 
 
                                     <div class="text-center pt-1 mb-5 pb-1">
-                                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="enviarSolicitud()" type="button">
+                                        <button style="background-color: black; color: white;" class="btn btn-block fa-lg gradient-custom-2 mb-3"
+                                            @click="enviarSolicitud()" type="button" :disabled="disableSendButton">
                                             Enviar Solicitud <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -60,6 +87,8 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useVuelidate } from "@vuelidate/core";
+import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 export default {
     name: "enviarSolicitdVendedor",
     data() {
@@ -70,9 +99,18 @@ export default {
                 rfc: "",
                 ine: "",
             },
+            loading: false
+        };
+    },
+    setup() {
+        return {
+            v$: useVuelidate(),
         };
     },
     methods: {
+        onlynumbers(evt) {
+            signal(evt);
+        },
         async enviarSolicitud() {
             try {
                 const result = await Swal.fire({
@@ -84,27 +122,32 @@ export default {
                     confirmButtonText: "Confirmar",
                     cancelButtonText: 'Cancelar',
                 });
-
-                if (result.isConfirmed) {
+                this.loading = true;
+                const isFormCorrect = await this.v$.$validate();
+                console.log(isFormCorrect);
+                if (result.isConfirmed && isFormCorrect) {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
                         return;
                     }
                     axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
-                            headers: { Authorization: `Bearer ${token}` }
-                        })
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
                         .then(response => {
                             Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
                             this.$router.push({ name: 'profile-screen' });
                         })
                         .catch(error => {
                             let errorMessage = "Hubo un problema al enviar la solicitud de vendedor";
-                            if (error.response && error.response.data && error.response.data.length > 0) {
+                            if (error.response.data && error.response.data.length > 0) {
                                 errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                             }
                             Swal.fire('Error', errorMessage, 'error');
+                            this.loading = false;
                         });
+                } else {
+                    Swal.fire('Error', "Revise todos los campos", 'error');
                 }
             } catch (error) {
                 Swal.fire({
@@ -116,7 +159,52 @@ export default {
         },
 
 
-    }
+    },
+    validations() {
+        return {
+            vendedor: {
+                telefonoVendedor: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "Teléfono inválido",
+                        helpers.regex(/(?:\d\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/)
+                    ),
+                },
+                curp: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "CURP inválida",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                    minLength: helpers.withMessage("La CURP debe tener exactamente 18 caracteres", minLength(18)),
+                    maxLength: helpers.withMessage("La CURP debe tener exactamente 18 caracteres", maxLength(18)),
+                },
+                rfc: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    validFormat: helpers.withMessage(
+                        "RFC inválido",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                    minLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", minLength(13)),
+                    maxLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", maxLength(13)),
+                },
+                ine: {
+                    required: helpers.withMessage("Campo obligatorio", required),
+                    maxLength: helpers.withMessage("Maximo 30 caracteres", maxLength(30)),
+                    validFormat: helpers.withMessage(
+                        "INE invalida",
+                        helpers.regex(/^[a-zA-Z0-9]+$/)
+                    ),
+                },
+            },
+        };
+    },
+    computed: {
+        disableSendButton() {
+            // Verificar si el formulario es válido y retornar el resultado inverso (true si es inválido)
+            return this.v$.$invalid;
+        }
+    },
 };
 </script>
 
@@ -140,14 +228,36 @@ export default {
     cursor: pointer;
 }
 
-.image-preview-container {
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
-.image-preview {
-    max-width: 200px;
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

@@ -200,10 +200,9 @@
                                                                 icon="people"></b-icon> Lista de usuarios</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
-                                                                icon="card-checklist"></b-icon> Bitacora de
-                                                            usuarios</b-button>
-                                                    </b-col>
+                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
+                                                                icon="book"></b-icon> Bitacora general</b-button>
+                                                    </b-col>    
                                                     <b-col>
                                                         <b-button variant="fades" to="usuarios"><b-icon
                                                                 icon="shop"></b-icon> Administrar ventas</b-button>
@@ -231,9 +230,12 @@
                                                 <b-row>
                                                     <b-col>
                                                         <b-button variant="fades" to="categorias-screen"><b-icon
-                                                                icon="bookmarks"></b-icon> Categorias y
-                                                            subcategorias</b-button>
+                                                            icon="bookmarks"></b-icon> Categorias y
+                                                        subcategorias</b-button>
                                                     </b-col>
+                                                    <b-button variant="faded" to=""><b-icon
+                                                        icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
+                                                    
                                                     <b-col>
                                                         <b-button variant="faded" to="bitacorag-screen"><b-icon
                                                                 icon="book"></b-icon> Bitacora general</b-button>
@@ -243,6 +245,7 @@
                                                                 icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     </b-col>
                                                 </b-row>
+                                                <br>
                                             </b-card>
                                         </b-collapse>
                                     </div>

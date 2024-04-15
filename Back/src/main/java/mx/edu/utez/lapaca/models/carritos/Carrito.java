@@ -1,6 +1,8 @@
 package mx.edu.utez.lapaca.models.carritos;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,12 +29,14 @@ public class Carrito {
     private Long id;
 
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("carrito")
     private List<ItemCarrito> items = new ArrayList<>();
 
     private Double monto;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne
@@ -42,5 +46,10 @@ public class Carrito {
     @ManyToOne
     @JoinColumn(name = "direccion_id")
     private Direccion direccion;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado;
+
+    private String Idpago;
 
 }

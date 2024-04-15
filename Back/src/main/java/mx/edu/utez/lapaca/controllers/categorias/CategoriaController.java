@@ -17,9 +17,7 @@ import java.util.Map;
 @RequestMapping("/api-carsi-shop/categoria")
 @CrossOrigin(origins = {"*"})
 public class CategoriaController {
-
     private final CategoriaService service;
-
     public CategoriaController(CategoriaService service) {
         this.service = service;
     }

@@ -9,7 +9,3 @@
         name:"kid-accesorios"
     }
 </script>
-
-<style scoped>
-
-</style>

@@ -11,15 +11,20 @@ import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
+import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.ofertas.Oferta;
+import mx.edu.utez.lapaca.models.ofertas.OfertaRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.pagos.PagoRepository;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.security.dto.email.EmailDto;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,28 +53,29 @@ public class PagoService {
     public void init() {
         Stripe.apiKey = secretKey;
     }
-
     private final PagoRepository repository;
-
     private final CarritoRepository carritoRepository;
-
     private final UsuarioRepository usuarioRepository;
-
     private final ProductoRepository productoRepository;
+    private final PagoRepository pagoRepository;
+    private final OfertaRepository ofertaRepository;
+    private final LogService logService;
 
     private final DireccionRepository direccionRepository;
 
-
-    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository) {
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository, LogService logService) {
         this.repository = repository;
         this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
         this.direccionRepository = direccionRepository;
+        this.pagoRepository = pagoRepository;
+        this.ofertaRepository = ofertaRepository;
+        this.logService = logService;
     }
 
 
-    //insertar forma de pago
+    //METODO PAGO
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
@@ -114,6 +121,60 @@ public class PagoService {
         }
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Pago>> getAllMetodosPago() {
+        return new CustomResponse<>(
+                this.pagoRepository.findAll(),
+                false,
+                200,
+                "Ok"
+        );
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Pago>> getAllMetodoPagoByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Pago> pagos = pagoRepository.findByUsuario(usuario);
+            logService.log("Get", "El usuario con el correo "
+                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            return new CustomResponse<>(
+                    pagos,
+                    false,
+                    200,
+                    "OK"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //stripe
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
@@ -141,6 +202,17 @@ public class PagoService {
                 throw new InsuficienteStockException("No hay suficiente stock disponible para el producto '" + producto.getNombre() + "'.");
             }
             double subtotal = item.getCantidad() * producto.getPrecio();
+
+            // Aplicar descuento de ofertas activas si existen
+            List<Oferta> ofertasActivas = ofertaRepository.findActiveOffersByProductId(producto.getId());
+            if (!ofertasActivas.isEmpty()) {
+                double descuentoTotal = 0;
+                for (Oferta oferta : ofertasActivas) {
+                    descuentoTotal += (producto.getPrecio() * item.getCantidad() * (oferta.getPorcentajeDescuento() / 100));
+                }
+                subtotal -= descuentoTotal;
+            }
+
             montoTotal += subtotal;
             producto.setStock(producto.getStock() - item.getCantidad());
             carrito.setMonto(montoTotal);
@@ -152,9 +224,13 @@ public class PagoService {
             throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
         }
 
-
+        Optional<Pago> pagoOptional = pagoRepository.findById(carrito.getPago().getId());
+        if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
+        }
+        // Antes de guardar el carrito, establece el estado como "PENDIENTE"
+        carrito.setEstado(EstadoPedido.EN_CAMINO);
         carritoRepository.save(carrito);
-
 
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos
@@ -175,6 +251,50 @@ public class PagoService {
             throw new StripePaymentException("Error al procesar el pago: " + e.getMessage());
         }
     }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Carrito>> getAll() {
+        return new CustomResponse<>(
+                this.carritoRepository.findAll(),
+                false,
+                200,
+                "Ok"
+        );
+    }
+
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<List<Carrito>> getAllByCurrentUser() {
+        // Obtener el nombre de usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Buscar al usuario por su correo electrónico
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            // Obtener los productos creados por el usuario
+            List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
+            logService.log("Get", "El usuario con el correo "
+                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            return new CustomResponse<>(
+                    carritos,
+                    false,
+                    200,
+                    "OK"
+            );
+        } else {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    404,
+                    "Usuario no encontrado"
+            );
+        }
+    }
+
+
+
 
 
 

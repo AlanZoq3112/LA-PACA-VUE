@@ -9,14 +9,16 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-4 tabla">
                                         <div>
-                                            <h4>Solicitud de productos <i class="fa fa-shopping-basket"
-                                                    aria-hidden="true"></i>
+                                            <h4>Solicitud de productos <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                             </h4>
 
                                         </div>
+
                                     </div>
                                     <div class="row">
-                                        <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
+                                        <div v-for="producto in paginatedProductos" :key="producto.id"
+                                            class="col-lg-3 mb-4">
+                                            <!-- Tu tarjeta de producto aquí -->
                                             <b-card class="card-custom mb-2" img-alt="Image" img-height="450px"
                                                 max-width="200px" img-top>
                                                 <template #header>
@@ -73,6 +75,9 @@
                                             </b-card>
                                         </div>
                                     </div>
+                                    <!-- Agrega la paginación aquí -->
+                                    <b-pagination v-model="currentPage" :total-rows="productos.length"
+                                        :per-page="perPage" align="center" class="my-4" />
                                 </div>
                             </div>
                         </div>
@@ -83,18 +88,38 @@
     </div>
 </template>
 
-
-
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-export default {
 
+export default {
     name: 'Productos',
     data() {
         return {
             productos: [],
+            currentPage: 1,
+            perPage: 8,
+            fields: [
+                { key: 'nombre', label: 'Nombre', sortable: true },
+                { key: 'descripcion', label: 'Descripción', sortable: true },
+                { key: 'precio', label: 'Precio', sortable: true },
+                { key: 'stock', label: 'Stock', sortable: true },
+                { key: 'estado', label: 'Status', sortable: true },
+                { key: 'usuario', label: 'Nombre vendedor', sortable: true },
+                {
+                    key: 'actions',
+                    label: 'Acciones',
+                    visible: true,
+                },
+            ],
         };
+    },
+    computed: {
+        paginatedProductos() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.productos.slice(start, end);
+        },
     },
     methods: {
         async getProductos() {
@@ -105,8 +130,7 @@ export default {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                this.productos = response.data.data;
-            } catch (error) {
+                this.productos = response.data.data.filter(producto => [1, 2, 3].includes(producto.estado));            } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los productos, intente mas tarde', 'error');
             }
         },

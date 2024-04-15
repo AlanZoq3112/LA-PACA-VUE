@@ -185,12 +185,11 @@ export default {
                     }
                 }
             } catch (error) {
-                console.error("Error al realizar la solicitud de guardado:", error);
-                Swal.fire({
-                    title: "Error",
-                    text: "Hubo un problema al intentar guardar el producto",
-                    icon: "error"
-                });
+                let errorMessage = "Hubo un problema al intentar registrar el producto, intente más tarde";
+                if (error.response?.data && error.response.data.length > 0) {
+                    errorMessage = error.response.data[0];
+                }
+                Swal.fire('Error', errorMessage, 'error');
             } finally {
                 this.loading = false;
             }

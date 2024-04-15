@@ -78,7 +78,7 @@ public class PagoService {
     public CustomResponse<Pago> insert(Pago pago) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
             pago.setUsuario(usuario.get());
 
@@ -199,7 +199,7 @@ public class PagoService {
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Obtener el nombre de usuario
+        String username = authentication.getName();
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (!usuarioOptional.isPresent()) {

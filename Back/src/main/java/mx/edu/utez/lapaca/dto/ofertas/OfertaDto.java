@@ -1,8 +1,5 @@
 package mx.edu.utez.lapaca.dto.ofertas;
 
-
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +11,6 @@ import mx.edu.utez.lapaca.models.productos.Producto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

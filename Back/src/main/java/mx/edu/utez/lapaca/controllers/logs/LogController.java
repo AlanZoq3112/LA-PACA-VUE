@@ -12,9 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api-carsi-shop/log")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 @AllArgsConstructor
 public class LogController {
+
     private final LogService logService;
 
     @GetMapping("/getAllLogs")

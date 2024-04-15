@@ -16,14 +16,14 @@ public class CustomResponse <T> {
     int statusCode;
     String message;
 
-    // Constructor original
+
     public CustomResponse(T data, boolean error, int statusCode) {
         this.data = data;
         this.error = error;
         this.statusCode = statusCode;
     }
 
-    // Nuevo constructor con mensaje
+
     public CustomResponse(boolean error, int statusCode, String message) {
         this.data = null;
         this.error = error;

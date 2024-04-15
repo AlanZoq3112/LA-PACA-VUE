@@ -3,8 +3,11 @@ package mx.edu.utez.lapaca.controllers.productos;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.productos.ProductoDto;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageCountException;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageSizeException;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageUploadException;
 import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
+import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
 import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.productos.ProductoService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
@@ -21,7 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/producto")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 public class ProductoController {
     private final ProductoService service;
 
@@ -36,26 +39,25 @@ public class ProductoController {
     public ResponseEntity<CustomResponse<Producto>> insert(@Valid @ModelAttribute ProductoDto productoDto) throws Exception {
         List<MultipartFile> imageFiles = productoDto.getImagenes();
         if (imageFiles.size() < 2 || imageFiles.size() > 5) {
-            throw new Exception("Debe proporcionar de 2 a 5 imágenes.");
+            throw new ImageCountException("Debe proporcionar de 2 a 5 imágenes.");
         }
         List<String> imageUrls = new ArrayList<>();
         for (MultipartFile imageFile : imageFiles) {
             if (imageFile.getSize() > 2 * 1024 * 1024) {
-                throw new Exception("El tamaño de una imagen excede el límite de 2MB.");
+                throw new ImageSizeException("El tamaño de una imagen excede el límite de 2MB.");
             }
             String imageUrl = firebaseService.uploadFile(imageFile);
             if (imageUrl == null) {
-                throw new Exception("Error al subir una imagen a Firebase.");
+                throw new ImageUploadException("Error al subir una imagen a Firebase.");
             }
             imageUrls.add(imageUrl);
         }
-        //se crea una lista de objetos ProductoImagen y se configura con las URLs de las imágenes
         List<ProductoImagen> imagenes = new ArrayList<>();
-        Producto producto = productoDto.getProducto(); // Obtener el producto del DTO
+        Producto producto = productoDto.getProducto();
         for (String imageUrl : imageUrls) {
             ProductoImagen imagen = new ProductoImagen();
             imagen.setImageUrl(imageUrl);
-            imagen.setProducto(producto); // Establecer la relación con el producto
+            imagen.setProducto(producto);
             imagenes.add(imagen);
         }
         producto.setImagenes(imagenes);
@@ -64,8 +66,6 @@ public class ProductoController {
                 HttpStatus.CREATED
         );
     }
-
-
 
     @GetMapping("/getAll")
     public ResponseEntity<CustomResponse<List<Producto>>> getAll(){
@@ -136,6 +136,8 @@ public class ProductoController {
         );
     }
 
+
+
     @GetMapping("/productos-aprobados")
     public ResponseEntity<CustomResponse<List<Producto>>> getAllApprovedProducts() {
         return new ResponseEntity<>(
@@ -143,8 +145,5 @@ public class ProductoController {
                 HttpStatus.OK
         );
     }
-
-
-
 
 }

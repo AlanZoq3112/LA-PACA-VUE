@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.models.categorias;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,7 @@ public class Categoria {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String nombre;
 
-    @OneToMany(mappedBy = "categoria") //(cascade = CascadeType.ALL, orphanRemoval = true) | las subcategorías asociadas a una categoría eliminada también se eliminen de la base de datos
+    @OneToMany(mappedBy = "categoria")
     @JsonIgnore
     private List<SubCategoria> subcategorias;
 

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
+import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,17 +54,12 @@ public class ProductoDto {
     private List<Oferta> ofertas = new ArrayList<>();
 
 
-
     public Producto getProducto() {
-
         Producto producto = new Producto();
-        // Asignar otros campos del producto
         List<ProductoImagen> listaImagenes = new ArrayList<>();
         for (MultipartFile imagen : imagenes) {
             ProductoImagen productoImagen = new ProductoImagen();
-            // Configurar otros detalles de la imagen...
-            productoImagen.setProducto(producto); // Establecer la relación con el producto
-            listaImagenes.add(productoImagen);
+            productoImagen.setProducto(producto);
         }
         producto.setImagenes(listaImagenes);
 

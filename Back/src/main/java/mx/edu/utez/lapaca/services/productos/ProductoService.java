@@ -1,5 +1,7 @@
 package mx.edu.utez.lapaca.services.productos;
 
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoAlreadyExistsException;
+import mx.edu.utez.lapaca.dto.productos.validators.ProductoInsertException;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
@@ -26,24 +28,22 @@ public class ProductoService {
     private final ProductoRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final LogService logService;
-    private final FirebaseService firebaseService;
+    private static final String PRODUCTOS_CONSTANT = "Productos";
+    private static final String APROBACION_TABLA_CONSTANT = "Aprobacion";
 
-
-    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService, FirebaseService firebaseService) {
+    public ProductoService(ProductoRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.logService = logService;
-        this.firebaseService = firebaseService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Producto> insert(Producto producto) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
             producto.setUsuario(usuario.get());
-            // verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -53,9 +53,7 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
-            // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
             producto.setEstado(1);
-            // Guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Insert", "Producto Agregado", "Productos");
             return new CustomResponse<>(
@@ -98,7 +96,8 @@ public class ProductoService {
         Optional<Producto> producto = repository.findById(id);
         try {
             if (producto.isPresent()) {
-                logService.log("GetOne", "Consulta del producto con el ID: " + id, "Productos");
+                logService.log("GetOne", "Consulta del producto con el ID: " + id,
+                        PRODUCTOS_CONSTANT);
                 return new CustomResponse<>(
                         producto.get(),
                         false,
@@ -134,13 +133,11 @@ public class ProductoService {
     public CustomResponse<Producto> update(Producto producto) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
-
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
             producto.setUsuario(usuario.get());
 
-            // verificar si el usuario existe en la base de datos
             Optional<Producto> existingProductoOptional = repository.findById(producto.getId());
             if (existingProductoOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -150,11 +147,9 @@ public class ProductoService {
                         "El producto no existe");
             }
 
-            // se guarda la solicitud de producto
             producto.setEstado(2);
-            // se guardar el producto
             Producto savedProducto = repository.save(producto);
-            logService.log("Update", "Producto Actualizado","Productos");
+            logService.log("Update", "Producto Actualizado",PRODUCTOS_CONSTANT);
             return new CustomResponse<>(
                     savedProducto,
                     false,
@@ -197,23 +192,22 @@ public class ProductoService {
             producto.setEstado(estado);
             repository.save(producto);
 
-            // se actualiza el rol del usuario asociado si se aprueba como vendedor
             if (estado == 3) {
                 Usuario usuario = producto.getUsuario();
                 usuarioRepository.save(usuario);
             }
             String mensaje = "";
             if (estado == 3) {
-                logService.log("Aprobación", "El Administrador aprobo el producto con el ID: " + id,"Productos");
+                logService.log(APROBACION_TABLA_CONSTANT, "El Administrador aprobo el producto con el ID: " + id,PRODUCTOS_CONSTANT);
                 mensaje = "Solicitud aprobada correctamente";
             } else if (estado == 0) {
-                logService.log("Aprobación", "El Administrador marcó como inactivo el producto con el ID: " + id,"Productos");
+                logService.log(APROBACION_TABLA_CONSTANT, "El Administrador marcó como inactivo el producto con el ID: " + id,PRODUCTOS_CONSTANT);
                 mensaje = "Producto marcado como inactivo correctamente";
             } else if (estado == 1) {
-                logService.log("Aprobación", "El Administrador marcó como pendiente el producto con el ID: " + id,"Productos");
+                logService.log(APROBACION_TABLA_CONSTANT, "El Administrador marcó como pendiente el producto con el ID: " + id,PRODUCTOS_CONSTANT);
                 mensaje = "Producto marcado como pendiente correctamente";
             }  else if (estado == 2) {
-                logService.log("Aprobación", "El Administrador rechazó el producto con el ID: " + id,"Productos");
+                logService.log(APROBACION_TABLA_CONSTANT, "El Administrador rechazó el producto con el ID: " + id,PRODUCTOS_CONSTANT);
                 mensaje = "Producto rechazado correctamente";
             }
             return new CustomResponse<>(
@@ -240,7 +234,7 @@ public class ProductoService {
                 Producto producto = optionalProducto.get();
                 producto.setEstado(0); // establecer el estado como inactivo
                 repository.save(producto);
-                logService.log("Delete", "Producto eliminado (inactivo) con el ID: " + id,"Productos");
+                logService.log("Delete", "Producto eliminado (inactivo) con el ID: " + id,PRODUCTOS_CONSTANT);
                 return new CustomResponse<>(
                         null,
                         false,
@@ -276,18 +270,15 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Producto>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Producto> productos = repository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver sus productos","productos");
+                    + usuario + "ha solicitado ver sus productos",PRODUCTOS_CONSTANT);
             return new CustomResponse<>(
                     productos,
                     false,
@@ -304,11 +295,9 @@ public class ProductoService {
         }
     }
 
-
-    @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Producto>> getAllApprovedProducts() {
         try {
-            List<Producto> productos = repository.findByEstadoTrue();
+            List<Producto> productos = repository.findByEstado(3);
             return new CustomResponse<>(
                     productos,
                     false,
@@ -324,4 +313,6 @@ public class ProductoService {
             );
         }
     }
+
+
 }

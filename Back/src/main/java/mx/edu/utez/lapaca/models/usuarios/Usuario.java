@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.models.usuarios;
 
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -67,6 +66,9 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Direccion> direcciones;
 
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -97,6 +99,11 @@ public class Usuario implements UserDetails {
         return true;
     }
 
+
     public void getFechaNacimiento(Date fechaNacimiento) {
+        throw new UnsupportedOperationException("Este método no está implementado.");
+
     }
+
+
 }

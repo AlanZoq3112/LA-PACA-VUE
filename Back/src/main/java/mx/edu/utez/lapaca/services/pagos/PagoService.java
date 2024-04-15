@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.param.ChargeCreateParams;
 import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.dto.productos.validators.InsuficienteStockException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
@@ -14,7 +15,7 @@ import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
-import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.ofertas.OfertaRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -23,7 +24,6 @@ import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
-import mx.edu.utez.lapaca.security.dto.email.EmailDto;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
@@ -60,6 +60,7 @@ public class PagoService {
     private final PagoRepository pagoRepository;
     private final OfertaRepository ofertaRepository;
     private final LogService logService;
+    private static final String PAGOS_CONSTANT = "Pagos";
 
     private final DireccionRepository direccionRepository;
 
@@ -74,20 +75,14 @@ public class PagoService {
         this.logService = logService;
     }
 
-
-    //METODO PAGO
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
-
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             pago.setUsuario(usuario.get());
 
-
-            // verificar si el producto ya existe
             Optional<Pago> exists = repository.findByNumero(pago.getNumero());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -98,6 +93,8 @@ public class PagoService {
                 );
             }
             Pago savedPago = repository.save(pago);
+            logService.log("Post", "Se ha registrado un método de pago",PAGOS_CONSTANT);
+
             return new CustomResponse<>(
                     savedPago,
                     false,
@@ -133,18 +130,13 @@ public class PagoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Pago>> getAllMetodoPagoByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Pago> pagos = pagoRepository.findByUsuario(usuario);
-            logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+            logService.log("Get", "Usuario ha solicitado ver sus métodos de pago",PAGOS_CONSTANT);
             return new CustomResponse<>(
                     pagos,
                     false,
@@ -161,25 +153,54 @@ public class PagoService {
         }
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public CustomResponse<Pago> deleteById(Long id) {
+        try {
+            Optional<Pago> pagoId = pagoRepository.findById(id);
+            if (!pagoId.isPresent()) {
+                return new CustomResponse<>(
+                        null,
+                        true,
+                        400,
+                        "El pago con el id " + id + " no existe"
+                );
+            }
+            Pago pago = pagoId.get();
+            carritoRepository.updatePagoToNullByPagoId(id);
+
+            pagoRepository.delete(pago);
+            logService.log("Delete", "Método de pago con el id: " + pagoId + " sido " +
+                    "eliminado",PAGOS_CONSTANT);
+
+            return new CustomResponse<>(
+                    null,
+                    false,
+                    200,
+                    "El método de pago con el id " + id + " ha sido eliminado correctamente"
+            );
+        } catch (DataAccessException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    500,
+                    "Error interno del servidor al eliminar el método de pago"
+            );
+        } catch (IllegalArgumentException e) {
+            return new CustomResponse<>(
+                    null,
+                    true,
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Error... datos para eliminar un método de pago incorrectos" + e.getMessage()
+            );
+        }
+    }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    //stripe
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Obtener el nombre de usuario
+        String username = authentication.getName();
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (!usuarioOptional.isPresent()) {
@@ -203,7 +224,6 @@ public class PagoService {
             }
             double subtotal = item.getCantidad() * producto.getPrecio();
 
-            // Aplicar descuento de ofertas activas si existen
             List<Oferta> ofertasActivas = ofertaRepository.findActiveOffersByProductId(producto.getId());
             if (!ofertasActivas.isEmpty()) {
                 double descuentoTotal = 0;
@@ -218,8 +238,8 @@ public class PagoService {
             carrito.setMonto(montoTotal);
             item.setCarrito(carrito);
         }
-        //direccion me lleva la verga no me sale nd ah no ya xd
         Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
+        System.out.println(direccionOptional);
         if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("La dirección seleccionada no pertenece al usuario autenticado.");
         }
@@ -228,16 +248,14 @@ public class PagoService {
         if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
         }
-        // Antes de guardar el carrito, establece el estado como "PENDIENTE"
         carrito.setEstado(EstadoPedido.EN_CAMINO);
         carritoRepository.save(carrito);
 
         Map<String, Object> chargeParams = new HashMap<>();
-        chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos
+        chargeParams.put("amount", (int) (montoTotal * 100));
         chargeParams.put("currency", "mxn");
         chargeParams.put("description", "Pago por productos en el carrito");
-        chargeParams.put("source", "tok_visa"); // Token generado por Stripe.js o Stripe Elements
-
+        chargeParams.put("source", "tok_visa");
         try {
             ChargeCreateParams params = ChargeCreateParams.builder()
                     .setAmount((long) (montoTotal * 100))
@@ -252,6 +270,25 @@ public class PagoService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void marcarComoEntregado(Long carritoId, String username) {
+        Optional<Carrito> carritoOptional = carritoRepository.findById(carritoId);
+        if (carritoOptional.isPresent()) {
+            Carrito carrito = carritoOptional.get();
+            if (!carrito.getUsuario().getEmail().equals(username)) {
+                throw new UnauthorizedAccessException("El usuario no está autorizado para modificar este carrito.");
+            }
+            if (carrito.getEstado() != EstadoPedido.EN_CAMINO) {
+                throw new IllegalStateException("El pedido no está en camino y no puede ser marcado como entregado.");
+            }
+            carrito.setEstado(EstadoPedido.ENTREGADO);
+            carritoRepository.save(carrito);
+        } else {
+            throw new RuntimeException("No se encontró el carrito con el ID especificado.");
+        }
+    }
+
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Carrito>> getAll() {
         return new CustomResponse<>(
@@ -265,18 +302,15 @@ public class PagoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Carrito>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
+            String userEmail = usuario.getEmail();
             List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
-                    + usuario + "ha solicitado ver su historial de pagos","carritos");
+                    + userEmail + "ha solicitado ver su historial de pagos","carritos");
             return new CustomResponse<>(
                     carritos,
                     false,
@@ -292,10 +326,4 @@ public class PagoService {
             );
         }
     }
-
-
-
-
-
-
 }

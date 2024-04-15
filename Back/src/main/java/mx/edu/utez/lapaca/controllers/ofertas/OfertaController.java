@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api-carsi-shop/oferta")
-@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
 public class OfertaController {
 
     private final OfertaService ofertaService;

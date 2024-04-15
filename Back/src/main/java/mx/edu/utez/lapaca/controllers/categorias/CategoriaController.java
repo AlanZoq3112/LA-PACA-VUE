@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/categoria")
-@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
 public class CategoriaController {
     private final CategoriaService service;
     public CategoriaController(CategoriaService service) {

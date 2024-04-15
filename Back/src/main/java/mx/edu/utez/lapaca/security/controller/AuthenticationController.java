@@ -11,7 +11,7 @@ import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
 @RestController
 @RequestMapping("/api-carsi-shop/auth")
 @RequiredArgsConstructor

@@ -20,6 +20,9 @@
                                             </b-button>
                                         </div>
                                     </div>
+                                    <div class="text-center" v-if="productos.length === 0">
+                                        <p>No tienes productos creados.</p>
+                                    </div>
                                     <div class="row">
                                         <div v-for="producto in paginatedProductos" :key="producto.id"
                                             class="col-lg-3 mb-4">

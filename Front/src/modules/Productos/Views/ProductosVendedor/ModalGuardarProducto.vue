@@ -95,6 +95,7 @@ export default {
     },
 
     methods: {
+        
         onClose() {
             this.$bvModal.hide("modal-guardar-productos");
             this.resetForm();

@@ -138,7 +138,7 @@
                                     </div>
                                     <!-- Historial compras -->
                                     <br>
-                                    <div>
+                                    <div v-if="user.role == 'VENDEDOR' || user.role === 'COMPRADOR'">
                                         <b-button v-b-toggle.collapseCompras class="m-1" variant="faded">Mis Compras
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
                                         </b-button>

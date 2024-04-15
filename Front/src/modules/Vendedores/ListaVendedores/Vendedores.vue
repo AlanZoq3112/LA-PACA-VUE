@@ -3,20 +3,19 @@
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="vendedor in vendedores" :key="vendedor.id" class="col-lg-3 mb-4">
-                    <b-card class="card-custom mb-2" img-alt="Image" img-height="450px" max-width="200px" img-top>
+                    <b-card class="card-custom mb-2" img-alt="Image" img-height="350px" max-width="200px" img-top>
                         <template #header>
                             <b-carousel :controls="false" indicators :interval="0">
                                 <b-carousel-slide
-                                    style="min-height: 300px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                    style="min-height: 200px; min-width: 100%; max-height: 300px; max-width: 100%;"
                                     v-for="(imagen, index) in vendedor.imagenes" :key="index"
                                     :img-src="imagen.imageUrl"></b-carousel-slide>
                             </b-carousel>
                         </template>
                         <b-card-text style="min-height:200px; min-width: 100%; max-height: 300px; max-width: 100%;">
                             <h5>{{ vendedor.curp }}</h5>
-                            <p>{{ vendedor.telefonoVendedor }}</p>
                             <p>{{ vendedor.rfc }}</p>
-                            <p>{{ vendedor.estado ? 'Aprobado' : 'Rechazado' }}</p>
+                            <p>{{ vendedor.telefonoVendedor }}</p>
                         </b-card-text>
                         <template #footer>
                             <b-row>

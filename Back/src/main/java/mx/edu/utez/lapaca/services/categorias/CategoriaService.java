@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.services.categorias;
 
-
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
 import mx.edu.utez.lapaca.services.logs.LogService;
@@ -21,9 +20,12 @@ public class CategoriaService {
 
     private final CategoriaRepository repository;
     private final LogService logService;
+    private static final String CATEGORIAS_CONSTANT = "Categorias";
+    private static final String CATEGORIA_NO_EXISTE_MENSAJE = "La categoria con el id ";
+
+
 
     public CategoriaService(CategoriaRepository repository, LogService logService) {
-
         this.repository = repository;
         this.logService = logService;
     }
@@ -42,7 +44,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedUser = repository.save(categoria);
-            logService.log("Insert", "Categoria registrada", "Categorias");
+            logService.log("Insert", "Categoria registrada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -81,19 +83,19 @@ public class CategoriaService {
         Optional<Categoria> categoria = repository.findById(id);
         try {
             if (categoria.isPresent()) {
-                logService.log("GetOne", "Se encontro la categoria con id_:" + id, "Categorias");
+                logService.log("GetOne", "Se encontro la categoria con id_:" + id, CATEGORIAS_CONSTANT);
                 return new CustomResponse<>(
                         categoria.get(),
                         false,
                         200,
-                        "Categoria con el id " + categoria.get().getId() + " encontrada"
+                        CATEGORIA_NO_EXISTE_MENSAJE + categoria.get().getId() + " encontrada"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "La categoria con el id " + id + " no existe"
+                        CATEGORIA_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -124,7 +126,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedCategoria = repository.save(categoria);
-            logService.log("Update", "Categoria Actualizada", "Categorias");
+            logService.log("Update", "Categoria Actualizada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedCategoria,
                     false,
@@ -158,17 +160,17 @@ public class CategoriaService {
                         null,
                         true,
                         400,
-                        "La categoria con el id " + id + " no existe"
+                        CATEGORIA_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
             Categoria categoria = categoriaId.get();
-            logService.log("Delete", "Categoria Eliminada con el ID: " + id,  "Categorias");
+            logService.log("Delete", "Categoria Eliminada con el ID: " + id,  CATEGORIAS_CONSTANT);
             repository.delete(categoria);
             return new CustomResponse<>(
                     null,
                     false,
                     200,
-                    "La categoria con el id " + id + " ha sido eliminado correctamente"
+                    CATEGORIA_NO_EXISTE_MENSAJE + id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(

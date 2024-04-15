@@ -109,7 +109,7 @@
                                     <br>
                                     <!-- Productos -->
                                     <div>
-                                        <b-button v-b-toggle.collapsVendedor class="m-1" variant="faded">
+                                        <b-button v-if="user.role == 'VENDEDOR' || user.role === 'COMPRADOR'" v-b-toggle.collapsVendedor class="m-1" variant="faded">
                                             Administrar productos
                                             <b-icon icon="caret-right" style="height: 20px; width: 16px;"></b-icon>
                                         </b-button>
@@ -204,8 +204,8 @@
                                                                 icon="book"></b-icon> Bitacora general</b-button>
                                                     </b-col>    
                                                     <b-col>
-                                                        <b-button variant="fades" to="usuarios"><b-icon
-                                                                icon="shop"></b-icon> Administrar ventas</b-button>
+                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
+                                                            icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     </b-col>
                                                 </b-row>
                                                 <br>
@@ -221,30 +221,12 @@
                                                             productos</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"><i
-                                                                class="fa fa-truck" aria-hidden="true"></i> Administrar
-                                                            envios</b-button>
-                                                    </b-col>
-                                                </b-row>
-                                                <br>
-                                                <b-row>
-                                                    <b-col>
                                                         <b-button variant="fades" to="categorias-screen"><b-icon
                                                             icon="bookmarks"></b-icon> Categorias y
                                                         subcategorias</b-button>
                                                     </b-col>
-                                                    <b-button variant="faded" to=""><b-icon
-                                                        icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
-                                                    
-                                                    <b-col>
-                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
-                                                                icon="book"></b-icon> Bitacora general</b-button>
-                                                    </b-col>
-                                                    <b-col>
-                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
-                                                                icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
-                                                    </b-col>
                                                 </b-row>
+                                                <br>
                                                 <br>
                                             </b-card>
                                         </b-collapse>
@@ -324,7 +306,6 @@ export default {
                 });
 
                 this.user = response.data.data;
-                console.log(this.user);
             } catch (error) {
                 Swal.fire({
                     title: "Error",

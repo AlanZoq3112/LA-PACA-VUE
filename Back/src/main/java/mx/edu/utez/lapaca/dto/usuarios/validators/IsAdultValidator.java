@@ -8,21 +8,15 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class IsAdultValidator implements ConstraintValidator<IsAdult, LocalDate> {
-
-    // Sobreescribe initialize
     @Override
     public void initialize(IsAdult constraintAnnotation) {
-        // No se requiere inicialización especial en este validador
+        //no se admite inicializacion
     }
-
-    // Sobreescribe isValid
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
         if (value == null) {
-            return true; // Se considera válido si es nulo
+            return true;
         }
-
-        // Realiza la validación y retorna true o false
         LocalDate now = LocalDate.now();
         Period period = Period.between(value, now);
         return period.getYears() >= 18;

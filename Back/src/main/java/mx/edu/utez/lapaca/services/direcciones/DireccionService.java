@@ -5,6 +5,7 @@ import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -24,27 +25,26 @@ public class DireccionService {
     private final DireccionRepository repository;
 
     private final UsuarioRepository usuarioRepository;
+    private final LogService logService;
+    private static final String DIRECCIONES_CONSTANT = "Direcciones";
+    private static final String DIRECCION_NO_EXISTE_MENSAJE = "Dirección con el id ";
 
-    public DireccionService(DireccionRepository repository, UsuarioRepository usuarioRepository) {
+    public DireccionService(DireccionRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.logService = logService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> insert(Direccion direccion) {
         try {
-            // se obtiene el usuario autenticado desde el contexto de spring security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
-
-            // se ecupera el usuario de la bd usando el correo
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
-            // se asignaa la dirección al usuario
             direccion.setUsuario(usuario.get());
 
-            // se guarda la dirección
             Direccion savedDireccion = repository.save(direccion);
+            logService.log("Insert", "Dirección registrada", DIRECCIONES_CONSTANT);
             return new CustomResponse<>(
                     savedDireccion,
                     false,
@@ -83,18 +83,20 @@ public class DireccionService {
         Optional<Direccion> direccion = repository.findById(id);
         try {
             if (direccion.isPresent()) {
+                logService.log("Get", "Se encontró la dirección con el id: "
+                        + id, DIRECCIONES_CONSTANT);
                 return new CustomResponse<>(
                         direccion.get(),
                         false,
                         200,
-                        "Dirección con el id " + direccion.get().getId() + " encontrada"
+                        DIRECCION_NO_EXISTE_MENSAJE + direccion.get().getId() + " encontrada"
                 );
             } else {
                 return new CustomResponse<>(
                         null,
                         true,
                         400,
-                        "La dirección con el id " + id + " no existe"
+                        DIRECCION_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
         } catch (DataAccessException e) {
@@ -117,12 +119,9 @@ public class DireccionService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> update(Direccion direccion) {
         try {
-
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
-
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             direccion.setUsuario(usuario.get());
 
             Optional<Direccion> existingDireccionOptional = repository.findById(direccion.getId());
@@ -135,6 +134,7 @@ public class DireccionService {
             }
 
             Direccion savedDireccion = repository.save(direccion);
+            logService.log("Update", "Dirección actualizada", DIRECCIONES_CONSTANT);
             return new CustomResponse<>(
                     savedDireccion,
                     false,
@@ -168,16 +168,19 @@ public class DireccionService {
                         null,
                         true,
                         400,
-                        "La dirección con el id " + id + " no existe"
+                        DIRECCION_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
             Direccion direccion = direccionId.get();
             repository.delete(direccion);
+            logService.log("Delete", "Dirección eliminada con el id: "
+                    + id, DIRECCIONES_CONSTANT);
+
             return new CustomResponse<>(
                     null,
                     false,
                     200,
-                    "La dirección con el id " + id + " ha sido eliminado correctamente"
+                    DIRECCION_NO_EXISTE_MENSAJE + id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(
@@ -198,16 +201,15 @@ public class DireccionService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Direccion>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Direccion> direcciones = usuario.getDirecciones();
+            logService.log("Get", "Se ha solicitado ver las direcciones" +
+                    "asociadas al usuario", DIRECCIONES_CONSTANT);
+
             return new CustomResponse<>(
                     direcciones,
                     false,

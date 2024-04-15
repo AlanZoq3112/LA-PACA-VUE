@@ -2,7 +2,7 @@
     <div>
         <b-modal hide-footer hide-header centered id="modal-editar-categorias">
             <header class="text-center border-bottom">
-                <p style="font-family: cabin">Editar categoria</p>
+                <p>Editar categoria</p>
             </header>
             <main>
                 <form id="editarCategoria">
@@ -122,13 +122,11 @@ export default {
 
 <style scoped>
 .success {
-    font-family: Cabin;
     background-color: #009475;
     color: white;
 }
 
 .cancel {
-    font-family: Cabin;
     background-color: #ffce50;
     color: black;
 }

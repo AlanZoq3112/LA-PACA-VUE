@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.devoluciones.Devolucion;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

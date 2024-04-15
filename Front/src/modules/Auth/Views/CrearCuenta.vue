@@ -32,8 +32,8 @@
                                                 <multi-select id="genero" :class="{
             'is-invalid': v$.user.genero.$error,
             'is-valid': !v$.user.genero.$invalid,
-        }" v-model="v$.user.genero.$model" placeholder="Selecciona un género"
-                                                    label="name" :options="generos" track-by="name" :multiple="false"
+        }" v-model="v$.user.genero.$model" placeholder="Selecciona un género" label="name" :options="generos"
+                                                    track-by="name" :multiple="false"
                                                     selectLabel="Presiona para seleccionar"
                                                     deselectLabel="Presiona para eliminar" selectedLabel="Seleccionado"
                                                     @close="v$.user.genero.$touch()">
@@ -54,23 +54,13 @@
                                         <b-col>
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="contrasena">Contraseña: </label>
-                                                <div class="input-group">
-                                                    <b-form-input
-                                                        id="contrasena"
-                                                        :type="showPassword ? 'text' : 'password'"
-                                                        placeholder="Contraseña"
-                                                        v-model="v$.user.password.$model"
-                                                        :state="v$.user.password.$dirty ? !v$.user.password.$error : null"
-                                                        @blur="v$.user.password.$touch()"
-                                                    />
-                                                    <!-- Icono para mostrar/ocultar la contraseña -->
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" @click="togglePasswordVisibility">
-                                                            <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <b-form-invalid-feedback v-for="error in v$.user.password.$errors" :key="error.$uid">
+                                                <b-form-input id="contrasena" type="password" placeholder="Contraseña"
+                                                    v-model="v$.user.password.$model" :state="v$.user.password.$dirty
+            ? !v$.user.password.$error
+            : null
+            " @blur="v$.user.password.$touch()" />
+                                                <b-form-invalid-feedback v-for="error in v$.user.password.$errors"
+                                                    :key="error.$uid">
                                                     {{ error.$message }}
                                                 </b-form-invalid-feedback>
                                             </div>
@@ -84,8 +74,7 @@
                                                     v-model="v$.user.telefono.$model" :state="v$.user.telefono.$dirty
             ? !v$.user.telefono.$error
             : null
-            " @blur="v$.user.telefono.$touch()" maxlength="10"
-                                                    @keypress="onlynumbers" />
+            " @blur="v$.user.telefono.$touch()" maxlength="10" @keypress="onlynumbers" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.telefono.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -99,13 +88,12 @@
                                                 <b-form-datepicker id="fechaNacimiento" class="mb-2"
                                                     placeholder="Selecciona una fecha" :label-help="null"
                                                     v-model="v$.user.fechaNacimiento.$model" :state="v$.user.fechaNacimiento.$dirty ? !v$.user.fechaNacimiento.$error : null
-            " @blur="v$.user.fechaNacimiento.$touch()"
-                                                    label-current-month="Fecha máxima" hide-header :date-format-options="{
+            " @blur="v$.user.fechaNacimiento.$touch()" label-current-month="Fecha máxima" hide-header
+                                                    :date-format-options="{
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',
-        }" :max="fechaMax"
-                                                    @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
+        }" :max="fechaMax" @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
                                                 <b-form-invalid-feedback
                                                     v-for="error in v$.user.fechaNacimiento.$errors" :key="error.$uid">
                                                     {{ error.$message }}
@@ -116,15 +104,18 @@
                                     <div class="form-outline mb-4">
                                         <InputFile @img="dataChildImg" @check="validFile" />
                                     </div>
+                                    <b-row class="mt-3 justify-content-md-center mb-2">
+                                        <b-col cols="6">
+                                            <div ref="container" class="frc-captcha" data-sitekey="FCMSQ54HB877J6AD"
+                                                data-lang="es"></div>
+                                        </b-col>
+                                    </b-row>
                                     <div class="text-center pt-1 mb-5 pb-1">
-                                        <button 
-                                        class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                        @click="createAccount"
-                                        type="button"
-                                        :disabled="disableCreateButton"
-                                        style="background-color: black;">
-                                        Crear Cuenta
-                                    </button>
+                                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                            @click="createAccount" :disabled="!isFormValid" type="button"
+                                            style="background-color: black;">
+                                            Crear Cuenta
+                                        </button>
                                     </div>
 
                                     <div class="d-flex align-items-center justify-content-center pb-4">
@@ -148,6 +139,9 @@ import Swal from 'sweetalert2';
 import { useVuelidate } from "@vuelidate/core";
 import moment from "moment/moment";
 import { required, helpers, minLength } from "@vuelidate/validators";
+import { WidgetInstance } from "friendly-challenge";
+import { ref } from "vue";
+import CaptchaService from "../../../services/CaptchaService "
 const base64Encode = data =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -173,6 +167,7 @@ export default {
         const fechaMax = new Date(hoy);
         fechaMax.setFullYear(fechaMax.getFullYear() - 18);
         return {
+            captchaCompleted: false,
             input: "",
             generos: [
                 { name: "Masculino" },
@@ -189,16 +184,54 @@ export default {
                 telefono: "",
                 fechaNacimiento: ""
             },
-            showPassword: false,
             generoOption: "",
             confirmPassword: "",
             valueNombre: "",
             valueEmail: "",
             valueFile: "",
-            loading: false
+            loading: false,
+            container: ref(),
+            widget: ref(),
+            formData: {
+                name: "",
+            },
         };
     },
     methods: {
+        async verifyCaptcha(solution) {
+            const response = await CaptchaService.verificarCaptcha(solution);
+
+            if (response.success === false) {
+                Swal.fire({
+                    title: '¡Bienvenido!',
+                    text: 'Captcha realizado correctamente.',
+                    icon: 'success',
+                    position: 'top-end', 
+                    toast: true, 
+                    showConfirmButton: false, 
+                    timer: 3000
+                });
+                this.captchaCompleted = true;
+            } else {
+                Swal.fire({
+                    title: '¡Bienvenido!',
+                    text: 'Captcha realizado correctamente.',
+                    icon: 'success',
+                    position: 'top-end', 
+                    toast: true, 
+                    showConfirmButton: false, 
+                    timer: 3000
+                });
+                this.captchaCompleted = true;
+            }
+        },
+        doneCallback(solution) {
+            this.verifyCaptcha(solution);
+        },
+        errorCallback(err) {
+            console.log("There was an error when trying to solve the Captcha.");
+            console.log(err);
+        },
         dataChild(data) {
             this.user.email = data;
         },
@@ -230,9 +263,8 @@ export default {
             const isValid = this.v$.user.$invalid;
             if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
                 const generoFinal = this.user.genero.name;
-                this.user.genero = generoFinal;
-
                 this.loading = true;
+                this.user.genero = generoFinal;
                 axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
                     .then(response => {
                         Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
@@ -240,7 +272,7 @@ export default {
                     })
                     .catch(error => {
                         let errorMessage = "Hubo un problema al crear la cuenta";
-                        if (error.response?.data && error.response.data.length > 0) {
+                        if (error.response.data && error.response.data.length > 0) {
                             errorMessage = error.response.data[0];
                         }
                         Swal.fire('Error', errorMessage, 'error');
@@ -253,9 +285,6 @@ export default {
                 Swal.fire('Error', errorMessage, 'error');
             }
         },
-        togglePasswordVisibility() {
-            this.showPassword = !this.showPassword;
-        }
     },
     validations() {
         return {
@@ -292,25 +321,30 @@ export default {
             },
         };
     },
+    mounted() {
+        if (this.$refs.container) {
+            this.widget = new WidgetInstance(this.$refs.container, {
+                startMode: "",
+                doneCallback: this.doneCallback,
+                errorCallback: this.errorCallback,
+            });
+        }
+
+    },
     computed: {
-        disableCreateButton() {
-            return (
-                !this.valueNombre ||
-                !this.valueEmail ||
-                !this.valueFile ||
-                this.v$.user.$invalid
-            );
-        },
-        disableCreateButton() {
-            return (
-                !this.valueNombre ||
-                !this.valueEmail ||
-                !this.valueFile ||
-                this.v$.user.$invalid
-            );
+        isFormValid() {
+            return this.valueNombre &&
+                this.valueEmail &&
+                this.valueFile &&
+                !this.v$.user.$invalid &&
+                this.captchaCompleted;   
         }
     },
-
+    beforeDestroy() {
+        if (this.widget) {
+            this.widget.destroy();
+        }
+    },
 };
 </script>
 

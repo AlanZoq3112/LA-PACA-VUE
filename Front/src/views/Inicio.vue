@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div class="banner-container">
+            <img src="./../assets/baners/BannerEnvio.png" class="img-fluid" alt="...">
+        </div>
+
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">
@@ -24,7 +28,7 @@
                                 <b-col>
                                     <div class="d-flex justify-content-end">
                                         <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
-                                            to="kid-producto" variant="faded">
+                                            to="pagar" variant="faded">
                                             <b-icon icon="cart-plus"></b-icon>
                                         </b-button>
                                     </div>
@@ -50,12 +54,8 @@ export default {
     methods: {
         async getProductos() {
             try {
-                const token = localStorage.getItem("token");
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
-                    {
-
-                    }
                 );
                 // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {

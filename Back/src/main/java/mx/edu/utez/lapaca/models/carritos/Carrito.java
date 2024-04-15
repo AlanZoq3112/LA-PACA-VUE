@@ -1,7 +1,7 @@
 package mx.edu.utez.lapaca.models.carritos;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
@@ -36,7 +36,7 @@ public class Carrito {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonIgnore
+    //@JsonIgnore
     private Usuario usuario;
 
     @ManyToOne
@@ -50,6 +50,6 @@ public class Carrito {
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
 
-    private String Idpago;
+    private String idPago;
 
 }

@@ -2,8 +2,6 @@ package mx.edu.utez.lapaca.dto.usuarios.email;
 
 public class EmailDTO {
     private String email;
-
-    // Constructor
     public EmailDTO() {
     }
 
@@ -11,7 +9,6 @@ public class EmailDTO {
         this.email = email;
     }
 
-    // Getters y setters
     public String getEmail() {
         return email;
     }

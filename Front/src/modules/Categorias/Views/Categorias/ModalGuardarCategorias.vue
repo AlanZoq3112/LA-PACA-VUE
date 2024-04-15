@@ -3,7 +3,7 @@
         <div>
             <b-modal hide-footer hide-header centered id="modal-guardar-categorias">
                 <header class="text-center border-bottom">
-                    <p style="font-family: cabin">Registrar categoria</p>
+                    <p>Registrar categoria</p>
                 </header>
                 <main>
                     <form id="registrarCategoria">
@@ -118,13 +118,11 @@ export default {
 
 <style scoped>
 .success {
-    font-family: Cabin;
     background-color: #009475;
     color: white;
 }
 
 .cancel {
-    font-family: Cabin;
     background-color: #ffce50;
     color: black;
 }

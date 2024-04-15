@@ -1,7 +1,7 @@
 <template>
   <div class="not-found-container">
     <div class="not-found-content">
-      <img src="./../assets/not-found.jpg" height="400px" />
+      <img alt="not found" src="./../assets/not-found.jpg" height="400px" />
       <p class="not-found-message">¡La pagina que estas buscando no existe!</p>
       <router-link to="/inicio" class="not-found-link"
         >Vuelve a la pagina principal</router-link
@@ -52,5 +52,4 @@ export default {};
 .not-found-link:hover {
   background-color: #2980b9;
 }
-</style>
 </style>

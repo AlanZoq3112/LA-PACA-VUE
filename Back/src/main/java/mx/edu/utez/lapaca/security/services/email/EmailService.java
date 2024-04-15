@@ -2,13 +2,12 @@ package mx.edu.utez.lapaca.security.services.email;
 
 import jakarta.mail.internet.MimeMessage;
 import mx.edu.utez.lapaca.security.dto.email.EmailDto;
-
 import org.springframework.mail.javamail.JavaMailSender;
-
-
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -22,6 +21,9 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+
+
     public boolean sendMail(EmailDto email) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -32,15 +34,10 @@ public class EmailService {
             mailSender.send((message));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error al enviar el correo electrónico: {}", e.getMessage(), e);
             return false;
         }
     }
-
-
-
-
-
 
     public String template(EmailDto email) {
         return """
@@ -104,8 +101,5 @@ public class EmailService {
             </html>
             """.replace("%s", email.getBody());
     }
-
-
-
 
 }

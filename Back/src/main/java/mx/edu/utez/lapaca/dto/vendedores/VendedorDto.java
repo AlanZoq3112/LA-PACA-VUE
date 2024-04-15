@@ -6,7 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
+import mx.edu.utez.lapaca.models.vendedor_imagen.VendedorImagen;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +29,7 @@ public class VendedorDto {
     @Pattern(regexp = "^\\d{1,10}$", message = "El teléfono debe contener solo números y tener como máximo 10 dígitos")
     private String telefonoVendedor;
 
-    @NotBlank(message = "La URL de la ine no puede estar vacía")
-    private String ine;
+    private List<MultipartFile> imagenes = new ArrayList<>();
 
     @NotBlank(message = "El RFC no puede estar vacío")
     @Pattern(regexp = "^[A-Z]{4}\\d{6}[A-Z\\d]{3}$", message = "RFC no válido")
@@ -39,11 +43,21 @@ public class VendedorDto {
     private Usuario usuario;
 
     public Vendedor getVendedor() {
+        Vendedor vendedor = new Vendedor();
+        List<VendedorImagen> listaImagenes = new ArrayList<>();
+        for (MultipartFile imagen : imagenes) {
+            VendedorImagen vendedorImagen = new VendedorImagen();
+            vendedorImagen.setVendedor(vendedor);
+            listaImagenes.add(vendedorImagen);
+        }
+        vendedor.setImagenes(listaImagenes);
+
+
         return new Vendedor(
                 getId(),
                 getCurp(),
                 getTelefonoVendedor(),
-                getIne(),
+                listaImagenes,
                 getRfc(),
                 isEstado(),
                 getUsuario()

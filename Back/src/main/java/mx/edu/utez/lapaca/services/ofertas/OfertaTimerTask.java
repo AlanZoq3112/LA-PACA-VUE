@@ -17,16 +17,10 @@ public class OfertaTimerTask extends TimerTask {
 
     @Override
     public void run() {
-        // Obtén todas las ofertas activas
         List<Oferta> ofertasActivas = ofertaRepository.findAllByEstadoTrue();
-
-        // Recorre todas las ofertas activas
         for (Oferta oferta : ofertasActivas) {
             Date fechaActual = new Date();
-
-            // Verifica si la oferta ha alcanzado su fecha de finalización
             if (oferta.getFechaFin().before(fechaActual) || oferta.getFechaFin().equals(fechaActual)) {
-                // Si la oferta ha alcanzado su fecha de finalización, desactívala
                 oferta.setEstado(false);
                 ofertaRepository.save(oferta);
             }

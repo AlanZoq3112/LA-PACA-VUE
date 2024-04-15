@@ -50,12 +50,8 @@ export default {
     methods: {
         async getProductos() {
             try {
-                const token = localStorage.getItem("token");
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
-                    {
-
-                    }
                 );
                 // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {

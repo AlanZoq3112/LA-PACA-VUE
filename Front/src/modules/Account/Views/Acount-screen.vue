@@ -237,9 +237,12 @@
                                                         icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"><i
-                                                                class="fa fa-truck" aria-hidden="true"></i> Administrar
-                                                            envios</b-button>
+                                                        <b-button variant="faded" to="bitacorag-screen"><b-icon
+                                                                icon="book"></b-icon> Bitacora general</b-button>
+                                                    </b-col>
+                                                    <b-col>
+                                                        <b-button variant="faded" to="bitacoral-screen"><b-icon
+                                                                icon="person-lines-fill"></b-icon> Bitacora Inicios de sesión</b-button>
                                                     </b-col>
                                                 </b-row>
                                                 <br>

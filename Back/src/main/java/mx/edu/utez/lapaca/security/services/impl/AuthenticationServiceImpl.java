@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.logslogin.LogLoginService;
+
 
 import mx.edu.utez.lapaca.security.dto.JwtAuthenticationResponse;
 import mx.edu.utez.lapaca.security.dto.RefreshTokenRequest;
@@ -13,6 +15,7 @@ import mx.edu.utez.lapaca.security.services.AuthenticationService;
 import mx.edu.utez.lapaca.security.services.JWTService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
+    private final LogLoginService logLoginService;
 
 
 
@@ -58,16 +62,44 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public JwtAuthenticationResponse signin(SinginRequest singinRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singinRequest.getEmail(),
-                singinRequest.getPassword()));
+
+        try {
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singinRequest.getEmail(),
+
+                    singinRequest.getPassword()));
+
+        } catch (AuthenticationException e) {
+
+            // Return an error message to the user
+
+            throw new IllegalArgumentException("Invalid email or password");
+
+        }
+
+
         var user = userRepository.findByEmail(singinRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+
+        // Call the logLoginService method here
+
+        String usuario = user.getEmail();
+        logLoginService.guardarLogLogin("login", "Inicio de sesión", "bitacoraLogin", usuario);
+
+
         var jwt = jwtService.generateToken(user);
+
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
+
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+
         jwtAuthenticationResponse.setToken(jwt);
+
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
+
         return jwtAuthenticationResponse;
+
     }
 
     @Override

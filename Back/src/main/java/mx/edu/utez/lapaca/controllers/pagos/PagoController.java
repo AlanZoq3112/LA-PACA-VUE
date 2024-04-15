@@ -6,14 +6,11 @@ import mx.edu.utez.lapaca.dto.pagos.PagoDto;
 import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
-import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
-import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.security.dto.email.EmailDto;
 import mx.edu.utez.lapaca.security.services.email.EmailService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.services.pagos.PagoService;
-import mx.edu.utez.lapaca.services.usuarios.UsuarioService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
 import org.springframework.http.HttpStatus;
@@ -27,24 +24,19 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/pago")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 public class PagoController {
     private final PagoService service;
     private final CarritoRepository carritoRepository;
-    private final DireccionRepository direccionRepository;
-    private final UsuarioService usuarioService;
     private final EmailService emailService;
     private final LogService logService;
-    private final ProductoRepository productoRepository;
+    private static final String CARRITOS_CONSTANT = "Carritos";
 
-    public PagoController(PagoService service, CarritoRepository carritoRepository, DireccionRepository direccionRepository, UsuarioService usuarioService, EmailService emailService, LogService logService, ProductoRepository productoRepository) {
+    public PagoController(PagoService service, CarritoRepository carritoRepository, EmailService emailService, LogService logService) {
         this.service = service;
         this.carritoRepository = carritoRepository;
-        this.direccionRepository = direccionRepository;
-        this.usuarioService = usuarioService;
         this.emailService = emailService;
         this.logService = logService;
-        this.productoRepository = productoRepository;
     }
 
     @PostMapping("/insertarFormaPago")
@@ -88,10 +80,10 @@ public class PagoController {
     public String realizarPago(@Valid @RequestBody Carrito carrito) {
         try {
             String idPago = service.procesarPago(carrito);
-            carrito.setIdpago(idPago);
+            carrito.setIdPago(idPago);
             carritoRepository.save(carrito);
-            logService.log("Get", "Se ha efectuado una compra con " +
-                    "el id de pago: " + idPago,"carritos");
+            logService.log("Insert", "Se ha efectuado una compra con " +
+                    "el id de pago: " + idPago,CARRITOS_CONSTANT);
             EmailDto emailDto = new EmailDto();
             emailDto.setEmail(carrito.getUsuario().getEmail());
             emailDto.setFullName(carrito.getUsuario().getNombre());

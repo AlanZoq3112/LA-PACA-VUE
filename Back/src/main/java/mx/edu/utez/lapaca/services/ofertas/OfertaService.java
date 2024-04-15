@@ -27,6 +27,7 @@ public class OfertaService {
     private final ProductoRepository productoRepository;
     private final LogService logService;
     private final Timer timer;
+    private static final String OFERTAS_CONSTANT = "Ofertas";
     public OfertaService(OfertaRepository ofertaRepository, ProductoRepository productoRepository, LogService logService) {
         this.ofertaRepository = ofertaRepository;
         this.productoRepository = productoRepository;
@@ -81,7 +82,7 @@ public class OfertaService {
         }
         try {
             Oferta savedOferta = ofertaRepository.save(oferta);
-            logService.log("Insert", "Oferta registrada", "ofertas");
+            logService.log("Insert", "Oferta registrada", OFERTAS_CONSTANT);
             return new CustomResponse<>(savedOferta, false, 200, "Oferta registrada");
         } catch (DataAccessException e) {
             return new CustomResponse<>(null, true, 500, "Error interno del servidor al registrar la oferta");

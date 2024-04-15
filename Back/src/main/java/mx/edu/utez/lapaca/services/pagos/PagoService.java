@@ -15,7 +15,7 @@ import mx.edu.utez.lapaca.models.carritos.CarritoRepository;
 import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
-import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.ofertas.OfertaRepository;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -61,6 +61,7 @@ public class PagoService {
     private final PagoRepository pagoRepository;
     private final OfertaRepository ofertaRepository;
     private final LogService logService;
+    private static final String PAGOS_CONSTANT = "Pagos";
 
 
     public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository, LogService logService) {
@@ -92,7 +93,7 @@ public class PagoService {
                 );
             }
             Pago savedPago = repository.save(pago);
-            logService.log("Post", "Se ha registrado un método de pago","pagos");
+            logService.log("Post", "Se ha registrado un método de pago",PAGOS_CONSTANT);
 
             return new CustomResponse<>(
                     savedPago,
@@ -135,7 +136,7 @@ public class PagoService {
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             List<Pago> pagos = pagoRepository.findByUsuario(usuario);
-            logService.log("Get", "Usuario ha solicitado ver sus métodos de pago","pagos");
+            logService.log("Get", "Usuario ha solicitado ver sus métodos de pago",PAGOS_CONSTANT);
             return new CustomResponse<>(
                     pagos,
                     false,
@@ -169,7 +170,7 @@ public class PagoService {
 
             pagoRepository.delete(pago);
             logService.log("Delete", "Método de pago con el id: " + pagoId + " sido " +
-                    "eliminado","pagos");
+                    "eliminado",PAGOS_CONSTANT);
 
             return new CustomResponse<>(
                     null,
@@ -251,11 +252,10 @@ public class PagoService {
         carritoRepository.save(carrito);
 
         Map<String, Object> chargeParams = new HashMap<>();
-        chargeParams.put("amount", (int) (montoTotal * 100)); // La cantidad se expresa en centavos
+        chargeParams.put("amount", (int) (montoTotal * 100));
         chargeParams.put("currency", "mxn");
         chargeParams.put("description", "Pago por productos en el carrito");
-        chargeParams.put("source", "tok_visa"); // Token generado por Stripe.js o Stripe Elements
-
+        chargeParams.put("source", "tok_visa");
         try {
             ChargeCreateParams params = ChargeCreateParams.builder()
                     .setAmount((long) (montoTotal * 100))

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
-import mx.edu.utez.lapaca.models.vendedorImagen.VendedorImagen;
+import mx.edu.utez.lapaca.models.vendedor_imagen.VendedorImagen;
 
 import java.util.ArrayList;
 import java.util.List;

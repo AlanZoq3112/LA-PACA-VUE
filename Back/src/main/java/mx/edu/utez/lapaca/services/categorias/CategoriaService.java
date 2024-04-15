@@ -20,9 +20,10 @@ public class CategoriaService {
 
     private final CategoriaRepository repository;
     private final LogService logService;
+    private static final String CATEGORIAS_CONSTANT = "Categorias";
+
 
     public CategoriaService(CategoriaRepository repository, LogService logService) {
-
         this.repository = repository;
         this.logService = logService;
     }
@@ -40,7 +41,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedUser = repository.save(categoria);
-            logService.log("Insert", "Categoria registrada", "Categorias");
+            logService.log("Insert", "Categoria registrada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -79,7 +80,7 @@ public class CategoriaService {
         Optional<Categoria> categoria = repository.findById(id);
         try {
             if (categoria.isPresent()) {
-                logService.log("GetOne", "Se encontro la categoria con id_:" + id, "Categorias");
+                logService.log("GetOne", "Se encontro la categoria con id_:" + id, CATEGORIAS_CONSTANT);
                 return new CustomResponse<>(
                         categoria.get(),
                         false,
@@ -122,7 +123,7 @@ public class CategoriaService {
                 );
             }
             Categoria savedCategoria = repository.save(categoria);
-            logService.log("Update", "Categoria Actualizada", "Categorias");
+            logService.log("Update", "Categoria Actualizada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedCategoria,
                     false,
@@ -160,7 +161,7 @@ public class CategoriaService {
                 );
             }
             Categoria categoria = categoriaId.get();
-            logService.log("Delete", "Categoria Eliminada con el ID: " + id,  "Categorias");
+            logService.log("Delete", "Categoria Eliminada con el ID: " + id,  CATEGORIAS_CONSTANT);
             repository.delete(categoria);
             return new CustomResponse<>(
                     null,

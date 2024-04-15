@@ -5,6 +5,7 @@ import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.direcciones.DireccionRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,13 @@ public class DireccionService {
     private final DireccionRepository repository;
 
     private final UsuarioRepository usuarioRepository;
+    private final LogService logService;
+    private static final String DIRECCIONES_CONSTANT = "Direcciones";
 
-    public DireccionService(DireccionRepository repository, UsuarioRepository usuarioRepository) {
+    public DireccionService(DireccionRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.logService = logService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -39,6 +43,7 @@ public class DireccionService {
             direccion.setUsuario(usuario.get());
 
             Direccion savedDireccion = repository.save(direccion);
+            logService.log("Insert", "Dirección registrada", DIRECCIONES_CONSTANT);
             return new CustomResponse<>(
                     savedDireccion,
                     false,
@@ -77,6 +82,8 @@ public class DireccionService {
         Optional<Direccion> direccion = repository.findById(id);
         try {
             if (direccion.isPresent()) {
+                logService.log("Get", "Se encontró la dirección con el id: "
+                        + id, DIRECCIONES_CONSTANT);
                 return new CustomResponse<>(
                         direccion.get(),
                         false,
@@ -126,6 +133,7 @@ public class DireccionService {
             }
 
             Direccion savedDireccion = repository.save(direccion);
+            logService.log("Update", "Dirección actualizada", DIRECCIONES_CONSTANT);
             return new CustomResponse<>(
                     savedDireccion,
                     false,
@@ -164,6 +172,9 @@ public class DireccionService {
             }
             Direccion direccion = direccionId.get();
             repository.delete(direccion);
+            logService.log("Delete", "Dirección eliminada con el id: "
+                    + id, DIRECCIONES_CONSTANT);
+
             return new CustomResponse<>(
                     null,
                     false,
@@ -195,6 +206,9 @@ public class DireccionService {
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             List<Direccion> direcciones = usuario.getDirecciones();
+            logService.log("Get", "Se ha solicitado ver las direcciones" +
+                    "asociadas al usuario", DIRECCIONES_CONSTANT);
+
             return new CustomResponse<>(
                     direcciones,
                     false,

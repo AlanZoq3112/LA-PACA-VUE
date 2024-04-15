@@ -21,6 +21,7 @@ public class SubCategoriaService {
     private final SubCategoriaRepository repository;
 
     private final LogService logService;
+    private static final String SUBCATEGORIAS_CONSTANT = "Subcategorias";
     public SubCategoriaService(SubCategoriaRepository repository, LogService logService) {
         this.repository = repository;
         this.logService = logService;
@@ -39,7 +40,7 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
-            logService.log("Insert", "SubCategoria registrada","subcategorias");
+            logService.log("Insert", "SubCategoria registrada",SUBCATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
@@ -78,7 +79,8 @@ public class SubCategoriaService {
         Optional<SubCategoria> subCategoria = repository.findById(id);
         try {
             if (subCategoria.isPresent()) {
-                logService.log("Get", "SubCategoria con el ID " + id + " encontrada","subcategorias");
+                logService.log("Get", "SubCategoria con el ID " + id + " encontrada",
+                        SUBCATEGORIAS_CONSTANT);
                 return new CustomResponse<>(
                         subCategoria.get(),
                         false,
@@ -122,7 +124,7 @@ public class SubCategoriaService {
                 );
             }
             SubCategoria savedSubCategoria = repository.save(subCategoria);
-            logService.log("Update", "SubCategoria actualizada","subcategorias");
+            logService.log("Update", "SubCategoria actualizada",SUBCATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     savedSubCategoria,
                     false,
@@ -161,7 +163,7 @@ public class SubCategoriaService {
             }
             SubCategoria subCategoria = subCategoriaId.get();
             repository.delete(subCategoria);
-            logService.log("Delete", "SubCategoria eliminada: "+id,"subcategorias");
+            logService.log("Delete", "SubCategoria eliminada: "+id,SUBCATEGORIAS_CONSTANT);
             return new CustomResponse<>(
                     null,
                     false,

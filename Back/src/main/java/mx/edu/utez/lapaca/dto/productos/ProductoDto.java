@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
+import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import org.springframework.web.multipart.MultipartFile;

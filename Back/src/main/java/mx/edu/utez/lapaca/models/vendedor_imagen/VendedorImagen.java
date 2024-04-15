@@ -1,4 +1,4 @@
-package mx.edu.utez.lapaca.models.vendedorImagen;
+package mx.edu.utez.lapaca.models.vendedor_imagen;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;

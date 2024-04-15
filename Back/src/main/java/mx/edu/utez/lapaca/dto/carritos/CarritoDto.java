@@ -7,7 +7,7 @@ import lombok.Setter;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
@@ -33,7 +33,7 @@ public class CarritoDto {
 
     private EstadoPedido estado;
 
-    private String Idpago;
+    private String idPago;
 
 
     public Carrito getCarrito () {
@@ -45,7 +45,7 @@ public class CarritoDto {
                 getPago(),
                 getDireccion(),
                 getEstado(),
-                getIdpago()
+                getIdPago()
         );
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/recovery/")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 public class RecoveryPasswordController {
 
 

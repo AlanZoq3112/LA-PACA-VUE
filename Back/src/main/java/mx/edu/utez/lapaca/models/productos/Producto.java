@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
+import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+
 
 public class Producto {
 

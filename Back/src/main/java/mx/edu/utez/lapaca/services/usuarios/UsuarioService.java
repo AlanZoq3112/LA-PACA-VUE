@@ -26,6 +26,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     private final LogService logService;
+    private static final String USUARIOS_CONSTANT = "Usuarios";
 
     public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder, LogService logService) {
         this.repository = repository;
@@ -38,7 +39,7 @@ public class UsuarioService {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
         try {
             if (exists.isPresent()) {
-                logService.log("Insert", "Usuario insertado", "usuario");
+                logService.log("Insert", "Usuario insertado", USUARIOS_CONSTANT);
                 return new CustomResponse<>(
                         null,
                         true,
@@ -90,7 +91,7 @@ public class UsuarioService {
         Optional<Usuario> usuario = repository.findByEmail(email);
         try {
             if (usuario.isPresent()) {
-                logService.log("Inicio Sesión", "Inicio sesón: "+email, "usuarios");
+                logService.log("Inicio Sesión", "Inicio sesón: "+email, USUARIOS_CONSTANT);
                 return new CustomResponse<>(
                         usuario.get(),
                         false,
@@ -143,7 +144,7 @@ public class UsuarioService {
                 );
             }
             Usuario savedUser = repository.save(usuario);
-            logService.log("Update", "Usuario actualizado", "usuario");
+            logService.log("Update", "Usuario actualizado", USUARIOS_CONSTANT);
             return new CustomResponse<>(
                     savedUser,
                     false,
@@ -184,7 +185,8 @@ public class UsuarioService {
             }
             Usuario usuario = usuarioId.get();
             repository.delete(usuario);
-            logService.log("Delete", "Usuario eliminado con el ID: " + id, "usuario");
+            logService.log("Delete", "Usuario eliminado con el ID: " + id,
+                    USUARIOS_CONSTANT);
             return new CustomResponse<>(
                     null,
                     false,
@@ -224,7 +226,8 @@ public class UsuarioService {
         usuario.setPassword(
                 passwordEncoder.encode(usuario.getPassword())
         );
-        logService.log("UpdatePassword", "Contraseña actualizada", "usuario");
+        logService.log("UpdatePassword", "Contraseña actualizada",
+                USUARIOS_CONSTANT);
         return new CustomResponse<>(
                 this.repository.saveAndFlush(usuario),
                 false,

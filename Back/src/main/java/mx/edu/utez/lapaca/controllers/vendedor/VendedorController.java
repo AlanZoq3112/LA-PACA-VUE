@@ -2,10 +2,11 @@ package mx.edu.utez.lapaca.controllers.vendedor;
 
 
 import jakarta.validation.Valid;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageCountException;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageSizeException;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageUploadException;
 import mx.edu.utez.lapaca.dto.vendedores.VendedorDto;
-import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
-import mx.edu.utez.lapaca.models.vendedorImagen.VendedorImagen;
+import mx.edu.utez.lapaca.models.vendedor_imagen.VendedorImagen;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
 import mx.edu.utez.lapaca.services.firebase.FirebaseService;
 import mx.edu.utez.lapaca.services.vendedores.VendedorService;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/vendedor")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 public class VendedorController {
 
     private final VendedorService service;
@@ -38,17 +39,17 @@ public class VendedorController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COMPRADOR')")
     public ResponseEntity<CustomResponse<Vendedor>> insert(@Valid @ModelAttribute VendedorDto vendedorDto) throws Exception {
         List<MultipartFile> imageFiles = vendedorDto.getImagenes();
-        if (!(imageFiles.size() == 2)) {
-            throw new Exception("Debe proporcionar su INE por los dos lados");
+        if (imageFiles.size() != 2) {
+            throw new ImageCountException("Debe proporcionar su INE por los dos lados");
         }
         List<String> imageUrls = new ArrayList<>();
         for (MultipartFile imageFile : imageFiles) {
             if (imageFile.getSize() > 2 * 1024 * 1024) {
-                throw new Exception("El tamaño de una imagen excede el límite de 2MB.");
+                throw new ImageSizeException("El tamaño de una imagen excede el límite de 2MB.");
             }
             String imageUrl = firebaseService.uploadFileVendedor(imageFile);
             if (imageUrl == null) {
-                throw new Exception("Error al subir una imagen a Firebase.");
+                throw new ImageUploadException("Error al subir una imagen a Firebase.");
             }
             imageUrls.add(imageUrl);
         }

@@ -28,13 +28,12 @@ public class VendedorService {
     private final VendedorRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final LogService logService;
-    private final FirebaseService firebaseService;
+    private static final String VENDEDORES_CONSTANT = "Vendedores";
 
-    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService, FirebaseService firebaseService) {
+    public VendedorService(VendedorRepository repository, UsuarioRepository usuarioRepository, LogService logService) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.logService = logService;
-        this.firebaseService = firebaseService;
     }
 
 
@@ -60,7 +59,8 @@ public class VendedorService {
                 vendedor.setUsuario(usuario);
                 vendedor.setEstado(false);
                 Vendedor savedVendedor = repository.save(vendedor);
-                logService.log("Insert", "Se almaceno la solicitud del vendedor", "vendedores");
+                logService.log("Insert", "Se almaceno la solicitud del vendedor",
+                        VENDEDORES_CONSTANT);
                 return new CustomResponse<>(
                         savedVendedor,
                         false,
@@ -108,7 +108,8 @@ public class VendedorService {
         Optional<Vendedor> vendedor = repository.findByCurp(curp);
         try {
             if (vendedor.isPresent()) {
-                logService.log("Get", "Se consultó un vendedor con la CURP " + vendedor, "vendedores");
+                logService.log("Get", "Se consultó un vendedor con la CURP " + vendedor,
+                        VENDEDORES_CONSTANT);
                 return new CustomResponse<>(
                         vendedor.get(),
                         false,
@@ -159,7 +160,8 @@ public class VendedorService {
             }
             vendedor.setEstado(true);
             Vendedor savedVendedor = repository.save(vendedor);
-            logService.log("Update", "Se actualizó el perfil del vendedor con el ID " + existingUsuarioOptional, "vendedores");
+            logService.log("Update", "Se actualizó el perfil del vendedor con el ID " +
+                    existingUsuarioOptional, VENDEDORES_CONSTANT);
             return new CustomResponse<>(
                     savedVendedor,
                     false,
@@ -211,7 +213,8 @@ public class VendedorService {
                 );
 
             }
-            logService.log("Update", "Se aprobo un vendedor con el ID " + vendedorOptional, "vendedores");
+            logService.log("Update", "Se aprobo un vendedor con el ID " +
+                    vendedorOptional, VENDEDORES_CONSTANT);
             return new CustomResponse<>(
                     vendedor,
                     false,

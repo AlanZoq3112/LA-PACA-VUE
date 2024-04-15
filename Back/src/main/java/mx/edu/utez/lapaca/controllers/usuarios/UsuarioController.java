@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.controllers.usuarios;
 
 import jakarta.validation.Valid;
+import mx.edu.utez.lapaca.dto.productos.validators.images.ImageUploadException;
 import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
 import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
 import mx.edu.utez.lapaca.models.roles.Role;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/usuario")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
 public class UsuarioController {
 
     private final UsuarioService service;
@@ -47,7 +48,7 @@ public class UsuarioController {
         String imageUrl = firebaseService.uploadFileUser(imageFile);
         usuarioDto.setImage(imageFile);
         if (imageUrl == null) {
-            throw new Exception("Failed to upload image to Firebase.");
+            throw new ImageUploadException("Failed to upload image to Firebase.");
         }
         usuarioDto.setRole(Role.COMPRADOR);
         return new ResponseEntity<>(

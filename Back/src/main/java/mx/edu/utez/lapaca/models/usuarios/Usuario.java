@@ -101,6 +101,8 @@ public class Usuario implements UserDetails {
 
 
     public void getFechaNacimiento(Date fechaNacimiento) {
+        throw new UnsupportedOperationException("Este método no está implementado.");
+
     }
 
 

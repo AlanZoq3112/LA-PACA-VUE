@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
-import mx.edu.utez.lapaca.models.itemCarrito.ItemCarrito;
+import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
@@ -51,6 +51,6 @@ public class Carrito {
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
 
-    private String Idpago;
+    private String idPago;
 
 }

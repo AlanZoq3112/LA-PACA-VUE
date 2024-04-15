@@ -6,6 +6,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
 @Component
 public class EmailService {
 
@@ -15,6 +20,9 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+
 
     public boolean sendMail(EmailDto email) {
         try {
@@ -26,7 +34,7 @@ public class EmailService {
             mailSender.send((message));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error al enviar el correo electrónico: {}", e.getMessage(), e);
             return false;
         }
     }

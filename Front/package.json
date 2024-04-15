@@ -2,7 +2,7 @@
   "name": "utez.edu.mx",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5173",
     "build": "vite build",
     "preview": "vite preview --port 4173"
   },

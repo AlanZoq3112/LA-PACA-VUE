@@ -24,7 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api-carsi-shop/vendedor")
-@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
 public class VendedorController {
 
     private final VendedorService service;

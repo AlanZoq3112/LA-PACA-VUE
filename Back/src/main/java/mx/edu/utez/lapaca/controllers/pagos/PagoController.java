@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api-carsi-shop/pago")
-@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"})
 public class PagoController {
     private final PagoService service;
     private final CarritoRepository carritoRepository;
@@ -106,16 +107,6 @@ public class PagoController {
         String username = authentication.getName();
         try {
             service.marcarComoEntregado(carrito.getId(), username);
-            EmailDto emailDto = new EmailDto();
-            emailDto.setEmail(carrito.getUsuario().getEmail());
-            emailDto.setFullName(carrito.getUsuario().getNombre());
-            emailDto.setSubject("Confirmación de entrega en CarsiShop");
-            emailDto.setBody("Su pedido ha sido entregado satisfactoriamente." +
-                    "<br>ID del pedido: " + carrito.getId() +
-                    "<br>Estado del pedido: Entregado");
-
-            emailService.sendMail(emailDto);
-
             return ResponseEntity.ok("El pedido ha sido marcado como entregado correctamente.");
         } catch (UnauthorizedAccessException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

@@ -24,6 +24,8 @@ import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos.ProductoRepository;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
+import mx.edu.utez.lapaca.security.dto.email.EmailDto;
+import mx.edu.utez.lapaca.security.services.email.EmailService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
 import mx.edu.utez.lapaca.utils.StripePaymentException;
@@ -62,9 +64,11 @@ public class PagoService {
     private final OfertaRepository ofertaRepository;
     private final LogService logService;
     private static final String PAGOS_CONSTANT = "Pagos";
+    private static final String CARRITOS_CONSTANT = "Carritos";
 
+    private final EmailService emailService;
 
-    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository, LogService logService) {
+    public PagoService(PagoRepository repository, CarritoRepository carritoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository, DireccionRepository direccionRepository, PagoRepository pagoRepository, OfertaRepository ofertaRepository, LogService logService, EmailService emailService) {
         this.repository = repository;
         this.carritoRepository = carritoRepository;
         this.usuarioRepository = usuarioRepository;
@@ -73,6 +77,7 @@ public class PagoService {
         this.pagoRepository = pagoRepository;
         this.ofertaRepository = ofertaRepository;
         this.logService = logService;
+        this.emailService = emailService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -275,6 +280,7 @@ public class PagoService {
         Optional<Carrito> carritoOptional = carritoRepository.findById(carritoId);
         if (carritoOptional.isPresent()) {
             Carrito carrito = carritoOptional.get();
+
             if (!carrito.getUsuario().getEmail().equals(username)) {
                 throw new UnauthorizedAccessException("El usuario no está autorizado para modificar este carrito.");
             }
@@ -283,9 +289,20 @@ public class PagoService {
             }
             carrito.setEstado(EstadoPedido.ENTREGADO);
             carritoRepository.save(carrito);
+            logService.log("Insert", "El pedido con id: " +
+                    carrito.getIdPago() + " ha sido entregado",CARRITOS_CONSTANT);
+            EmailDto emailDto = new EmailDto();
+            emailDto.setEmail(carrito.getUsuario().getEmail());
+            emailDto.setFullName(carrito.getUsuario().getNombre());
+            emailDto.setSubject("Confirmación de entrega en CarsiShop");
+            emailDto.setBody("Su pedido ha sido entregado satisfactoriamente." +
+                    "<br>ID del pedido: " + carrito.getIdPago() +
+                    "<br>Estado del pedido: Entregado");
+            emailService.sendMail(emailDto);
         } else {
             throw new RuntimeException("No se encontró el carrito con el ID especificado.");
         }
+
     }
 
 
@@ -310,7 +327,7 @@ public class PagoService {
             String userEmail = usuario.getEmail();
             List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
-                    + userEmail + "ha solicitado ver su historial de pagos","carritos");
+                    + userEmail + "ha solicitado ver su historial de pagos",CARRITOS_CONSTANT);
             return new CustomResponse<>(
                     carritos,
                     false,

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(
-        origins = "*",
+        origins = {"http://localhost:8091", "http://localhost:8080", "http://localhost:5173"},
         methods = {RequestMethod.POST, RequestMethod.OPTIONS}
 )
 @RequestMapping("/api-carsi-shop/captcha")

@@ -38,7 +38,6 @@ public class UsuarioController {
         this.firebaseService = firebaseService;
 
     }
-
     @PostMapping(value = "/insert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @ModelAttribute UsuarioDto usuarioDto) throws Exception {

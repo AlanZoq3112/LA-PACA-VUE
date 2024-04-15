@@ -131,7 +131,6 @@ export default {
                     }
                 });
                 this.categorias = response.data.data;
-                console.log(this.categorias);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener las categorias, intente mas tarde', 'error');
             }
@@ -226,13 +225,11 @@ export default {
         paginatedCategorias() {
             const start = (this.currentPageCategorias - 1) * this.perPage;
             const end = start + this.perPage;
-            console.log('Categorias paginadas:', this.categorias.slice(start, end)); // Agregar este console.log
             return this.categorias.slice(start, end);
         },
         paginatedSubcategorias() {
             const start = (this.currentPageSubcategorias - 1) * this.perPage;
             const end = start + this.perPage;
-            console.log('Subcategorias paginadas:', this.subcategorias.slice(start, end)); // Agregar este console.log
             return this.subcategorias.slice(start, end);
         }
     },

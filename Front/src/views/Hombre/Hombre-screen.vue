@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div class="banner-container">
-            <img src="./../../assets/baners/BannerTenis.png" class="img-fluid" alt="...">
-        </div>
+
         <div class="custom-container py-1">
             <div class="row">
                 <div v-for="producto in productos" :key="producto.id" class="col-lg-3 mb-4">

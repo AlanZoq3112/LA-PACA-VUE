@@ -203,7 +203,7 @@ export default {
 
             if (response.success === false) {
                 Swal.fire({
-                    title: '¡Bienvenido!',
+                    title: 'Aceptado!',
                     text: 'Captcha realizado correctamente.',
                     icon: 'success',
                     position: 'top-end', 
@@ -214,7 +214,7 @@ export default {
                 this.captchaCompleted = true;
             } else {
                 Swal.fire({
-                    title: '¡Bienvenido!',
+                    title: 'Aceptado!',
                     text: 'Captcha realizado correctamente.',
                     icon: 'success',
                     position: 'top-end', 

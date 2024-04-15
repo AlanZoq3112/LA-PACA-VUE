@@ -27,6 +27,7 @@ public class UsuarioService {
 
     private final LogService logService;
     private static final String USUARIOS_CONSTANT = "Usuarios";
+    private static final String USUARIO_NO_EXISTE_MENSAJE = "Usuario con id ";
 
     public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder, LogService logService) {
         this.repository = repository;
@@ -184,7 +185,7 @@ public class UsuarioService {
                         null,
                         true,
                         400,
-                        "El usuario con el id " + id + " no existe"
+                        USUARIO_NO_EXISTE_MENSAJE + id + " no existe"
                 );
             }
             Usuario usuario = usuarioId.get();
@@ -195,7 +196,7 @@ public class UsuarioService {
                     null,
                     false,
                     200,
-                    "El usuario con el id " + id + " ha sido eliminado correctamente"
+                    USUARIO_NO_EXISTE_MENSAJE+ id + " ha sido eliminado correctamente"
             );
         } catch (DataAccessException e) {
             return new CustomResponse<>(

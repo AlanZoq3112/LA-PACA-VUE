@@ -127,7 +127,6 @@ export default {
                     return usuario.role === 'VENDEDOR' || usuario.role === 'COMPRADOR';
                 });
 
-                console.log(this.usuarios);
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los usuarios, intente mas tarde', 'error');
             }

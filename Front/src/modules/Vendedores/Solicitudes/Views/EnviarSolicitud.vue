@@ -25,9 +25,9 @@
                                             <label class="form-label" for="curp">CURP: </label>
                                             <b-form-input id="curp" type="text" placeholder="CURP"
                                                 v-model="v$.vendedor.curp.$model" :state="v$.vendedor.curp.$dirty
-                                                    ? !v$.vendedor.curp.$error
-                                                    : null
-                                                    " @blur="v$.vendedor.curp.$touch()" maxlength="18" />
+            ? !v$.vendedor.curp.$error
+            : null
+            " @blur="v$.vendedor.curp.$touch()" maxlength="18" />
                                             <b-form-invalid-feedback v-for="error in v$.vendedor.curp.$errors"
                                                 :key="error.$uid">
                                                 {{ error.$message }}
@@ -37,9 +37,9 @@
                                             <label class="form-label" for="rfc">RFC: </label>
                                             <b-form-input id="rfc" type="text" placeholder="RFC"
                                                 v-model="v$.vendedor.rfc.$model" :state="v$.vendedor.rfc.$dirty
-                                                    ? !v$.vendedor.rfc.$error
-                                                    : null
-                                                    " @blur="v$.vendedor.rfc.$touch()" maxlength="13" />
+            ? !v$.vendedor.rfc.$error
+            : null
+            " @blur="v$.vendedor.rfc.$touch()" maxlength="13" />
                                             <b-form-invalid-feedback v-for="error in v$.vendedor.rfc.$errors"
                                                 :key="error.$uid">
                                                 {{ error.$message }}
@@ -51,9 +51,9 @@
                                         <label class="form-label" for="telefono">Teléfono: </label>
                                         <b-form-input id="telefono" type="text" placeholder="Teléfono"
                                             v-model="v$.vendedor.telefonoVendedor.$model" :state="v$.vendedor.telefonoVendedor.$dirty
-                                                    ? !v$.vendedor.telefonoVendedor.$error
-                                                    : null
-                                                    " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10"
+            ? !v$.vendedor.telefonoVendedor.$error
+            : null
+            " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10"
                                             @keypress="onlynumbers" />
                                         <b-form-invalid-feedback v-for="error in v$.vendedor.telefonoVendedor.$errors"
                                             :key="error.$uid">
@@ -61,14 +61,27 @@
                                         </b-form-invalid-feedback>
                                     </div>
                                     <div class="form-outline mb-4">
-                                        <label class="form-label" for="telefono">INE(Coloca la clave unica que esta en la parte de atras de tu credencial): </label>
-                                        <input v-model="vendedor.ine" type="text" id="ine" class="form-control"
-                                            placeholder="INE" />
+                                        <label class="form-label" for="ine-images">INE (Selecciona 2 imágenes): </label>
+                                        <div class="input-group">
+                                            <input type="file" id="ine-images" multiple
+                                                @change="handleIneImageUpload($event)" class="form-control"
+                                                accept="image/*" :disabled="vendedor.imagenes.length >= 2">
+                                            <label class="input-group-text" for="ine-images">Seleccionar
+                                                imágenes</label>
+                                        </div>
+                                        <!-- Vista previa de las imágenes seleccionadas -->
+                                        <div v-if="vendedor.imagenes.length > 0" class="preview-container mt-3">
+                                            <div v-for="(image, index) in vendedor.imagenes" :key="index" class="image-preview">
+                                                <img :src="getImageURL(image)" alt="Imagen previa"
+                                                    class="preview-image">
+                                            </div>
+                                        </div>
                                     </div>
 
 
                                     <div class="text-center pt-1 mb-5 pb-1">
-                                        <button style="background-color: black; color: white;" class="btn btn-block fa-lg gradient-custom-2 mb-3"
+                                        <button style="background-color: black; color: white;"
+                                            class="btn btn-block fa-lg gradient-custom-2 mb-3"
                                             @click="enviarSolicitud()" type="button" :disabled="disableSendButton">
                                             Enviar Solicitud <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                         </button>
@@ -97,7 +110,7 @@ export default {
                 telefonoVendedor: "",
                 curp: "",
                 rfc: "",
-                ine: "",
+                imagenes: [],
             },
             loading: false
         };
@@ -124,7 +137,6 @@ export default {
                 });
                 this.loading = true;
                 const isFormCorrect = await this.v$.$validate();
-                console.log(isFormCorrect);
                 if (result.isConfirmed && isFormCorrect) {
                     const token = localStorage.getItem('token');
                     if (!token) {
@@ -132,7 +144,11 @@ export default {
                         return;
                     }
                     axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        
                     })
                         .then(response => {
                             Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
@@ -157,7 +173,30 @@ export default {
                 });
             }
         },
-
+        handleIneImageUpload(event) {
+            const files = event.target.files;
+            // Reiniciar el array de imágenes
+            this.vendedor.imagenes = [];
+            // Verificar si se seleccionaron más de dos imágenes
+            if (files.length > 2) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Solo puedes seleccionar hasta 2 imágenes como tu INE",
+                    icon: "error"
+                });
+                // Reiniciar la selección de archivos
+                event.target.value = "";
+            } else {
+                // Agregar las imágenes seleccionadas al array
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    this.vendedor.imagenes.push(file);
+                }
+            }
+        },
+        getImageURL(file) {
+            return URL.createObjectURL(file);
+        },
 
     },
     validations() {
@@ -187,14 +226,6 @@ export default {
                     ),
                     minLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", minLength(13)),
                     maxLength: helpers.withMessage("El RFC debe tener exactamente 13 caracteres", maxLength(13)),
-                },
-                ine: {
-                    required: helpers.withMessage("Campo obligatorio", required),
-                    maxLength: helpers.withMessage("Maximo 30 caracteres", maxLength(30)),
-                    validFormat: helpers.withMessage(
-                        "INE invalida",
-                        helpers.regex(/^[a-zA-Z0-9]+$/)
-                    ),
                 },
             },
         };
@@ -259,5 +290,20 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-preview {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.preview-image {
+    max-width: 100px;
+    max-height: 100px;
 }
 </style>

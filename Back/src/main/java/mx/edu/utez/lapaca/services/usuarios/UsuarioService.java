@@ -32,7 +32,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
         this.logService = logService;
     }
-    //insert
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> insert(Usuario usuario) {
         Optional<Usuario> exists = repository.findByEmail(usuario.getEmail());
@@ -73,7 +73,7 @@ public class UsuarioService {
         }
     }
 
-    //get all
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Usuario>> getAll() {
         return new CustomResponse<>(
@@ -84,7 +84,7 @@ public class UsuarioService {
         );
     }
 
-    //get one by id
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> getOne(String email) {
         Optional<Usuario> usuario = repository.findByEmail(email);
@@ -169,7 +169,7 @@ public class UsuarioService {
     }
 
 
-    //delete
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Usuario> deleteById(Long id) {
         try {

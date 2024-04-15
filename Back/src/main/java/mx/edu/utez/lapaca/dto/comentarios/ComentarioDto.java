@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.dto.comentarios;
 
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,8 +26,6 @@ public class ComentarioDto {
 
     @NotNull(message = "id de productos no puede ser nula")
     private Producto producto;
-
-
 
 
     public Comentario getComentario() {

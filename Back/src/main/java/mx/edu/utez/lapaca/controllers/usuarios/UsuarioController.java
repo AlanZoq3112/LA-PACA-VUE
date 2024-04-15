@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.controllers.usuarios;
 
-
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.usuarios.UsuarioDto;
 import mx.edu.utez.lapaca.dto.usuarios.email.EmailDTO;
@@ -36,7 +35,6 @@ public class UsuarioController {
         this.firebaseService = firebaseService;
     }
 
-    //insert
     @PostMapping(value = "/insert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Usuario>> insert(@Valid @ModelAttribute UsuarioDto usuarioDto) throws Exception {

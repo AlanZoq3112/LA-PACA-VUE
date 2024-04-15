@@ -1,6 +1,5 @@
 package mx.edu.utez.lapaca.controllers.subcategorias;
 
-
 import jakarta.validation.Valid;
 import mx.edu.utez.lapaca.dto.subcategorias.SubCategoriaDto;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;

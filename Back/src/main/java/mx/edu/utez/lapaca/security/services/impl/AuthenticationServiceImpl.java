@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
-
 import mx.edu.utez.lapaca.security.dto.JwtAuthenticationResponse;
 import mx.edu.utez.lapaca.security.dto.RefreshTokenRequest;
 import mx.edu.utez.lapaca.security.dto.SignUpRequest;
@@ -21,14 +20,11 @@ import java.util.HashMap;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     private final UsuarioRepository userRepository;
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final PasswordEncoder passwordEncoder;
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
-
-
 
 
     public Usuario singupUser(SignUpRequest signUpRequest){

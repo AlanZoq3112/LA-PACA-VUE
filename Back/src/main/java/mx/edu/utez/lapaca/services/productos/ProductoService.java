@@ -40,10 +40,9 @@ public class ProductoService {
     public CustomResponse<Producto> insert(Producto producto) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // Obtener el nombre de usuario
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
             producto.setUsuario(usuario.get());
-            // verificar si el producto ya existe
             Optional<Producto> exists = repository.findByNombre(producto.getNombre());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -53,9 +52,7 @@ public class ProductoService {
                         "Error... Producto ya registrado"
                 );
             }
-            // se marca la solicitud como pendiente de aprobación osea false hasta que el acmi la apruebe o nop
             producto.setEstado(1);
-            // Guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Insert", "Producto Agregado", "Productos");
             return new CustomResponse<>(
@@ -134,13 +131,11 @@ public class ProductoService {
     public CustomResponse<Producto> update(Producto producto) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
-
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
 
             producto.setUsuario(usuario.get());
 
-            // verificar si el usuario existe en la base de datos
             Optional<Producto> existingProductoOptional = repository.findById(producto.getId());
             if (existingProductoOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -150,9 +145,7 @@ public class ProductoService {
                         "El producto no existe");
             }
 
-            // se guarda la solicitud de producto
             producto.setEstado(2);
-            // se guardar el producto
             Producto savedProducto = repository.save(producto);
             logService.log("Update", "Producto Actualizado","Productos");
             return new CustomResponse<>(
@@ -197,7 +190,6 @@ public class ProductoService {
             producto.setEstado(estado);
             repository.save(producto);
 
-            // se actualiza el rol del usuario asociado si se aprueba como vendedor
             if (estado == 3) {
                 Usuario usuario = producto.getUsuario();
                 usuarioRepository.save(usuario);
@@ -276,15 +268,12 @@ public class ProductoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Producto>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Producto> productos = repository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
                     + usuario + "ha solicitado ver sus productos","productos");
@@ -303,7 +292,6 @@ public class ProductoService {
             );
         }
     }
-
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Producto>> getAllApprovedProducts() {

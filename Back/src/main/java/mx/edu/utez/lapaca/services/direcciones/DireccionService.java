@@ -33,17 +33,11 @@ public class DireccionService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> insert(Direccion direccion) {
         try {
-            // se obtiene el usuario autenticado desde el contexto de spring security
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
-
-            // se ecupera el usuario de la bd usando el correo
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
-            // se asignaa la dirección al usuario
             direccion.setUsuario(usuario.get());
 
-            // se guarda la dirección
             Direccion savedDireccion = repository.save(direccion);
             return new CustomResponse<>(
                     savedDireccion,
@@ -117,12 +111,9 @@ public class DireccionService {
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Direccion> update(Direccion direccion) {
         try {
-
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
-
+            String username = authentication.getName();
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             direccion.setUsuario(usuario.get());
 
             Optional<Direccion> existingDireccionOptional = repository.findById(direccion.getId());
@@ -198,15 +189,11 @@ public class DireccionService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Direccion>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Direccion> direcciones = usuario.getDirecciones();
             return new CustomResponse<>(
                     direcciones,

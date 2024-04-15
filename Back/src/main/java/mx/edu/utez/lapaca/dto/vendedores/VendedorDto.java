@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.lapaca.models.productos.Producto;
-import mx.edu.utez.lapaca.models.productosImagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.vendedorImagen.VendedorImagen;
 import mx.edu.utez.lapaca.models.vendedores.Vendedor;
@@ -45,14 +43,11 @@ public class VendedorDto {
     private Usuario usuario;
 
     public Vendedor getVendedor() {
-
         Vendedor vendedor = new Vendedor();
-        // Asignar otros campos del producto
         List<VendedorImagen> listaImagenes = new ArrayList<>();
         for (MultipartFile imagen : imagenes) {
             VendedorImagen vendedorImagen = new VendedorImagen();
-            // Configurar otros detalles de la imagen...
-            vendedorImagen.setVendedor(vendedor); // Establecer la relación con el vendedor
+            vendedorImagen.setVendedor(vendedor);
             listaImagenes.add(vendedorImagen);
         }
         vendedor.setImagenes(listaImagenes);

@@ -17,9 +17,6 @@ import java.util.function.Function;
 
 @Service
 public class JWTServiceImpl implements JWTService {
-
-
-    //clave generada automáticamente que cumple con los requisitos de seguridad para el algoritmo HS256 -> 256 bits
     private Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateResetPasswordToken(String email) {

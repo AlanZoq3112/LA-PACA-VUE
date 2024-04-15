@@ -38,7 +38,6 @@ public class RecoveryPasswordController {
         this.emailService = emailService;
     }
 
-    //String que se envia al email
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int LENGTH = 8;
 

@@ -20,7 +20,6 @@ public class Log {
     @Column(nullable = false)
     private LocalDateTime fechaHora;
 
-
     public Long getId() {
         return id;
     }

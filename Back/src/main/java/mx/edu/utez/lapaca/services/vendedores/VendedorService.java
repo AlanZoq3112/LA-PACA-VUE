@@ -43,14 +43,13 @@ public class VendedorService {
     public CustomResponse<Vendedor> insert(Vendedor vendedor) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
+            String username = authentication.getName();
 
             Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
             if (usuarioOptional.isPresent()) {
                 Usuario usuario = usuarioOptional.get();
                 Optional<Vendedor> existingVendedorOptional = repository.findByUsuario(usuario);
                 if (existingVendedorOptional.isPresent()) {
-                    // si ya existe una solicitud de vendedor, pues epale epale
                     return new CustomResponse<>(
                             null,
                             true,
@@ -69,7 +68,6 @@ public class VendedorService {
                         "Solicitud de vendedor registrada. Pendiente de aprobación"
                 );
             } else {
-                // si no se encuentra el usuario, msj de error
                 return new CustomResponse<>(
                         null,
                         true,
@@ -147,12 +145,10 @@ public class VendedorService {
     public CustomResponse<Vendedor> update(Vendedor vendedor) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName(); // obtener el nombre de usuario
-            // se asigna el usuario al vendedor
+            String username = authentication.getName();
             Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
             vendedor.setUsuario(usuarioOptional.get());
 
-            // verificar si el usuario existe en la base de datos
             Optional<Usuario> existingUsuarioOptional = usuarioRepository.findById(vendedor.getId());
             if (existingUsuarioOptional.isEmpty()) {
                 return new CustomResponse<>(
@@ -161,7 +157,6 @@ public class VendedorService {
                         HttpStatus.NOT_FOUND.value(),
                         "El usuario no existe");
             }
-            // se guarda la solicitud de vendedor
             vendedor.setEstado(true);
             Vendedor savedVendedor = repository.save(vendedor);
             logService.log("Update", "Se actualizó el perfil del vendedor con el ID " + existingUsuarioOptional, "vendedores");
@@ -198,10 +193,8 @@ public class VendedorService {
         if (vendedorOptional.isPresent()) {
             Vendedor vendedor = vendedorOptional.get();
 
-
             vendedor.setEstado(estado);
             repository.save(vendedor);
-            // se actualiza el rol del usuario asociado si se aprueba como vendedor
             if (estado) {
                 Usuario usuario = vendedor.getUsuario();
                 usuario.setRole(Role.VENDEDOR);

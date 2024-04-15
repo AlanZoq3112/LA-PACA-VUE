@@ -54,17 +54,12 @@ public class ProductoDto {
     private List<Oferta> ofertas = new ArrayList<>();
 
 
-
     public Producto getProducto() {
-
         Producto producto = new Producto();
-        // Asignar otros campos del producto
         List<ProductoImagen> listaImagenes = new ArrayList<>();
         for (MultipartFile imagen : imagenes) {
             ProductoImagen productoImagen = new ProductoImagen();
-            // Configurar otros detalles de la imagen...
-            productoImagen.setProducto(producto); // Establecer la relación con el producto
-            listaImagenes.add(productoImagen);
+            productoImagen.setProducto(producto);
         }
         producto.setImagenes(listaImagenes);
 

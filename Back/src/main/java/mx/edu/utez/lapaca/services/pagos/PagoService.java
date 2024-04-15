@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.param.ChargeCreateParams;
 import jakarta.annotation.PostConstruct;
+import mx.edu.utez.lapaca.dto.pagos.validators.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.dto.productos.validators.InsuficienteStockException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoInactivoException;
 import mx.edu.utez.lapaca.dto.productos.validators.ProductoNotFoundException;
@@ -73,20 +74,14 @@ public class PagoService {
         this.logService = logService;
     }
 
-
-    //METODO PAGO
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<Pago> insert(Pago pago) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName(); // Obtener el nombre de usuario
-
             Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-
             pago.setUsuario(usuario.get());
 
-
-            // verificar si el producto ya existe
             Optional<Pago> exists = repository.findByNumero(pago.getNumero());
             if (exists.isPresent()) {
                 return new CustomResponse<>(
@@ -134,15 +129,11 @@ public class PagoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Pago>> getAllMetodoPagoByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
             List<Pago> pagos = pagoRepository.findByUsuario(usuario);
             logService.log("Get", "Usuario ha solicitado ver sus métodos de pago","pagos");
             return new CustomResponse<>(
@@ -174,8 +165,6 @@ public class PagoService {
                 );
             }
             Pago pago = pagoId.get();
-
-            // Desvincula el método de pago de todos los carritos que lo referencian
             carritoRepository.updatePagoToNullByPagoId(id);
 
             pagoRepository.delete(pago);
@@ -206,7 +195,7 @@ public class PagoService {
     }
 
 
-    //stripe
+
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -234,7 +223,6 @@ public class PagoService {
             }
             double subtotal = item.getCantidad() * producto.getPrecio();
 
-            // Aplicar descuento de ofertas activas si existen
             List<Oferta> ofertasActivas = ofertaRepository.findActiveOffersByProductId(producto.getId());
             if (!ofertasActivas.isEmpty()) {
                 double descuentoTotal = 0;
@@ -249,7 +237,6 @@ public class PagoService {
             carrito.setMonto(montoTotal);
             item.setCarrito(carrito);
         }
-        //direccion me lleva la verga no me sale nd ah no ya xd
         Optional<Direccion> direccionOptional = direccionRepository.findById(carrito.getDireccion().getId());
         System.out.println(direccionOptional);
         if (!direccionOptional.isPresent() || !direccionOptional.get().getUsuario().getId().equals(usuario.getId())) {
@@ -260,7 +247,6 @@ public class PagoService {
         if (!pagoOptional.isPresent() || !pagoOptional.get().getUsuario().getId().equals(usuario.getId())) {
             throw new RuntimeException("El pago seleccionado no pertenece al usuario autenticado.");
         }
-        // Antes de guardar el carrito, establece el estado como "PENDIENTE"
         carrito.setEstado(EstadoPedido.EN_CAMINO);
         carritoRepository.save(carrito);
 
@@ -284,6 +270,25 @@ public class PagoService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void marcarComoEntregado(Long carritoId, String username) {
+        Optional<Carrito> carritoOptional = carritoRepository.findById(carritoId);
+        if (carritoOptional.isPresent()) {
+            Carrito carrito = carritoOptional.get();
+            if (!carrito.getUsuario().getEmail().equals(username)) {
+                throw new UnauthorizedAccessException("El usuario no está autorizado para modificar este carrito.");
+            }
+            if (carrito.getEstado() != EstadoPedido.EN_CAMINO) {
+                throw new IllegalStateException("El pedido no está en camino y no puede ser marcado como entregado.");
+            }
+            carrito.setEstado(EstadoPedido.ENTREGADO);
+            carritoRepository.save(carrito);
+        } else {
+            throw new RuntimeException("No se encontró el carrito con el ID especificado.");
+        }
+    }
+
+
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Carrito>> getAll() {
         return new CustomResponse<>(
@@ -297,17 +302,12 @@ public class PagoService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public CustomResponse<List<Carrito>> getAllByCurrentUser() {
-        // Obtener el nombre de usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Buscar al usuario por su correo electrónico
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // Obtener los productos creados por el usuario
-            String userEmail = usuario.getEmail(); // Obtener el correo electrónico del usuario
-
+            String userEmail = usuario.getEmail();
             List<Carrito> carritos = carritoRepository.findByUsuario(usuario);
             logService.log("Get", "El usuario con el correo "
                     + userEmail + "ha solicitado ver su historial de pagos","carritos");
@@ -326,6 +326,4 @@ public class PagoService {
             );
         }
     }
-
-
 }

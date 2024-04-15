@@ -52,13 +52,12 @@ public class VendedorController {
             }
             imageUrls.add(imageUrl);
         }
-        //se crea una lista de objetos ProductoImagen y se configura con las URLs de las imágenes
         List<VendedorImagen> imagenes = new ArrayList<>();
-        Vendedor vendedor = vendedorDto.getVendedor(); // Obtener el producto del DTO
+        Vendedor vendedor = vendedorDto.getVendedor();
         for (String imageUrl : imageUrls) {
             VendedorImagen imagen = new VendedorImagen();
             imagen.setImageUrl(imageUrl);
-            imagen.setVendedor(vendedor); // Establecer la relación con el producto
+            imagen.setVendedor(vendedor);
             imagenes.add(imagen);
         }
         vendedor.setImagenes(imagenes);
@@ -96,7 +95,6 @@ public class VendedorController {
         );
     }
 
-
     @PutMapping("/aprobarSolicitudVendedor")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CustomResponse<Vendedor>> updateVendedorStatus(@RequestBody Map<String, Object> requestBody) {
@@ -118,7 +116,4 @@ public class VendedorController {
             return ResponseEntity.ok(response);
         }
     }
-
-
-
 }

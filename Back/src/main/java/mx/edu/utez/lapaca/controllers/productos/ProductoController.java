@@ -49,13 +49,12 @@ public class ProductoController {
             }
             imageUrls.add(imageUrl);
         }
-        //se crea una lista de objetos ProductoImagen y se configura con las URLs de las imágenes
         List<ProductoImagen> imagenes = new ArrayList<>();
-        Producto producto = productoDto.getProducto(); // Obtener el producto del DTO
+        Producto producto = productoDto.getProducto();
         for (String imageUrl : imageUrls) {
             ProductoImagen imagen = new ProductoImagen();
             imagen.setImageUrl(imageUrl);
-            imagen.setProducto(producto); // Establecer la relación con el producto
+            imagen.setProducto(producto);
             imagenes.add(imagen);
         }
         producto.setImagenes(imagenes);
@@ -64,8 +63,6 @@ public class ProductoController {
                 HttpStatus.CREATED
         );
     }
-
-
 
     @GetMapping("/getAll")
     public ResponseEntity<CustomResponse<List<Producto>>> getAll(){

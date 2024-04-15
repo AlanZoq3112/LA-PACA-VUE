@@ -10,7 +10,7 @@
                 <p>Registrar producto</p>
             </header>
             <main>
-                <b-form @submit.prevent="save">
+                <b-form @submit.prevent="guardarProducto">
                     <b-row>
                         <b-col>
                             <b-form-group label="Nombre del producto" label-for="nombre">
@@ -118,7 +118,7 @@ export default {
         getImageURL(file) {
             return URL.createObjectURL(file);
         },
-        async save() {
+        async guardarProducto() {
             try {
                 const result = await Swal.fire({
                     title: "¿Estás seguro de registrar el producto?",

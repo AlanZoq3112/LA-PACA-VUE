@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.security.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.lapaca.controllers.twilio.TwilioController;
 import mx.edu.utez.lapaca.models.roles.Role;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 import mx.edu.utez.lapaca.models.usuarios.UsuarioRepository;
@@ -73,6 +74,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
+        if (user.getRole() == Role.ADMIN){
+            TwilioController.sendSMS();
+        }
         return jwtAuthenticationResponse;
 
     }

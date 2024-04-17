@@ -10,7 +10,6 @@ import java.time.Period;
 public class IsAdultValidator implements ConstraintValidator<IsAdult, LocalDate> {
     @Override
     public void initialize(IsAdult constraintAnnotation) {
-        //no se admite inicializacion
     }
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {

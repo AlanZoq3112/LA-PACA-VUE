@@ -48,8 +48,6 @@ public class DireccionDto {
     @Size(max = 100, message = "el cp debe tener {max} caracteres")
     private String referencia;
 
-
-
     private Usuario usuario;
 
     public Direccion getDireccion() {

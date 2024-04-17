@@ -27,7 +27,7 @@ public class OfertaDto {
 
     private Date fechaInicio;
 
-    @NotNull(message = "La fecha de inicio de la oferta es obligatoria")
+    @NotNull(message = "La fecha de fin de la oferta es obligatoria")
 
     private Date fechaFin;
 

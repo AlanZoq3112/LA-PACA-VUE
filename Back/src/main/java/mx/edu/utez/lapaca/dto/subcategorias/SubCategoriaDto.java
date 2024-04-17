@@ -1,6 +1,7 @@
 package mx.edu.utez.lapaca.dto.subcategorias;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class SubCategoriaDto {
     @Size(max = 25, message = "El nombre debe tener como máximo {max} caracteres")
     private String nombre;
 
+    @NotNull(message = "La categoria no puede ser nula")
     private Categoria categoria;
 
     public SubCategoria getSubCategoria() {

@@ -27,6 +27,8 @@ public class ProductoDto {
     @Size(max = 40, message = "El nombre del producto debe tener como máximo {max} caracteres")
     private String nombre;
 
+    @NotNull(message = "Debe proporcionar al menos una imagen del producto")
+    @Size(min = 1, max = 5, message = "Debe proporcionar entre {min} y {max} imágenes del producto")
     private List<MultipartFile> imagenes = new ArrayList<>();
 
     @NotBlank(message = "La descripción del producto no puede estar vacía")
@@ -45,6 +47,7 @@ public class ProductoDto {
     @NotNull(message = "El estado no puede ser nulo")
     private int estado;
 
+    @NotNull(message = "El usuario no puede ser nulo")
     private Usuario usuario;
 
     @NotNull(message = "El id de subcategoria no puede ser nulo")

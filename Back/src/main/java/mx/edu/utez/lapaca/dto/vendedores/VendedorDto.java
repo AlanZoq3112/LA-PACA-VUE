@@ -39,7 +39,7 @@ public class VendedorDto {
     @NotNull(message = "El estado no puede ser nulo")
     private boolean estado;
 
-
+    @NotNull(message = "El usuario no puede ser nulo")
     private Usuario usuario;
 
     public Vendedor getVendedor() {

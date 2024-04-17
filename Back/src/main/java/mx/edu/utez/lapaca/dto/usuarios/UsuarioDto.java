@@ -51,6 +51,7 @@ public class UsuarioDto {
     @IsAdult
     private LocalDate fechaNacimiento;
 
+    @Size(max = 10, message = "El código debe tener como maximo {max} caracteres")
     private String secretPass;
 
     private Role role;

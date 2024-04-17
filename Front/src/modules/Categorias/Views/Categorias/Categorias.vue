@@ -160,7 +160,7 @@ export default {
                     Swal.fire('Eliminada', 'La categoria ha sido eliminada correctamente', 'success');
                 }
             } catch (error) {
-                let errorMessage = "Hubo un problema al intentar eliminar la categoria, intente más tarde";
+                let errorMessage = "No se pueden eliminar categorias con subcategorias asociadas";
                 if (error.response?.data && error.response.data.length > 0) {
                     errorMessage = error.response.data[0];
                 }

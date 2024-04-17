@@ -214,15 +214,15 @@ export default {
                 this.captchaCompleted = true;
             } else {
                 Swal.fire({
-                    title: 'Aceptado!',
-                    text: 'Captcha realizado correctamente.',
-                    icon: 'success',
+                    title: '¡Rechazado!',
+                    text: 'No pasaste la prueba de Captcha, intenta mas tarde.',
+                    icon: 'error',
                     position: 'top-end', 
                     toast: true, 
                     showConfirmButton: false, 
                     timer: 3000
                 });
-                this.captchaCompleted = true;
+                this.captchaCompleted = false;
             }
         },
         doneCallback(solution) {

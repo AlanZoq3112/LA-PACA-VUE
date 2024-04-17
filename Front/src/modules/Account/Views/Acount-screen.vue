@@ -144,7 +144,7 @@
                                         </b-button>
                                         <b-collapse id="collapseCompras">
                                             <b-card>
-                                                <b-button to="productos" variant="faded"><i class="fa fa-history"
+                                                <b-button to="historial" variant="faded"><i class="fa fa-history"
                                                         aria-hidden="true"></i> Hisotrial de compras</b-button>
 
                                             </b-card>
@@ -308,6 +308,7 @@ export default {
 
                 this.user = response.data.data;
             } catch (error) {
+                localStorage.clear();
                 Swal.fire({
                     title: "Error",
                     text: "Tu sesion se a cerrado por seguridad, vuelve a iniciar sesion",

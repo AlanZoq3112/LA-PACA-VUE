@@ -53,8 +53,7 @@
                                             v-model="v$.vendedor.telefonoVendedor.$model" :state="v$.vendedor.telefonoVendedor.$dirty
             ? !v$.vendedor.telefonoVendedor.$error
             : null
-            " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10"
-                                            @keypress="onlynumbers" />
+            " @blur="v$.vendedor.telefonoVendedor.$touch()" maxlength="10" @keypress="onlynumbers" />
                                         <b-form-invalid-feedback v-for="error in v$.vendedor.telefonoVendedor.$errors"
                                             :key="error.$uid">
                                             {{ error.$message }}
@@ -71,7 +70,8 @@
                                         </div>
                                         <!-- Vista previa de las imágenes seleccionadas -->
                                         <div v-if="vendedor.imagenes.length > 0" class="preview-container mt-3">
-                                            <div v-for="(image, index) in vendedor.imagenes" :key="index" class="image-preview">
+                                            <div v-for="(image, index) in vendedor.imagenes" :key="index"
+                                                class="image-preview">
                                                 <img :src="getImageURL(image)" alt="Imagen previa"
                                                     class="preview-image">
                                             </div>
@@ -127,7 +127,7 @@ export default {
         async enviarSolicitud() {
             try {
                 const result = await Swal.fire({
-                    title: "¿Estás seguro de enviar la solicitud de vededor?",
+                    title: "¿Estás seguro de enviar la solicitud de vendedor?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#008c6f',
@@ -138,9 +138,20 @@ export default {
                 this.loading = true;
                 const isFormCorrect = await this.v$.$validate();
                 if (result.isConfirmed && isFormCorrect) {
+                    // Verificar si se han seleccionado exactamente 2 imágenes
+                    if (this.vendedor.imagenes.length !== 2) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Selecciona exactamente 2 imágenes antes de enviar",
+                            icon: "error"
+                        });
+                        this.loading = false; // Detener la carga
+                        return; // No continuar con el envío del formulario
+                    }
                     const token = localStorage.getItem('token');
                     if (!token) {
                         Swal.fire('Error', 'No se encontró un token válido', 'error');
+                        this.loading = false; // Detener la carga
                         return;
                     }
                     axios.post('http://localhost:8091/api-carsi-shop/vendedor/insert', this.vendedor, {
@@ -148,7 +159,6 @@ export default {
                             Authorization: `Bearer ${token}`,
                             'Content-Type': 'multipart/form-data'
                         },
-                        
                     })
                         .then(response => {
                             Swal.fire('Enviada', 'Solicitud de vendedor enviada correctamente', 'success');
@@ -160,10 +170,13 @@ export default {
                                 errorMessage = error.response.data[0]; // Utiliza el primer mensaje de error recibido del servidor
                             }
                             Swal.fire('Error', errorMessage, 'error');
-                            this.loading = false;
+                        })
+                        .finally(() => {
+                            this.loading = false; // Detener la carga
                         });
                 } else {
                     Swal.fire('Error', "Revise todos los campos", 'error');
+                    this.loading = false; // Detener la carga
                 }
             } catch (error) {
                 Swal.fire({
@@ -171,27 +184,22 @@ export default {
                     text: "Hubo un problema al intentar guardar el usuario",
                     icon: "error"
                 });
+                this.loading = false; // Detener la carga
             }
         },
+
         handleIneImageUpload(event) {
             const files = event.target.files;
-            // Reiniciar el array de imágenes
-            this.vendedor.imagenes = [];
-            // Verificar si se seleccionaron más de dos imágenes
-            if (files.length > 2) {
+            if (files.length === 2) {
+                this.vendedor.imagenes = Array.from(files);
+            } else {
                 Swal.fire({
                     title: "Error",
-                    text: "Solo puedes seleccionar hasta 2 imágenes como tu INE",
+                    text: "Selecciona exactamente 2 imágenes",
                     icon: "error"
                 });
                 // Reiniciar la selección de archivos
                 event.target.value = "";
-            } else {
-                // Agregar las imágenes seleccionadas al array
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    this.vendedor.imagenes.push(file);
-                }
             }
         },
         getImageURL(file) {

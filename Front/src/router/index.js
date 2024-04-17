@@ -107,6 +107,20 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/historial',
+      name: 'historial',
+      component: () => import('./../modules/Venta/Views/Historial/Views/Historial.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+       
+        if (token) {
+          next();
+        } else {
+          next('/login');
+        }
+      }
+    },
+    {
       path: '/vendedores',
       name: 'vendedores',
       component: () => import('./../modules/Vendedores/ListaVendedores/Vendedores.vue'),
@@ -167,13 +181,13 @@ const router = new VueRouter({
       }
     },
     {
- 	path: '/bitacorag-screen',
+      path: '/bitacorag-screen',
       name: 'bitacorag-screen',
       component: () => import('./../modules/Bitacoras Generales/BitacorasG.vue'),
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token');
         const tokenDecoded = jwtDecode(token);
-if (tokenDecoded.rol === '[ADMIN]') {
+        if (tokenDecoded.rol === '[ADMIN]') {
           next();
         } else {
           next('/inicio');
@@ -182,18 +196,18 @@ if (tokenDecoded.rol === '[ADMIN]') {
     },
     {
       path: '/bitacoral-screen',
-         name: 'bitacoral-screen',
-         component: () => import('./../modules/Bitacoras Login/BitacorasL.vue'),
-         beforeEnter: (to, from, next) => {
-           const token = localStorage.getItem('token');
-           const tokenDecoded = jwtDecode(token);
-   if (tokenDecoded.rol === '[ADMIN]') {
-             next();
-           } else {
-             next('/inicio');
-           }
-         }
-       },
+      name: 'bitacoral-screen',
+      component: () => import('./../modules/Bitacoras Login/BitacorasL.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
+        if (tokenDecoded.rol === '[ADMIN]') {
+          next();
+        } else {
+          next('/inicio');
+        }
+      }
+    },
     {
       path: '/inicio',
       name: 'inicio',

@@ -18,12 +18,18 @@
                                         <h4 class="mt-1 mb-5 pb-1">Carsi Shop</h4>
                                     </div>
 
-                                    <form>
+                                    <form id="iniciarSesión">
 
                                         <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example11">Correo electrónico</label>
-                                            <input v-model="user.username" type="email" id="form2Example11"
-                                                class="form-control" placeholder="Correo electronico de tu cuenta" />
+                                            <label class="form-label" for="email">Correo electrónico</label>
+                                            <b-form-input v-model="user.username" type="email" id="form2Example11"
+                                                class="form-control" placeholder="Correo electronico de tu cuenta"
+                                                required :state="emailValidation" />
+
+
+                                            <b-form-invalid-feedback :state="emailValidation">
+                                                El correo electrónico es requerido y debe tener un formato válido.
+                                            </b-form-invalid-feedback>
                                         </div>
 
                                         <div class="form-outline mb-4">
@@ -31,17 +37,22 @@
                                             <div class="input-group">
                                                 <input v-model="user.password"
                                                     :type="showPassword ? 'text' : 'password'" id="form2Example22"
-                                                    class="form-control" placeholder="Ingresa tu contraseña" />
+                                                    class="form-control" placeholder="Ingresa tu contraseña"
+                                                    :state="validatePassword" />
                                                 <button class="btn btn-outline-secondary" type="button"
                                                     @click="togglePasswordVisibility">
                                                     <i :class="['fas', showPassword ? 'fa-eye-slash' : 'fa-eye']"></i>
                                                 </button>
+                                                <b-form-invalid-feedback :state="validatePassword   ">
+                                                    La contraseña es requerida y debe tener al menos 8 caracteres.
+                                                </b-form-invalid-feedback>
+
                                             </div>
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                @click="login" type="button" style="background-color: black;">
+                                                @click="login" type="button" style="background-color: black;" :disabled="!validarForm">
                                                 Iniciar Sesion <i class="fas fa-sign-in-alt"></i>
                                             </button>
                                             <a class="text-muted" href="recuperarContrasena">¿Olvidaste tu
@@ -111,9 +122,9 @@ export default {
                     title: '¡Bienvenido!',
                     text: 'Has iniciado sesión correctamente.',
                     icon: 'success',
-                    position: 'top-end', 
-                    toast: true, 
-                    showConfirmButton: false, 
+                    position: 'top-end',
+                    toast: true,
+                    showConfirmButton: false,
                     timer: 3000
                 });
             } catch (error) {
@@ -127,10 +138,40 @@ export default {
             }
         },
         togglePasswordVisibility() {
-            this.showPassword = !this.showPassword; 
+            this.showPassword = !this.showPassword;
         }
 
     },
+
+    computed: {
+        // Comprueba si el usuario ha ingresado un correo electrónico y una contraseña válidos
+        validarForm() {
+            return this.emailValidation && this.validatePassword;
+        },
+        emailValidation() {
+            // Expresión regular para validar el formato de un correo electrónico
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Array de dominios permitidos
+            const allowedDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'utez.edu.mx'];
+
+            // Verifica si el campo de correo electrónico está vacío o no coincide con el formato de correo electrónico
+            if (this.user.username.trim() === "" || !regex.test(this.user.username)) {
+                return false;
+            }
+
+            // Verifica si el dominio del correo electrónico está en la lista de dominios permitidos
+            const domain = this.user.username.split('@')[1];
+            return allowedDomains.includes(domain);
+        },
+
+
+        validatePassword() {
+            // Verifica si el campo de contraseña está vacío
+            return this.user.password.length > 7;
+        },
+
+    }
 }
 </script>
 

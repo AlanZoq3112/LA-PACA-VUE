@@ -15,47 +15,73 @@
                     <b-row>
                         <b-col>
                             <b-form-group label="Nombre del producto" label-for="nombre">
-                                <b-form-input v-model="producto.nombre" type="text" id="nombre" required></b-form-input>
+                                <b-form-input v-model="producto.nombre" type="text" id="nombre" required
+                                    :state="validarNombre" />
+
+                                <b-form-invalid-feedback :state="validarNombre">
+                                    {{ getNombreErrorMessage() }}
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Subcategoria" label-for="subCategoria">
                                 <b-form-select v-model="producto.subCategoria" id="subCategoria"
                                     :options="subcategorias.map(subcategoria => ({ value: subcategoria.id, text: `${subcategoria.nombre} de ${subcategoria.categoria.nombre}` }))"
-                                    required></b-form-select>
+                                    :state="validarSubCategoria" required>
+                                </b-form-select>
+                                <b-form-invalid-feedback :state="validarSubCategoria">
+                                    Debes seleccionar una subcategoría.
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                     </b-row>
-
                     <b-form-group label="Descripción" label-for="descripcion">
                         <b-form-textarea v-model="producto.descripcion" id="descripcion" rows="4"
-                            required></b-form-textarea>
+                            :state="validarDescripcion" required></b-form-textarea>
+                        <!-- Contador de caracteres -->
+                        <small class="text-muted">{{ contadorDescripcion }} / 100</small>
+                        <!-- Feedback de validación -->
+                        <b-form-invalid-feedback :state="validarDescripcion">
+                            {{ getDescripcionErrorMessage() }}
+                        </b-form-invalid-feedback>
                     </b-form-group>
                     <b-row>
                         <b-col>
                             <b-form-group label="Precio" label-for="precio">
-                                <b-form-input v-model="producto.precio" type="number" id="precio"
+                                <b-form-input v-model="producto.precio" type="number" id="precio" :state="validarPrecio"
                                     required></b-form-input>
+                                <!-- Feedback de validación -->
+                                <b-form-invalid-feedback :state="validarPrecio">
+                                    {{ getPrecioErrorMessage() }}
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Stock" label-for="stock">
-                                <b-form-input v-model="producto.stock" type="number" id="stock" required></b-form-input>
+                                <b-form-select v-model="producto.stock" id="stock" :options="generarOpcionesStock()"
+                                    required :state="validarStock" />
+                                <b-form-invalid-feedback :state="validarStock">
+                                    Selecciona stock.
+                                </b-form-invalid-feedback>
                             </b-form-group>
                         </b-col>
                     </b-row>
 
                     <b-row>
-                        <b-form-group label="Imágenes del producto" label-for="imagenes">
-                            <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
-                                class="form-control" required>
-                            <!-- Vista previa de las imágenes seleccionadas -->
-                            <div v-if="producto.imagenes.length > 0" class="preview-container mt-3">
-                                <div v-for="(imagen, index) in producto.imagenes" :key="index" class="image-preview">
-                                    <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
+                        <b-col>
+                            <b-form-group label="Imágenes del producto" label-for="imagenes">
+                                <input type="file" id="imagenes" multiple @change="handleFileUpload($event)"
+                                    class="form-control" required>
+                                <!-- Vista previa de las imágenes seleccionadas -->
+                                <div v-if="producto.imagenes.length > 0" class="preview-container mt-3">
+                                    <div v-for="(imagen, index) in producto.imagenes.slice(0, 5)" :key="index"
+                                        class="image-preview">
+                                        <img :src="getImageURL(imagen)" alt="Imagen previa" class="preview-image">
+
+                                    </div>
                                 </div>
-                            </div>
-                        </b-form-group>
+                            </b-form-group>
+                        </b-col>
                     </b-row>
 
                     <b-row>
@@ -64,7 +90,7 @@
                             <b-button type="button" class="cancel" @click="onClose">Cancelar</b-button>
                         </b-col>
                         <b-col>
-                            <b-button type="submit" class="success" variant="success">Registrar</b-button>
+                            <b-button type="submit" class="success" variant="success" :disabled="!formValid">Registrar</b-button>
                         </b-col>
                         <b-col></b-col>
                     </b-row>
@@ -95,18 +121,52 @@ export default {
     },
 
     methods: {
-        
+
         onClose() {
             this.$bvModal.hide("modal-guardar-productos");
             this.resetForm();
         },
         handleFileUpload(event) {
             const files = event.target.files;
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']; // Tipos de archivo permitidos
+
             // Verifica si hay al menos 2 y como máximo 5 imágenes seleccionadas
             if (files.length >= 2 && files.length <= 5) {
+                // Verifica si los archivos son del tipo permitido
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (!allowedTypes.includes(file.type)) {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Solo se permiten imágenes en formato JPEG, PNG o GIF.",
+                            icon: "error"
+                        });
+                        // Reinicia la selección de archivos
+                        event.target.value = "";
+                        return;
+                    }
+                }
+
+                // Limpia el arreglo de imágenes antes de agregar nuevas imágenes
+                this.producto.imagenes = [];
+
+                // Agrega las nuevas imágenes al arreglo
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     this.producto.imagenes.push(file);
+                }
+
+                // Verifica si la cantidad de imágenes en la vista previa excede 5
+                if (this.producto.imagenes.length > 5) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Solo se permiten hasta 5 imágenes.",
+                        icon: "error"
+                    });
+                    // Limpia el arreglo de imágenes
+                    this.producto.imagenes = [];
+                    // Reinicia la selección de archivos
+                    event.target.value = "";
                 }
             } else {
                 // Muestra un mensaje de error si la cantidad de imágenes no es válida
@@ -119,6 +179,7 @@ export default {
                 event.target.value = "";
             }
         },
+
         getImageURL(file) {
             return URL.createObjectURL(file);
         },
@@ -201,11 +262,101 @@ export default {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener las subcategorias, intente mas tarde', 'error');
             }
         },
+        getNombreErrorMessage() {
+            if (!this.validarNombre) {
+                if (!this.producto.nombre.trim()) {
+                    return "El nombre es requerido.";
+                } else if (this.producto.nombre.length > 40) {
+                    return "El nombre debe tener máximo 40 caracteres.";
+                } else {
+                    return "El nombre solo puede contener letras, números y espacios entre palabras.";
+                }
+            }
+            return "";
+        },
 
+        getDescripcionErrorMessage() {
+            if (!this.validarDescripcion) {
+                if (!this.producto.descripcion.trim()) {
+                    return "La descripción es requerida.";
+                } else if (this.producto.descripcion.length > 100) {
+                    return "La descripción debe tener máximo 100 caracteres.";
+                } else {
+                    return "La descripción solo puede contener letras, números y espacios.";
+                }
+            }
+            return "";
+        },
+
+        getPrecioErrorMessage() {
+            if (!this.validarPrecio) {
+                if (isNaN(this.producto.precio)) {
+                    return "El precio debe ser un número.";
+                } else if (this.producto.precio <= 0) {
+                    return "El precio debe ser mayor a 0.";
+                } else if (this.producto.precio >= 3000) {
+                    return "El precio debe ser menor a 3000.";
+                } else {
+                    return "El precio debe ser un número entero.";
+                }
+            }
+            return "";
+        },
+
+        generarOpcionesStock() {
+            const opciones = [];
+            for (let i = 5; i <= 40; i += 5) {
+                opciones.push({ value: i, text: `${i}` });
+            }
+            return opciones;
+        },
     },
 
     mounted() {
         this.getSubcategorias();
+
+    },
+
+    computed: {
+        validarNombre() {
+            const regex = /^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/; // Expresión regular que permite letras, números y espacios entre palabras
+            const nombre = this.producto.nombre.trim(); // Eliminar espacios en blanco al inicio y al final del nombre
+            return nombre.length > 0 && nombre.length <= 40 && regex.test(nombre);
+        },
+        validarSubCategoria() {
+            return !!this.producto.subCategoria;
+        },
+
+        contadorDescripcion() {
+            return this.producto.descripcion.length;
+        },
+
+        validarDescripcion() {
+            // Verificar que la descripción no esté vacía y no exceda los 100 caracteres
+            return (
+                this.producto.descripcion.length > 0 &&
+                this.producto.descripcion.length <= 100 &&
+                // Validar que la descripción no contenga caracteres especiales ni scripts
+                /^[a-zA-Z0-9\s]*$/.test(this.producto.descripcion)
+            );
+        },
+
+        validarPrecio() {
+            // Verificar que el precio sea un número entero, mayor a 0 y menor a 3000
+            return (
+                this.producto.precio !== "" &&
+                this.producto.precio > 0 &&
+                this.producto.precio < 3000
+            );
+        },
+
+        validarStock() {
+            return this.producto.stock !== 0;
+        },
+
+        formValid() {
+        // Verifica si todos los campos están validados
+        return this.validarNombre && this.validarSubCategoria && this.validarDescripcion && this.validarPrecio && this.validarStock && this.producto.imagenes.length > 0;    }
     },
 }
 </script>

@@ -159,7 +159,7 @@ export default {
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado correctamente', 'success');
                 }
             } catch (error) {
-                let errorMessage = "Hubo un problema al crear la cuenta";
+                let errorMessage = "Hubo un problema al eliminar al usuario, intenta mas tarde";
                 if (error.response?.data && error.response.data.length > 0) {
                     errorMessage = error.response.data[0];
                 }

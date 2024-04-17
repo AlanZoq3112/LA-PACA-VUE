@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <ModalInfo ref="ModalInfo" :selectedProduct="selectedProduct" />
+        <ModalInfo :producto="selectedProduct"/>
     </div>
 </template>
 
@@ -72,19 +72,6 @@ export default {
             productos: [],
             currentPage: 1,
             perPage: 8,
-            fields: [
-                { key: 'nombre', label: 'Nombre', sortable: true },
-                { key: 'descripcion', label: 'Descripción', sortable: true },
-                { key: 'precio', label: 'Precio', sortable: true },
-                { key: 'stock', label: 'Stock', sortable: true },
-                { key: 'estado', label: 'Status', sortable: true },
-                { key: 'usuario', label: 'Nombre vendedor', sortable: true },
-                {
-                    key: 'actions',
-                    label: 'Acciones',
-                    visible: true,
-                },
-            ],
             selectedProduct: null,
         };
     },
@@ -105,15 +92,14 @@ export default {
                     }
                 });
                 this.productos = response.data.data
-                console.log(this.productos);;
             } catch (error) {
                 Swal.fire('Error', 'Hubo un problema al intentar obtener los productos, intente mas tarde', 'error');
             }
         },
         async openModal(producto) {
-            this.selectedProduct = producto; // Almacena el producto seleccionado
-            console.log(this.selectedProduct);
-            this.$bvModal.show('ModalInfo');        },
+            this.selectedProduct = producto;
+            this.$bvModal.show('modal-info-productos');            
+        },
     },
     mounted() {
         this.getProductos();

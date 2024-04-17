@@ -209,7 +209,7 @@ export default {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/producto/getAll",
+                    "http://localhost:8091/api-carsi-shop/producto/mis-productos",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

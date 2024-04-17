@@ -42,17 +42,17 @@
                                                     <h5>{{ producto.nombre }}</h5>
                                                     <p>{{ producto.descripcion }}</p>
                                                     <p>{{ producto.subCategoria.nombre }} para {{
-                                            producto.subCategoria.categoria.nombre }}</p>
+                                        producto.subCategoria.categoria.nombre }}</p>
                                                     <p>{{ producto.stock }} disponibles</p>
                                                 </b-card-text>
                                                 <template #footer>
                                                     <b-row>
                                                         <b-col :class="{
-                                            'text-warning': producto.estado === 0,
-                                            'text-warning': producto.estado === 1,
-                                            'text-success': producto.estado === 3,
-                                            'text-danger': producto.estado === 2
-                                        }">
+                                        'text-warning': producto.estado === 0,
+                                        'text-warning': producto.estado === 1,
+                                        'text-success': producto.estado === 3,
+                                        'text-danger': producto.estado === 2
+                                    }">
                                                             <span v-if="producto.estado === 0">Inactivo</span>
                                                             <span v-if="producto.estado === 1">Pendiente</span>
                                                             <span v-else-if="producto.estado === 3">Aprobado</span>
@@ -60,7 +60,10 @@
                                                         </b-col>
                                                         <b-col>
                                                             <div class="d-flex justify-content-end">
-
+                                                                <b-button @click="openEditarModal(producto)"
+                                                                variant="faded">
+                                                                    <b-icon icon="pencil"></b-icon>
+                                                                </b-button>
                                                                 <b-button v-b-tooltip.hover="'Deshabilitar Producto'"
                                                                     @click="deshabilitarProducto(producto.id)"
                                                                     class="boton" variant="faded">
@@ -84,7 +87,7 @@
             </div>
         </div>
         <ModalGuardarProducto @producto-saved="getProductos" />
-    </div>
+        <ModalEditarProducto :producto="productoSeleccionado" @producto-saved="getProductos" />    </div>
 </template>
 
 <script>
@@ -92,10 +95,12 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import ModalGuardarProducto from './ModalGuardarProducto.vue';
+import ModalEditarProducto from './ModalEditarProducto.vue';
 
 export default {
     components: {
-        ModalGuardarProducto
+        ModalGuardarProducto,
+        ModalEditarProducto
     },
     name: 'MisProductos',
     data() {
@@ -103,35 +108,23 @@ export default {
             productos: [],
             currentPage: 1,
             perPage: 8,
-            fields: [
-                { key: 'nombre', label: 'Nombre', sortable: true },
-                { key: 'descripcion', label: 'Descripción', sortable: true },
-                { key: 'precio', label: 'Precio', sortable: true },
-                { key: 'stock', label: 'Stock', sortable: true },
-                { key: 'estado', label: 'Status', sortable: true },
-                { key: 'usuario', label: 'Nombre vendedor', sortable: true },
-                {
-                    key: 'actions',
-                    label: 'Acciones',
-                    visible: true,
-                },
-            ],
+            productoSeleccionado: null,
         };
     },
     computed: {
         paginatedProductos() {
-        // Filtrar productos activos y luego inactivos
-        const productosActivos = this.productos.filter(producto => producto.estado !== 0);
-        const productosInactivos = this.productos.filter(producto => producto.estado === 0);
+            // Filtrar productos activos y luego inactivos
+            const productosActivos = this.productos.filter(producto => producto.estado !== 0);
+            const productosInactivos = this.productos.filter(producto => producto.estado === 0);
 
-        // Concatenar productos activos e inactivos y luego aplicar la paginación
-        const productosFiltrados = [...productosActivos, ...productosInactivos];
+            // Concatenar productos activos e inactivos y luego aplicar la paginación
+            const productosFiltrados = [...productosActivos, ...productosInactivos];
 
-        const start = (this.currentPage - 1) * this.perPage;
-        const end = start + this.perPage;
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
 
-        return productosFiltrados.slice(start, end);
-    },
+            return productosFiltrados.slice(start, end);
+        },
 
     },
     methods: {
@@ -178,30 +171,12 @@ export default {
             }
         },
 
-        activarProducto(idProducto) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: '¿Quieres activar este producto?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#008c6f',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, activar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Encuentra el índice del producto en la lista
-                    const index = this.productos.findIndex(producto => producto.id === idProducto);
-                    // Cambia el estado del producto a 1 (activo)
-                    this.productos[index].estado = 1;
-                    Swal.fire(
-                        'Activado',
-                        'El producto ha sido activado correctamente.',
-                        'success'
-                    );
-                }
-            });
+        openEditarModal(producto) {
+            this.productoSeleccionado = producto;
+            console.log(producto);
+            this.$bvModal.show('modal-editar-productos');        
         },
+
 
     },
     mounted() {

@@ -78,7 +78,8 @@ export default {
                     }
                     const response = await axios.post("http://localhost:8091/api-carsi-shop/categoria/insert", this.categoria, {
                         headers: {
-                            Authorization: `Bearer ${token}` // Incluir el token JWT en el encabezado de autorización
+                            Authorization: `Bearer ${token}`, // Incluir el token JWT en el encabezado de autorización
+                            'Content-Type': 'multipart/form-data'
                         }
                     });
 

@@ -13,7 +13,18 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../modules/Auth/Views/Login.vue')
+      component: () => import('../modules/Auth/Views/Login.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        // Verificar si hay un token de sesión
+        if (token) {
+          // Redirigir al usuario a la página de inicio
+          next('/inicio');
+        } else {
+          // Permitir que el usuario acceda a la página de inicio de sesión
+          next();
+        }
+      }
     },
     {
       path: '/recuperarContrasena',

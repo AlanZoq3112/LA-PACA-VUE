@@ -10,39 +10,47 @@
                 <div class="card rounded-3 text-black">
                     <div class="text-center">
                         <br>
-                        <h5>Productos</h5>
+                        <h5>Productos en el carrito</h5>
                     </div>
                     <div class="card-body p-md-5 mx-md-4">
-                        <b-card v-for="producto in productos" :key="producto.id">
-                            <div class="row">
-                                <div class="col-md-7">
-                                    <h6>{{ producto.nombre }}</h6>
-                                    <p>{{ producto.descripcion }}</p>
-                                    <p>Precio: {{ producto.precio }}</p>
-                                    <p>Cantidad: {{ producto.stock }}</p>
+                        <div v-if="productosEnCarrito.length > 0">
+                            <b-card v-for="producto in productosEnCarrito" :key="producto.id">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <h6>{{ producto.nombre }}</h6>
+                                        <p>{{ producto.descripcion }}</p>
+                                        <p>Precio: {{ producto.precio }}</p>
+                                        <p>Cantidad: {{ cantidad }}</p>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <b-carousel :controls="false" indicators :interval="0" class="custom-carousel">
+                                            <b-carousel-slide
+                                                style="min-height: 200px; min-width: 100%; max-height: 300px; max-width: 100%;"
+                                                v-for="(imagen, index) in producto.imagenes" :key="index"
+                                                :img-src="imagen.imageUrl"></b-carousel-slide>
+                                        </b-carousel>
+                                    </div>
                                 </div>
-                                <div class="col-md-5">
-                                    <b-carousel :controls="false" indicators :interval="0" class="custom-carousel">
-                                        <b-carousel-slide
-                                            style="min-height: 200px; min-width: 100%; max-height: 300px; max-width: 100%;"
-                                            v-for="(imagen, index) in producto.imagenes" :key="index"
-                                            :img-src="imagen.imageUrl"></b-carousel-slide>
-                                    </b-carousel>
-                                </div>
-                            </div>
-                            <template #footer>
-                                <div class="icono">
-                                    <b-button variant="faded" style="color: red;"><b-icon
-                                            icon="trash"></b-icon></b-button>
-                                </div>
-                            </template>
-                        </b-card>
+                                <template #footer>
+                                    <div class="icono">
+                                        <b-button variant="faded" style="color: red;"
+                                            @click="eliminarDelCarrito(producto.id)">
+                                            <b-icon icon="trash"></b-icon>
+                                        </b-button>
+                                    </div>
+                                </template>
+                            </b-card>
+                        </div>
+                        <div v-else>
+                            <p>No hay productos en el carrito</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="custom-container py-1">
-                <!-- Parte derecha -->
+            <!-- Parte derecha: dirección y resumen de compra -->
+            <div class="custom-container2 py-1">
                 <div class="d-flex flex-column h-100">
+                    <!-- Dirección de entrega -->
                     <div class="mb-2">
                         <div class="card rounded-3 text-black">
                             <div class="text-center">
@@ -53,7 +61,7 @@
                                 <div v-if="direcciones.length > 0">
                                     <b-card v-for="direccion in direcciones" :key="direccion.id" class="mb-3">
                                         <h5>Código Postal {{ direccion.codigoPostal }}</h5>
-                                        <h6> Calle {{ direccion.calle }} No. {{ direccion.numero }}, Colonia {{
+                                        <h6>Calle {{ direccion.calle }} No. {{ direccion.numero }}, Colonia {{
             direccion.colonia
         }}, {{ direccion.municipio }} {{ direccion.estado }}</h6>
                                         <p>Referencias: {{ direccion.referencia }}</p>
@@ -69,13 +77,15 @@
                                 <div class="button-container mt-3 d-flex justify-content-between">
                                     <button v-b-modal.modal-guardar-direcciones
                                         style="background-color: black;color: white;"
-                                        class="btn fa-lg gradient-custom-2" type="button">Agregar nueva dirección <i
-                                            class="fas fa-plus"></i></button>
-
+                                        class="btn fa-lg gradient-custom-2" type="button">
+                                        Agregar nueva dirección
+                                        <i class="fas fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Método de pago -->
                     <div>
                         <div class="card rounded-3 text-black">
                             <div class="text-center">
@@ -85,9 +95,9 @@
                             <div class="card-body p-md-5 mx-md-4">
                                 <div v-if="metodosPago.length > 0">
                                     <b-card v-for="metodo in metodosPago" :key="metodo.id" class="mb-3">
-                                        <h5>Titular {{ metodo.titular }} </h5>
+                                        <h5>Titular {{ metodo.titular }}</h5>
                                         <p>{{ maskedNumero(metodo.numero) }} {{ metodo.tipo }}</p>
-                                        <p>Fecha: {{ metodo.fechaVencimiento }}   CVV: {{ maskedCvv(metodo.cvv) }}</p>
+                                        <p>Fecha: {{ metodo.fechaVencimiento }} CVV: {{ maskedCvv(metodo.cvv) }}</p>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" :value="metodo.id"
                                                 v-model="metodoPagoElegido">
@@ -95,44 +105,47 @@
                                     </b-card>
                                 </div>
                                 <div v-else>
-                                    <p>No hay Metodos de Pago disponibles</p>
+                                    <p>No hay métodos de pago disponibles</p>
                                 </div>
                                 <div class="button-container mt-3 d-flex justify-content-between">
                                     <button v-b-modal.modal-guardar-metodopago
                                         style="background-color: black;color: white;"
-                                        class="btn fa-lg gradient-custom-2" type="button">Agregar método de pago <i
-                                            class="fas fa-plus"></i></button>
+                                        class="btn fa-lg gradient-custom-2" type="button">
+                                        Agregar método de pago
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Resumen de compra -->
+                        <div class="container d-flex justify-content-center position-relative">
+                            <div class="card rounded-3 text-black">
+                                <div class="text-center">
+                                    <br>
+                                    <h5>Resumen de compra</h5>
+                                </div>
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <div v-if="productosEnCarrito.length > 0">
+                                        <p>Total: ${{ calculateTotal() }}</p>
+                                    </div>
+                                    <div v-else>
+                                        <p>No hay productos en el carrito</p>
+                                    </div>
+
+                                    <button style="background-color: black; color: white;"
+                                        class="btn btn-block fa-lg gradient-custom-2 mb-3" @click="pagar" type="button"
+                                        :disabled="!direccionElegida || !metodoPagoElegido">
+                                        Confirmar compra
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
-        <div class="container d-flex justify-content-center">
-            <div class="card rounded-3 text-black">
-                <div class="text-center">
-                    <br>
-                    <h5>Resumen de compra</h5>
-                </div>
-                <div class="card-body p-md-5 mx-md-4">
-                    <div v-if="productos.length > 0">
-                        <p>Total: ${{ calculateTotal()}}</p>
-                    </div>
-                    <div v-else>
-                        <p>No hay productos en el carrito</p>
-                    </div>
-
-                    <div class="text-center mt-3">
-                        <button style="background-color: black; color: white;"
-                            class="btn  btn-block fa-lg gradient-custom-2 mb-3" @click="pagar" type="button">
-                            Confirmar compra </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Modales para agregar direcciones y métodos de pago -->
         <ModalSaveDireccion @direccion-saved="getDirecciones" />
         <ModalSaveMetodoPago @metodo-saved="getMetodosDePago" />
     </div>
@@ -166,64 +179,30 @@ export default {
                     id: null
                 }
             },
+            cantidad: 1,
             loading: false
 
         };
     },
     methods: {
         maskedNumero(numero) {
-            // Si el número no está presente o es demasiado corto, devolverlo sin cambios
             if (!numero || numero.length < 4) return numero;
-
-            // Tomar los últimos 4 dígitos del número
             const lastFourDigits = numero.slice(-4);
-
-            // Crear una cadena de asteriscos del mismo tamaño que el número menos los últimos 4 dígitos
             const maskedPart = '*'.repeat(numero.length - 4);
-
-            // Combinar la parte enmascarada y los últimos 4 dígitos
             return maskedPart + lastFourDigits;
         },
         maskedCvv(cvv) {
-            // Si el CVV no está presente o es demasiado corto, devolverlo sin cambios
             if (!cvv || cvv.length < 3) return cvv;
-
-            // Tomar el primer dígito del CVV
             const firstDigit = cvv.slice(0, 1);
-
-            // Crear una cadena de asteriscos del tamaño de los otros 2 dígitos del CVV
             const maskedPart = '*'.repeat(cvv.length - 1);
-
-            // Combinar el primer dígito y la parte enmascarada
             return firstDigit + maskedPart;
         },
         calculateTotal() {
-            return this.productos.reduce((total, producto) => total + (producto.precio * producto.stock), 0);
+            return this.productosEnCarrito.reduce((total, producto) => total + (producto.precio * this.cantidad), 0);
         },
         continuar() {
             console.log("Id de la direccion seleccionada:", this.direccionElegida);
             this.$router.push({ name: 'checkoutMetodoPago' });
-        },
-
-        async getproductos() {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:8091/api-carsi-shop/producto/mis-productos",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-                // Filtrar los productos por subcategoría para hombres
-                this.productos = response.data.data.filter(producto => {
-                    return producto.subCategoria.categoria.nombre.toLowerCase() === "hombre" &&
-                        producto.subCategoria.nombre.toLowerCase() === "calzado" && producto.stock > 0 && producto.estado > 0;
-                });
-            } catch (error) {
-                console.error("Error al obtener los datos del usuario", error);
-            }
         },
 
         async getDirecciones() {
@@ -257,7 +236,6 @@ export default {
                 );
                 // Filtrar los productos por subcategoría para hombres
                 this.metodosPago = response.data.data;
-                console.log(this.metodosPago);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
@@ -285,9 +263,9 @@ export default {
                         return;
                     }
                     // Recorremos los productos y agregamos cada uno al array items de venta
-                    this.productos.forEach(producto => {
+                    this.productosEnCarrito.forEach(producto => {
                         this.venta.items.push({
-                            cantidad: producto.stock,
+                            cantidad: this.cantidad,
                             producto: { id: producto.id }
                         });
                     });
@@ -296,6 +274,7 @@ export default {
                         headers: { Authorization: `Bearer ${token}` }
                     }).then(response => {
                         Swal.fire('Realizada', 'Se realizó la compra correctamente', 'success');
+                        localStorage.removeItem('carrito');
                         this.$router.push({ name: 'profile-screen' });
 
                     })
@@ -318,9 +297,32 @@ export default {
             }
         },
 
+        eliminarDelCarrito(productoId) {
+            // Recuperar el carrito desde el almacenamiento local
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+            // Encontrar el índice del producto a eliminar
+            const index = carrito.findIndex(p => p.id === productoId);
+            if (index !== -1) {
+                // Eliminar el producto del carrito
+                carrito.splice(index, 1);
+
+                // Guardar el carrito actualizado en el almacenamiento local
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+
+                // Actualizar el estado de productosEnCarrito en Vue.js
+                this.productosEnCarrito = carrito;
+                window.location.reload();
+            }
+        }
+    },
+    computed: {
+        productosEnCarrito() {
+            return JSON.parse(localStorage.getItem('carrito')) || [];
+        },
     },
     mounted() {
-        this.getproductos();
+
         this.getDirecciones();
         this.getMetodosDePago();
     },

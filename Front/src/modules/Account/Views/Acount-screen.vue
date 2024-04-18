@@ -179,7 +179,7 @@
                                                             Administrar productos</b-button>
                                                     </b-col>
                                                     <b-col>
-                                                        <b-button to="historialVentas" variant="faded"><i
+                                                        <b-button to="MisVentas" variant="faded"><i
                                                                 class="fa fa-credit-card" aria-hidden="true"></i>
                                                             Administrar ventas</b-button>
                                                     </b-col>

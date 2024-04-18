@@ -177,6 +177,21 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/MisVentas',
+      name: 'MisVentas',
+      component: () => import('./../modules/Venta/misVentas/views/MisVentas.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        const tokenDecoded = jwtDecode(token);
+
+        if (tokenDecoded.rol === '[VENDEDOR]') {
+          next();
+        } else {
+          next('/inicio');
+        }
+      }
+    },
+    {
       path: '/categorias-screen',
       name: 'categorias-screen',
       component: () => import('./../modules/Categorias/Views/Categorias/Categorias.vue'),

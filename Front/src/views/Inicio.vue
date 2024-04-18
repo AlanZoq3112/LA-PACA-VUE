@@ -27,8 +27,8 @@
                                 <b-col>Precio: ${{ producto.precio }}</b-col>
                                 <b-col>
                                     <div class="d-flex justify-content-end">
-                                        <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
-                                            to="pagar" variant="faded">
+                                        <b-button @click="agregarAlCarrito(producto)"
+                                            v-b-tooltip.hover="'Agregar al carrito'" class="boton" variant="faded">
                                             <b-icon icon="cart-plus"></b-icon>
                                         </b-button>
                                     </div>
@@ -44,6 +44,7 @@
 
 <script>
 import axios from "axios";
+import Swal from 'sweetalert2';
 export default {
     name: "inicio",
     data() {
@@ -64,6 +65,20 @@ export default {
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
+        },
+        agregarAlCarrito(producto) {
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito.push(producto);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+
+            Swal.fire({
+        icon: 'success',
+        text: 'El producto se ha agregado al carrito',
+        position: 'top-end',
+        timer: 3000, // La alerta desaparecerá automáticamente después de 3 segundos
+        toast: true,
+        showConfirmButton: false
+    });
         },
     },
     mounted() {

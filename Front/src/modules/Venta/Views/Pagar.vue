@@ -30,12 +30,6 @@
                                     </b-carousel>
                                 </div>
                             </div>
-                            <template #footer>
-                                <div class="icono">
-                                    <b-button variant="faded" style="color: red;"><b-icon
-                                            icon="trash"></b-icon></b-button>
-                                </div>
-                            </template>
                         </b-card>
                     </div>
                 </div>

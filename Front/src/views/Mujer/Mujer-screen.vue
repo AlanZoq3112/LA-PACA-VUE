@@ -27,7 +27,7 @@
                                 <b-col>
                                     <div class="d-flex justify-content-end">
                                         <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
-                                            to="kid-producto" variant="faded">
+                                            to="pagar" variant="faded">
                                             <b-icon icon="cart-plus"></b-icon>
                                         </b-button>
                                     </div>

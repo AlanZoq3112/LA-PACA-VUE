@@ -93,7 +93,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/api-carsi-shop/captcha/verificar-captcha").permitAll()
 
 
-
                         .requestMatchers("/api-carsi-shop/log/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"api-carsi-shop/log/getAllLogs").hasAuthority(Role.ADMIN.name())
 

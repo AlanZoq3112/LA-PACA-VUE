@@ -72,7 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         var user = userRepository.findByEmail(singinRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         String usuario = user.getEmail();
-        logLoginService.guardarLogLogin("login", "Inicio de sesión", "bitacoraLogin", usuario);
+        //logLoginService.guardarLogLogin("login", "Inicio de sesión", "bitacoraLogin", usuario);
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 

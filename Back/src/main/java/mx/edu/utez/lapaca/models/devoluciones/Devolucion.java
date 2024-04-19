@@ -22,6 +22,9 @@ public class Devolucion {
     @Column(nullable = false)
     private Boolean status;
 
+    @Column(nullable = false)
+    private String comentario;
+
 
 
 }

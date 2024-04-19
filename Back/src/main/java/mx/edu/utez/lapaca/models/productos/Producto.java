@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.comentarios.Comentario;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
 import mx.edu.utez.lapaca.models.subcategorias.SubCategoria;
@@ -49,6 +50,9 @@ public class Producto {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnoreProperties({"genero", "image", "email", "password", "telefono", "fechaNacimiento",
+            "secretPass","role","vendedor","direcciones","enabled","username","authorities","accountNonLocked",
+            "credentialsNonExpired","accountNonExpired"})
     private Usuario usuario;
 
     @ManyToOne
@@ -58,6 +62,10 @@ public class Producto {
     @ManyToMany(mappedBy = "productos")
     //@JsonManagedReference
     private List<Oferta> ofertas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("producto")
+    private List<Comentario> comentarios = new ArrayList<>();
 
 
 }

@@ -24,11 +24,10 @@ public class OfertaDto {
     private boolean estado;
 
     @NotNull(message = "La fecha de inicio de la oferta es obligatoria")
-
     private Date fechaInicio;
 
-    @NotNull(message = "La fecha de inicio de la oferta es obligatoria")
 
+    @NotNull(message = "La fecha de fin de la oferta es obligatoria")
     private Date fechaFin;
 
     @NotNull(message = "El porcentaje de la oferta es obligatoria")

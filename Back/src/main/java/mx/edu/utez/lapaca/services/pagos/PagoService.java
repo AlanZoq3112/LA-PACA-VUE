@@ -205,7 +205,6 @@ public class PagoService {
     }
 
 
-
     @Transactional(rollbackFor = {StripePaymentException.class})
     public String procesarPago(Carrito carrito) throws StripePaymentException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -2,6 +2,7 @@ package mx.edu.utez.lapaca.controllers.pagos;
 
 
 import jakarta.validation.Valid;
+import mx.edu.utez.lapaca.dto.carritos.CarritoDto;
 import mx.edu.utez.lapaca.dto.pagos.PagoDto;
 import mx.edu.utez.lapaca.dto.pagos.exceptions.UnauthorizedAccessException;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
@@ -75,6 +76,11 @@ public class PagoController {
     }
 
 
+
+
+
+
+
     @PostMapping("/realizar-pago")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDEDOR', 'ROLE_COMPRADOR')")
     public String realizarPago(@Valid @RequestBody Carrito carrito) {
@@ -137,6 +143,7 @@ public class PagoController {
                     .body("Error al marcar el pedido como devuelto: " + e.getMessage());
         }
     }
+
 
 
 

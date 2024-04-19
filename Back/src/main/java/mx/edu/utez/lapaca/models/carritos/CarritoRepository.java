@@ -18,6 +18,5 @@ public interface CarritoRepository extends JpaRepository<Carrito, Long> {
     void updatePagoToNullByPagoId(Long pagoId);
 
 
-
-
+    List<Carrito> findByUsuarioId(Long id);
 }

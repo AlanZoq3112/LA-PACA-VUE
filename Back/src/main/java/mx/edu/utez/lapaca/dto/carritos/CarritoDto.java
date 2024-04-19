@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.carritos.Carrito;
 import mx.edu.utez.lapaca.models.carritos.EstadoPedido;
+import mx.edu.utez.lapaca.models.comentarios.Comentario;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
 import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -36,6 +38,9 @@ public class CarritoDto {
     private String idPago;
 
 
+    private String comentarioDevuelto;
+
+
     public Carrito getCarrito () {
         return new Carrito(
                 getId(),
@@ -45,7 +50,8 @@ public class CarritoDto {
                 getPago(),
                 getDireccion(),
                 getEstado(),
-                getIdPago()
+                getIdPago(),
+                getComentarioDevuelto()
         );
     }
 }

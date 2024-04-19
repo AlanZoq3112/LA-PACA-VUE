@@ -4,10 +4,13 @@ package mx.edu.utez.lapaca.models.carritos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.comentarios.Comentario;
 import mx.edu.utez.lapaca.models.direcciones.Direccion;
 import mx.edu.utez.lapaca.models.item_carrito.ItemCarrito;
 import mx.edu.utez.lapaca.models.pagos.Pago;
@@ -51,5 +54,8 @@ public class Carrito {
     private EstadoPedido estado;
 
     private String idPago;
+
+
+    private String comentarioDevuelto;
 
 }

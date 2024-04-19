@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.lapaca.models.comentarios.Comentario;
 import mx.edu.utez.lapaca.models.ofertas.Oferta;
 import mx.edu.utez.lapaca.models.productos.Producto;
 import mx.edu.utez.lapaca.models.productos_imagenes.ProductoImagen;
@@ -53,6 +54,8 @@ public class ProductoDto {
 
     private List<Oferta> ofertas = new ArrayList<>();
 
+    private List<Comentario> comentarios = new ArrayList<>();
+
 
     public Producto getProducto() {
         Producto producto = new Producto();
@@ -74,7 +77,8 @@ public class ProductoDto {
                 getEstado(),
                 getUsuario(),
                 getSubCategoria(),
-                getOfertas()
+                getOfertas(),
+                getComentarios()
         );
     }
 }

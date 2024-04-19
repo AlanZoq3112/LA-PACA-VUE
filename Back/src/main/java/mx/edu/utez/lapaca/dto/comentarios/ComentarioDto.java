@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.lapaca.models.comentarios.Comentario;
 import mx.edu.utez.lapaca.models.productos.Producto;
+import mx.edu.utez.lapaca.models.usuarios.Usuario;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,24 +17,26 @@ public class ComentarioDto {
 
     private Long id;
 
-    @NotBlank(message = "Este campo es obligatorio")
-    @Size(max = 150, message = "El comentario debe tener como máximo {max} caracteres")
+    @NotBlank(message = "Este campo de comentario no puede ir vacio")
+    @Size(max = 200, message = "El comentario debe tener como máximo {max} caracteres")
     private String comentarioTexto;
 
+    @NotBlank(message = "El puntaje no puede ser nulo")
     @Min(value = 0, message = "El puntaje mínimo es 0")
     @Max(value = 5L, message = "El puntaje máximo es 5")
     private int puntaje;
 
-    @NotNull(message = "id de productos no puede ser nula")
     private Producto producto;
 
+    private Usuario usuario;
 
     public Comentario getComentario() {
         return new Comentario(
                 getId(),
                 getComentarioTexto(),
                 getPuntaje(),
-                getProducto()
+                getProducto(),
+                getUsuario()
         );
     }
 

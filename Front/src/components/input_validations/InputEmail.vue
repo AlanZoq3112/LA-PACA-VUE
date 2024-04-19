@@ -18,7 +18,7 @@
 <script>
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, helpers, email } from "@vuelidate/validators";
+import { required, alphaNum, helpers, maxLength, minLength, email } from "@vuelidate/validators";
 
 export default Vue.extend({
     props: {
@@ -45,7 +45,7 @@ export default Vue.extend({
             } else {
                 this.$emit('check', false);
                 this.$emit('email', this.form.name);
-            }
+            }            
         },
     },
     validations: {
@@ -66,26 +66,13 @@ export default Vue.extend({
                         return ["gmail.com", "hotmail.com", "yahoo.com", "utez.edu.mx"].includes(value.split("@")[1])
                     }
                 ),
-                emailValidation() {
-                    // Expresión regular para validar el formato de un correo electrónico
-                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                    // Array de dominios permitidos
-                    const allowedDomains = ['gmail.com', 'utez.edu.mx', 'hotmail.com', 'yahoo.com'];
-
-                    // Verifica si el campo de correo electrónico está vacío o no coincide con el formato de correo electrónico
-                    if (this.user.username.trim() === "" || !emailPattern.test(this.user.username)) {
-                        return 'is-invalid';
+                validCharacters: helpers.withMessage(
+                    "El campo no es válido, solo se permiten letras y los caracteres especiales [ @./*-?']",
+                    value => {
+                        if (!value) return true
+                        return /^[a-zA-Z0-9@./*-_]+$/.test(value)
                     }
-
-                    // Verifica si el dominio del correo electrónico está en la lista de dominios permitidos
-                    const domain = this.user.username.split('@')[1];
-                    if (!allowedDomains.includes(domain)) {
-                        return 'is-invalid';
-                    }
-
-                    return 'is-valid';
-                },
+                ),
             },
         },
     },

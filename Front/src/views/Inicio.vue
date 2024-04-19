@@ -72,13 +72,13 @@ export default {
             localStorage.setItem('carrito', JSON.stringify(carrito));
 
             Swal.fire({
-        icon: 'success',
-        text: 'El producto se ha agregado al carrito',
-        position: 'top-end',
-        timer: 3000, // La alerta desaparecerá automáticamente después de 3 segundos
-        toast: true,
-        showConfirmButton: false
-    });
+                icon: 'success',
+                text: 'El producto se ha agregado al carrito',
+                position: 'top-end',
+                timer: 3000, // La alerta desaparecerá automáticamente después de 3 segundos
+                toast: true,
+                showConfirmButton: false
+            });
         },
     },
     mounted() {

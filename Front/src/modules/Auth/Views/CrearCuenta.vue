@@ -30,9 +30,9 @@
                                             <div class="form-outline mb-4">
                                                 <label class="form-label" for="genero">Género: </label>
                                                 <multi-select id="genero" :class="{
-            'is-invalid': v$.user.genero.$error,
-            'is-valid': !v$.user.genero.$invalid,
-        }" v-model="v$.user.genero.$model" placeholder="Selecciona un género" label="name" :options="generos"
+                                                    'is-invalid': v$.user.genero.$error,
+                                                    'is-valid': !v$.user.genero.$invalid,
+                                                }" v-model="v$.user.genero.$model" placeholder="Selecciona un género" label="name" :options="generos"
                                                     track-by="name" :multiple="false"
                                                     selectLabel="Presiona para seleccionar"
                                                     deselectLabel="Presiona para eliminar" selectedLabel="Seleccionado"
@@ -56,9 +56,9 @@
                                                 <label class="form-label" for="contrasena">Contraseña: </label>
                                                 <b-form-input id="contrasena" type="password" placeholder="Contraseña"
                                                     v-model="v$.user.password.$model" :state="v$.user.password.$dirty
-            ? !v$.user.password.$error
-            : null
-            " @blur="v$.user.password.$touch()" />
+                                                        ? !v$.user.password.$error
+                                                        : null
+                                                        " @blur="v$.user.password.$touch()" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.password.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -72,9 +72,9 @@
                                                 <label class="form-label" for="telefono">Teléfono: </label>
                                                 <b-form-input id="telefono" type="text" placeholder="Teléfono"
                                                     v-model="v$.user.telefono.$model" :state="v$.user.telefono.$dirty
-            ? !v$.user.telefono.$error
-            : null
-            " @blur="v$.user.telefono.$touch()" maxlength="10" @keypress="onlynumbers" />
+                                                        ? !v$.user.telefono.$error
+                                                        : null
+                                                        " @blur="v$.user.telefono.$touch()" maxlength="10" @keypress="onlynumbers" />
                                                 <b-form-invalid-feedback v-for="error in v$.user.telefono.$errors"
                                                     :key="error.$uid">
                                                     {{ error.$message }}
@@ -88,12 +88,12 @@
                                                 <b-form-datepicker id="fechaNacimiento" class="mb-2"
                                                     placeholder="Selecciona una fecha" :label-help="null"
                                                     v-model="v$.user.fechaNacimiento.$model" :state="v$.user.fechaNacimiento.$dirty ? !v$.user.fechaNacimiento.$error : null
-            " @blur="v$.user.fechaNacimiento.$touch()" label-current-month="Fecha máxima" hide-header
+                                                        " @blur="v$.user.fechaNacimiento.$touch()" label-current-month="Fecha máxima" hide-header
                                                     :date-format-options="{
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-        }" :max="fechaMax" @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
+                                                        year: 'numeric',
+                                                        month: 'numeric',
+                                                        day: 'numeric',
+                                                    }" :max="fechaMax" @hide="v$.user.fechaNacimiento.$touch()"></b-form-datepicker>
                                                 <b-form-invalid-feedback
                                                     v-for="error in v$.user.fechaNacimiento.$errors" :key="error.$uid">
                                                     {{ error.$message }}
@@ -112,8 +112,7 @@
                                     </b-row>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                            @click="createAccount" :disabled="!isFormValid" type="button"
-                                            style="background-color: black;">
+                                            @click="createAccount" type="button" style="background-color: black;">
                                             Crear Cuenta
                                         </button>
                                     </div>
@@ -167,7 +166,6 @@ export default {
         const fechaMax = new Date(hoy);
         fechaMax.setFullYear(fechaMax.getFullYear() - 18);
         return {
-            captchaCompleted: false,
             input: "",
             generos: [
                 { name: "Masculino" },
@@ -200,30 +198,7 @@ export default {
     methods: {
         async verifyCaptcha(solution) {
             const response = await CaptchaService.verificarCaptcha(solution);
-
-            if (response.success === false) {
-                Swal.fire({
-                    title: 'Aceptado!',
-                    text: 'Captcha realizado correctamente.',
-                    icon: 'success',
-                    position: 'top-end', 
-                    toast: true, 
-                    showConfirmButton: false, 
-                    timer: 3000
-                });
-                this.captchaCompleted = true;
-            } else {
-                Swal.fire({
-                    title: '¡Rechazado!',
-                    text: 'No pasaste la prueba de Captcha, intenta mas tarde.',
-                    icon: 'error',
-                    position: 'top-end', 
-                    toast: true, 
-                    showConfirmButton: false, 
-                    timer: 3000
-                });
-                this.captchaCompleted = false;
-            }
+            console.log(response);
         },
         doneCallback(solution) {
             this.verifyCaptcha(solution);
@@ -259,12 +234,14 @@ export default {
         onlynumbers(evt) {
             signal(evt);
         },
-        createAccount() {
+        createAccount() {            
             const isValid = this.v$.user.$invalid;
             if (this.valueNombre && this.valueEmail && this.valueFile && !isValid) {
                 const generoFinal = this.user.genero.name;
                 this.loading = true;
                 this.user.genero = generoFinal;
+
+                console.log(this.user);
                 axios.post('http://localhost:8091/api-carsi-shop/auth/singupUser', this.user)
                     .then(response => {
                         Swal.fire('Creada', 'Cuenta creada correctamente', 'success');
@@ -272,7 +249,7 @@ export default {
                     })
                     .catch(error => {
                         let errorMessage = "Hubo un problema al crear la cuenta";
-                        if (error.response.data && error.response.data.length > 0) {
+                        if (error.response && error.response.data && error.response.data.length > 0) {
                             errorMessage = error.response.data[0];
                         }
                         Swal.fire('Error', errorMessage, 'error');
@@ -328,16 +305,6 @@ export default {
                 doneCallback: this.doneCallback,
                 errorCallback: this.errorCallback,
             });
-        }
-
-    },
-    computed: {
-        isFormValid() {
-            return this.valueNombre &&
-                this.valueEmail &&
-                this.valueFile &&
-                !this.v$.user.$invalid &&
-                this.captchaCompleted;   
         }
     },
     beforeDestroy() {

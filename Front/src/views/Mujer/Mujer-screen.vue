@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="banner-container">
-            <img src="./../../assets/baners/BannerMujer.png" class="img-fluid" alt="Banner Mujer">
+            <img src="./../../assets//baners/BannerMujer2.png" class="img-fluid" alt="...">
         </div>
         <div class="custom-container py-1">
             <div class="row">
@@ -26,8 +26,8 @@
                                 <b-col>Precio: ${{ producto.precio }}</b-col>
                                 <b-col>
                                     <div class="d-flex justify-content-end">
-                                        <b-button v-b-tooltip.hover="'Agregar al carrito'" class="boton"
-                                            to="pagar" variant="faded">
+                                        <b-button @click="agregarAlCarrito(producto)"
+                                            v-b-tooltip.hover="'Agregar al carrito'" class="boton" variant="faded">
                                             <b-icon icon="cart-plus"></b-icon>
                                         </b-button>
                                     </div>
@@ -43,8 +43,10 @@
 
 <script>
 import axios from "axios";
+import Swal from 'sweetalert2';
+
 export default {
-    name: "mujer-screen",
+    name: "hombre-screen",
     data() {
         return {
             productos: [],
@@ -53,11 +55,15 @@ export default {
     methods: {
         async getProductos() {
             try {
-
+                const token = localStorage.getItem("token");
                 const response = await axios.get(
                     "http://localhost:8091/api-carsi-shop/producto/productos-aprobados",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
-                // Filtrar los productos por subcategoría para hombres
                 this.productos = response.data.data.filter(producto => {
                     return producto.subCategoria.categoria.nombre.toLowerCase() === "mujer" &&
                         producto.estado === 3 &&
@@ -66,6 +72,20 @@ export default {
             } catch (error) {
                 console.error("Error al obtener los datos del usuario", error);
             }
+        },
+        agregarAlCarrito(producto) {
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito.push(producto);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+
+            Swal.fire({
+                icon: 'success',
+                text: 'El producto se ha agregado al carrito',
+                position: 'top-end',
+                timer: 3000, // La alerta desaparecerá automáticamente después de 3 segundos
+                toast: true,
+                showConfirmButton: false
+            });
         },
     },
     mounted() {
@@ -100,18 +120,5 @@ export default {
     /* Ajustar el ancho de las imágenes al 100% del contenedor */
     height: auto;
     /* Altura automática para mantener la proporción */
-}
-
-.banner-container {
-    position: relative;
-    width: 100%;
-    margin-bottom: 20px;
-    /* Ajusta el margen inferior según sea necesario */
-}
-
-.banner-container img {
-    width: 100%;
-    height: auto;
-    display: block;
 }
 </style>

@@ -2,14 +2,18 @@ package mx.edu.utez.lapaca.services.categorias;
 
 import mx.edu.utez.lapaca.models.categorias.Categoria;
 import mx.edu.utez.lapaca.models.categorias.CategoriaRepository;
+import mx.edu.utez.lapaca.services.cifrado.EncryptionService;
 import mx.edu.utez.lapaca.services.logs.LogService;
 import mx.edu.utez.lapaca.utils.CustomResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +27,18 @@ public class CategoriaService {
     private static final String CATEGORIAS_CONSTANT = "Categorias";
     private static final String CATEGORIA_NO_EXISTE_MENSAJE = "La categoria con el id ";
 
+    private final PasswordEncoder passwordEncoder;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+
+    @Autowired
+    private EncryptionService encryptionService;
 
 
-    public CategoriaService(CategoriaRepository repository, LogService logService) {
+
+    public CategoriaService(CategoriaRepository repository, LogService logService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.logService = logService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -43,6 +54,8 @@ public class CategoriaService {
                         "Error... Categoria ya existente"
                 );
             }
+            String nombre = encryptionService.encrypt(categoria.getNombre());
+            categoria.setNombre(nombre);
             Categoria savedUser = repository.save(categoria);
             logService.log("Insert", "Categoria registrada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
@@ -65,13 +78,24 @@ public class CategoriaService {
                     HttpStatus.BAD_REQUEST.value(),
                     "Error... datos para insertar de categoria ilegal" + e.getMessage()
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<List<Categoria>> getAll() {
+    public CustomResponse<List<Categoria>> getAll() throws Exception {
+        List<Categoria> categoriasEncriptado = this.repository.findAll();
+        List<Categoria> categorias = new ArrayList<>();
+        for (Categoria categoria : categoriasEncriptado) {
+            Categoria categoriaNueva = new Categoria();
+            String nombre = encryptionService.decrypt(categoria.getNombre());
+            categoriaNueva.setNombre(nombre);
+            categoriaNueva.setId(categoria.getId());
+            categorias.add(categoriaNueva);
+        }
         return new CustomResponse<>(
-                this.repository.findAll(),
+                categorias,
                 false,
                 200,
                 "Ok"
@@ -79,13 +103,18 @@ public class CategoriaService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public CustomResponse<Categoria> getOne(Long id) {
+    public CustomResponse<Categoria> getOne(Long id) throws Exception {
         Optional<Categoria> categoria = repository.findById(id);
         try {
             if (categoria.isPresent()) {
                 logService.log("GetOne", "Se encontro la categoria con id_:" + id, CATEGORIAS_CONSTANT);
+                String nombre = encryptionService.decrypt(categoria.get().getNombre());
+                Categoria categoria1 = new Categoria();
+                categoria1.setNombre(nombre);
+                categoria1.setId(id);
+                System.out.println(categoria1.getNombre());
                 return new CustomResponse<>(
-                        categoria.get(),
+                        categoria1,
                         false,
                         200,
                         CATEGORIA_NO_EXISTE_MENSAJE + categoria.get().getId() + " encontrada"
@@ -105,13 +134,16 @@ public class CategoriaService {
                     500,
                     "Error interno del servidor al buscar la categoria solicitada"
             );
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             return new CustomResponse<>(
                     null,
                     true,
                     HttpStatus.BAD_REQUEST.value(),
                     "Error... datos para obtener una categoria ilegal" + e.getMessage()
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     @Transactional(rollbackFor = {SQLException.class})
@@ -125,6 +157,8 @@ public class CategoriaService {
                         "La categoria no existe"
                 );
             }
+            String nombre = encryptionService.encrypt(categoria.getNombre());
+            categoria.setNombre(nombre);
             Categoria savedCategoria = repository.save(categoria);
             logService.log("Update", "Categoria Actualizada", CATEGORIAS_CONSTANT);
             return new CustomResponse<>(
@@ -148,6 +182,8 @@ public class CategoriaService {
                     HttpStatus.BAD_REQUEST.value(),
                     "Error... datos para actualizar una categoria ilegal" + e.getMessage()
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

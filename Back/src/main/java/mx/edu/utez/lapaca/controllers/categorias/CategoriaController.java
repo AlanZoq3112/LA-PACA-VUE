@@ -33,7 +33,7 @@ public class CategoriaController {
 
     @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<CustomResponse<List<Categoria>>> getAll(){
+    public ResponseEntity<CustomResponse<List<Categoria>>> getAll() throws Exception {
         return new ResponseEntity<>(
                 this.service.getAll(),
                 HttpStatus.OK
@@ -42,7 +42,7 @@ public class CategoriaController {
 
     @GetMapping("/getOne")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<CustomResponse<Categoria>> getOne(@Valid @RequestBody Map<String, Long> requestBody){
+    public ResponseEntity<CustomResponse<Categoria>> getOne(@Valid @RequestBody Map<String, Long> requestBody) throws Exception {
         Long userId = requestBody.get("id");
         return new ResponseEntity<>(
                 this.service.getOne(userId),

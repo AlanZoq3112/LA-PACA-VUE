@@ -22,7 +22,7 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String nombre;
 
     @OneToMany(mappedBy = "categoria")
